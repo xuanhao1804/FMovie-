@@ -1,0 +1,31 @@
+$mobile-responsive-min-width  : 480px;
+$tablet-responsive-min-width  : 768px;
+$desktop-responsive-min-width : 1280px;
+$other-responsive-min-width   : 1440px;
+
+
+@mixin responsiveScreen($deviceType) {
+    @if $deviceType==phone {
+        @media only screen and (min-width: $mobile-responsive-min-width) {
+            @content;
+        }
+    }
+
+    @if $deviceType==tablet {
+        @media only screen and (min-width: $tablet-responsive-min-width) {
+            @content;
+        }
+    }
+
+    @if $deviceType==desktop {
+        @media only screen and (min-width: $desktop-responsive-min-width) {
+            @content;
+        }
+    }
+
+    @if $deviceType==other {
+        @media only screen and (min-width: $other-responsive-min-width) {
+            @content;
+        }
+    }
+}
