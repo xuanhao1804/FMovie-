@@ -4,7 +4,7 @@ mongoose.Promise = global.Promise;
 
 const db = {};
 
-db
+// db.user = User
 
 const connectDB = async () => {
   await mongoose
