@@ -21,10 +21,10 @@ const Header = () => {
         <div className="header content-width-padding">
             <div className="header-item text-dark">
                 <Link to={"/home"}>
-                    <img className="width-128" src={logo} alt="fmovie-logo" />
+                    <img className="width-112" src={logo} alt="fmovie-logo" />
                 </Link>
                 <Link to={"/booking"}>
-                    <img className="width-128" src={ticket} alt="fmovie-logo" />
+                    <img className="width-112" src={ticket} alt="fmovie-logo" />
                 </Link>
                 <Dropdown menu={{ items: filmsType }}>
                     <Link to={"/films"}>
