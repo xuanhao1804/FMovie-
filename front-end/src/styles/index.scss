@@ -3,7 +3,7 @@
 :root {}
 
 body {
-    font-family: monospace;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .content-width-padding {
@@ -31,4 +31,25 @@ body {
 
 .page-content-height {
     min-height: 400px;
+}
+
+.width-128 {
+    width : 8rem;
+    height: auto;
+}
+
+.text-dark {
+    color: #383838;
+}
+
+.text-white {
+    color: #fff
+}
+
+.bg-green {
+    background-color: #00ea1f;
+}
+
+.font-size-16 {
+    font-size: 1rem;
 }

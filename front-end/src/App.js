@@ -2,7 +2,6 @@ import { io } from "socket.io-client";
 import Home from "./pages/Home/Home";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Navbar from "./components/Navbar/Navbar";
 import Films from "./pages/Films/Films";
 import Header from "./components/Header/Header";
 
