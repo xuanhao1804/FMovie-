@@ -4,6 +4,8 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Films from "./pages/Films/Films";
 import Header from "./components/Header/Header";
+import Playing from "./pages/Films/Playing/Playing";
+import Upcoming from "./pages/Films/Upcoming/Upcoming";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -14,10 +16,14 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="films" element={<Films />} />
+          <Route path="films" element={<Films />} >
+            <Route index element={<Navigate to={"playing"} replace={true} />} />
+            <Route path="playing" element={<Playing />} />
+            <Route path="upcoming" element={<Upcoming />} />
+          </Route>
         </Routes>
-
         <ToastContainer
           position="bottom-left"
           autoClose={4000}

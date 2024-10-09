@@ -4,6 +4,14 @@
     align-items    : center;
     font-size      : 1rem;
 
+    &-divider {
+        text-align: center;
+        padding   : 1rem 0;
+        background: rgb(255, 145, 77);
+        background: linear-gradient(145deg, rgba(255, 145, 77, 1) 65%, rgba(255, 255, 254, 1) 100%);
+        color     : white;
+    }
+
     &-item {
         display    : flex;
         align-items: center;
