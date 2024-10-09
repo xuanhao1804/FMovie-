@@ -73,7 +73,7 @@ const Home = () => {
         <Col span={20}>
           <div className="title-section">
             <div className="line"></div>
-            <div>Movie Selection</div>
+            <div>LỰA CHỌN PHIM</div>
             <div className="line"></div>
           </div>
         </Col>
@@ -99,8 +99,8 @@ const Home = () => {
                 <div key={index} className="carousel-item">
                   <img src={imageUrl.url} alt="movie" />
                   <div className="button-container">
-                    <button className="detail-button">DETAILS</button>
-                    <button className="booking-button">BOOKING</button>
+                    <button className="detail-button">XEM CHI TIẾT</button>
+                    <button className="booking-button">ĐẶT VÉ</button>
                   </div>
                 </div>
               ))}
