@@ -1,0 +1,35 @@
+.films-card {
+    position           : relative;
+    background-size    : cover;
+    background-position: center;
+    height             : 20rem;
+    aspect-ratio       : 3/4;
+    cursor             : pointer;
+
+    &:hover {
+        box-shadow: 0 0 2rem #ff914d;
+    }
+
+    &-age-limitation {
+        position        : absolute;
+        z-index         : 1;
+        top             : 0.25rem;
+        left            : 0.25rem;
+        padding         : 0.1rem 0.25rem;
+        background-color: #ff914d;
+        color           : white;
+        font-size       : 1.2rem;
+    }
+
+    &-rating {
+        box-shadow      : 0 0 0.2rem white;
+        position        : absolute;
+        z-index         : 1;
+        top             : 0.25rem;
+        right           : 0.25rem;
+        padding         : 0.1rem 0.25rem;
+        background-color: transparent;
+        color           : white;
+        font-size       : 1.2rem;
+    }
+}
