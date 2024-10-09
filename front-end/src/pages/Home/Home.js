@@ -3,6 +3,7 @@ import { Carousel, Row, Col } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import '../../../node_modules/antd/dist/antd';
 import './Home.scss';
+import  FilmCard from '../../components/FilmsCard/FilmsCard'
 
 const sliderImageUrl = [
   {
@@ -96,13 +97,15 @@ const Home = () => {
               className="posters-carousel"
             >
               {sliderImageUrl.map((imageUrl, index) => (
-                <div key={index} className="carousel-item">
-                  <img src={imageUrl.url} alt="movie" />
-                  <div className="button-container">
-                    <button className="detail-button">XEM CHI TIẾT</button>
-                    <button className="booking-button">ĐẶT VÉ</button>
-                  </div>
-                </div>
+                <FilmCard></FilmCard>
+                
+                // <div key={index} className="carousel-item">
+                //   <img src={imageUrl.url} alt="movie" />
+                //   <div className="button-container">
+                //     <button className="detail-button">XEM CHI TIẾT</button>
+                //     <button className="booking-button">ĐẶT VÉ</button>
+                //   </div>
+                // </div>
               ))}
             </Carousel>
             <div className="arrow-left">
