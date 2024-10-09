@@ -58,8 +58,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-
-      
       <Carousel arrows={true} infinite={false} className="main-carousel">
         {carouselimg.map((imageUrl, index) => (
           <div key={index}>
@@ -67,8 +65,6 @@ const Home = () => {
           </div>
         ))}
       </Carousel>
-
-      
       <Row justify="center">
         <Col span={20}>
           <div className="title-section">
@@ -79,7 +75,7 @@ const Home = () => {
         </Col>
       </Row>
 
-      
+
       <Row justify="center">
         <Col span={20}>
           <div className="posters-carousel-wrapper">
@@ -99,7 +95,7 @@ const Home = () => {
                 <div key={index} className="carousel-item">
                   <img src={imageUrl.url} alt="movie" />
                   <div className="button-container">
-                    <button className="detail-button">XEM CHI TIẾT</button>
+                    <button className="detail-button">CHI TIẾT</button>
                     <button className="booking-button">ĐẶT VÉ</button>
                   </div>
                 </div>
