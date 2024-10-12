@@ -18,24 +18,25 @@ const Header = () => {
     ]
 
     return (
-        <div className="header content-width-padding">
-            <div className="header-item text-dark">
-                <Link to={"/home"}>
-                    <img className="width-112" src={logo} alt="fmovie-logo" />
-                </Link>
-                <Link to={"/booking"}>
-                    <img className="width-112" src={ticket} alt="fmovie-logo" />
-                </Link>
-                <Dropdown menu={{ items: filmsType }}>
-                    <Link to={"/films"}>
-                        Phim <i class="fa-solid fa-chevron-down"></i>
+        <>
+            <div className="header content-width-padding">
+                <div className="header-item text-dark">
+                    <Link to={"/home"}>
+                        <img className="width-112" src={logo} alt="fmovie-logo" />
                     </Link>
-                </Dropdown>
-                <Dropdown menu={{ items: cinemas }}>
-                    <Link to={"/cinemas"}>
-                        Rạp chiếu phim <i class="fa-solid fa-chevron-down"></i>
+                    <Link to={"/booking"}>
+                        <img className="width-112" src={ticket} alt="fmovie-logo" />
                     </Link>
-                </Dropdown>
+                    <Dropdown menu={{ items: filmsType }}>
+                        <Link to={"/films"}>
+                            Phim <i class="fa-solid fa-chevron-down"></i>
+                        </Link>
+                    </Dropdown>
+                    <Dropdown menu={{ items: cinemas }}>
+                        <Link to={"/cinemas"}>
+                            Rạp chiếu phim <i class="fa-solid fa-chevron-down"></i>
+                        </Link>
+                    </Dropdown>
 
             </div>
             <div className="header-item header-item-sm">
@@ -46,8 +47,12 @@ const Header = () => {
                     <Link to={"/auth/sign-in"}>Đăng ký</Link>
                 </Button>
 
+                </div>
             </div>
-        </div >
+            <div className="header-divider content-width-padding">
+                FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam (Chắc thế)
+            </div>
+        </>
     )
 }
 
