@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Films from "./pages/Films/Films";
 import Header from "./components/Header/Header";
+import Authentication from "./pages/Authentication/Authentication";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="home" element={<Home />} />
           <Route path="films" element={<Films />} />
+          <Route path="/auth/sign-in" element={<Authentication />} />
         </Routes>
 
         <ToastContainer

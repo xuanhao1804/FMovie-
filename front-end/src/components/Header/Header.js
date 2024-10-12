@@ -43,7 +43,7 @@ const Header = () => {
                     <Link to={"/auth/sign-in"}>Đăng nhập</Link>
                 </Button>
                 <Button type="success" value="large" className="bg-green text-white font-size-16">
-                    <Link to={"/auth/sign-up"}>Đăng ký</Link>
+                    <Link to={"/auth/sign-in"}>Đăng ký</Link>
                 </Button>
 
             </div>
