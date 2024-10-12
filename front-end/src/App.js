@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Films from "./pages/Films/Films";
 import Header from "./components/Header/Header";
+import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
 
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="home" element={<Home />} />
+          <Route path="/auth/sign-in" element={<Authentication />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
             <Route path="playing" element={<Playing />} />

@@ -38,14 +38,14 @@ const Header = () => {
                         </Link>
                     </Dropdown>
 
-                </div>
-                <div className="header-item header-item-sm">
-                    <Button type="primary" value="large" className="font-size-16">
-                        <Link to={"/auth/sign-in"}>Đăng nhập</Link>
-                    </Button>
-                    <Button type="success" value="large" className="bg-green text-white font-size-16">
-                        <Link to={"/auth/sign-up"}>Đăng ký</Link>
-                    </Button>
+            </div>
+            <div className="header-item header-item-sm">
+                <Button type="primary" value="large" className="font-size-16">
+                    <Link to={"/auth/sign-in"}>Đăng nhập</Link>
+                </Button>
+                <Button type="success" value="large" className="bg-green text-white font-size-16">
+                    <Link to={"/auth/sign-in"}>Đăng ký</Link>
+                </Button>
 
                 </div>
             </div>
