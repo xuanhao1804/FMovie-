@@ -30,11 +30,7 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.json({ limit: "64mb" }));
 app.use(bodyParser.urlencoded({ limit: "64mb", extended: true }));
-console.log(typeof MovieRouter);
-console.log(typeof CinemaRouter);
-console.log(typeof RoomRouter);
-console.log(typeof ShowtimeRouter);
-console.log(typeof CityRouter);
+
 // Above our `app.get("/users")` handler
 app.use("/movie", MovieRouter);
 app.use("/cinema", CinemaRouter);
