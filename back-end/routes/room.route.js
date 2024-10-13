@@ -1,5 +1,9 @@
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
+const roomRouter = express.Router();
 
-const router = express.Router();
+roomRouter.use(bodyParser.json());
 
-module.exports = router;
+module.exports = {
+    roomRouter
+};
