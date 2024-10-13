@@ -12,12 +12,12 @@ const ShowtimeSchema = new Schema({
         ref: 'Cinema',
         required: true,
     },
-    screen: {  // Thêm liên kết đến phòng chiếu
+    room: {  // Thêm liên kết đến phòng chiếu
         type: Schema.Types.ObjectId,
-        ref: 'Screen',
+        ref: 'Room',
         required: true,
     },
-    Screening_time: {
+    Present_time: {
         type: Date,
         required: true,  // Bao gồm ngày và giờ chiếu phim
     }
