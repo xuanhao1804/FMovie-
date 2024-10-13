@@ -3,8 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const Router = require("./routers");
 const db = require("./models");
+const { movieRouter } = require("./routers/movieRouter")
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 const http = require("http");
@@ -29,9 +29,7 @@ app.use(bodyParser.json({ limit: "64mb" }));
 app.use(bodyParser.urlencoded({ limit: "64mb", extended: true }));
 
 // Above our `app.get("/users")` handler
-
-
-
+app.use("/movie", movieRouter);
 
 io.on("connection", (socket) => {
     console.log("An user connect: ", socket.id);

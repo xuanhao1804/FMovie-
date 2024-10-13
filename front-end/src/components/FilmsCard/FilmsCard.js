@@ -1,14 +1,18 @@
 import "./FilmsCard.scss"
 
-const FilmsCard = () => {
+const FilmsCard = ({ image, limit, star }) => {
     return (
-        <div className="films-card" style={{ backgroundImage: `url(${"https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/thumbnail/190x260/2e2b8cd282892c71872b9e67d2cb5039/r/s/rsz_exe_main-poster-v2.jpg"})` }}>
+        <div className="films-card" style={{ backgroundImage: `url(${image})` }}>
             <span className="films-card-age-limitation">
-                18+
+                {limit}
             </span>
             <span className="films-card-rating">
-                8.9 <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>
+                {star} <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>
             </span>
+            <div className="films-card-button">
+                <button className="films-card-button-detail">XEM CHI TIẾT</button>
+                <button className="films-card-button-booking">ĐẶT VÉ</button>
+            </div>
         </div>
     )
 }

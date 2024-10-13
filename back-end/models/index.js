@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const Movie = require("./Movie");
 
 mongoose.Promise = global.Promise;
 
 const db = {};
 
 // db.user = User
+db.movie = Movie
 
 const connectDB = async () => {
   await mongoose
