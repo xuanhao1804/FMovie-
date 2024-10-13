@@ -3,24 +3,11 @@ import { Carousel, Row, Col } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import '../../../node_modules/antd/dist/antd';
 import './Home.scss';
+import { useSelector, useDispatch } from "react-redux";
+import FilmsCard from '../../components/FilmsCard/FilmsCard';
+import { fetchMovies } from "../../reducers/MovieReducer"
+import { useState } from "react"
 
-const sliderImageUrl = [
-  {
-    url: 'https://i2.wp.com/www.geeksaresexy.net/wp-content/uploads/2020/04/movie1.jpg?resize=600%2C892&ssl=1',
-  },
-  {
-    url: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/best-kids-movies-2020-call-of-the-wild-1579042974.jpg?crop=0.9760858955588091xw:1xh;center,top&resize=480:*',
-  },
-  {
-    url: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/best-movies-for-kids-2020-sonic-the-hedgehog-1571173983.jpg?crop=0.9871668311944719xw:1xh;center,top&resize=480:*',
-  },
-  {
-    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQS82ET2bq9oTNwPOL8gqyoLoLfeqJJJWJmKQ&usqp=CAU',
-  },
-  {
-    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTdvuww0JDC7nFRxiFL6yFiAxRJgM-1tvJTxA&usqp=CAU',
-  },
-];
 
 const carouselimg = [
   {
@@ -46,6 +33,13 @@ const CustomRightArrow = ({ onClick }) => (
 );
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  useState(() => {
+    dispatch(fetchMovies());
+  }, [])
+  const state = useSelector((state) => state);
+
   const carouselRef = useRef(null);
 
   const goToNextSlide = () => {
@@ -74,8 +68,6 @@ const Home = () => {
           </div>
         </Col>
       </Row>
-
-
       <Row justify="center">
         <Col span={20}>
           <div className="posters-carousel-wrapper">
@@ -91,16 +83,15 @@ const Home = () => {
               arrows={false}
               className="posters-carousel"
             >
-              {sliderImageUrl.map((imageUrl, index) => (
-                <div key={index} className="carousel-item">
-                  <img src={imageUrl.url} alt="movie" />
-                  <div className="button-container">
-                    <button className="detail-button">CHI TIẾT</button>
-                    <button className="booking-button">ĐẶT VÉ</button>
-                  </div>
-                </div>
-              ))}
+
+              {state.movies?.playingMovies?.map((item, index) => {
+                return (
+                  <FilmsCard image={item.image} limit={item.limit} star={item.star} video={item.video} />
+                )
+              })
+              }
             </Carousel>
+
             <div className="arrow-left">
               <CustomLeftArrow onClick={goToPrevSlide} />
             </div>
