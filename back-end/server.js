@@ -4,14 +4,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./models");
+
 const {MovieRouter,CinemaRouter, RoomRouter,ShowtimeRouter,CityRouter}   = require('./routes');
+
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 const http = require("http");
 //khoi tao web server
-
-
-
 
 const app = express();
 const server = createServer(app);
@@ -32,11 +31,13 @@ app.use(bodyParser.json({ limit: "64mb" }));
 app.use(bodyParser.urlencoded({ limit: "64mb", extended: true }));
 
 // Above our `app.get("/users")` handler
+
 app.use("/movie", MovieRouter);
 app.use("/cinema", CinemaRouter);
 app.use("/room", RoomRouter);
 app.use("/showtime", ShowtimeRouter);
 app.use("/city", CityRouter);
+
 
 io.on("connection", (socket) => {
     console.log("An user connect: ", socket.id);
