@@ -1,24 +1,21 @@
 import { Col, Row } from "antd"
 import FilmsCard from "../../../components/FilmsCard/FilmsCard"
-import { films } from "../../../data"
 import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 
 const Playing = () => {
 
-    const [playingFilms, setPlayingFilms] = useState([])
-    useEffect(() => {
-        const playing = films.filter(film => film.isPlaying === true)
-        setPlayingFilms(playing)
-    }, [])
+    const state = useSelector((state) => state)
 
     return (
         <div className="content-height-padding">
+            {console.log(state.movies)}
             <Row>
-                {playingFilms && playingFilms.length > 0 &&
-                    playingFilms.map((item, index) => {
+                {state.movies.playingMovies && state.movies.playingMovies.length > 0 &&
+                    state.movies.playingMovies.map((item, index) => {
                         return (
                             <Col key={"film" + item.id} span={6} style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
-                                <FilmsCard image={item.imageThumnail} limit={item.limit} star={item.star} />
+                                <FilmsCard image={item.image} limit={item.limit} star={item.star} />
                             </Col>
                         )
                     })

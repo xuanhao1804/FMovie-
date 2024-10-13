@@ -1,7 +1,17 @@
 import { NavLink, Outlet } from "react-router-dom"
 import "./Films.scss"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchMovies } from "../../reducers/MovieReducer"
+import { useState } from "react"
 
 const Films = () => {
+
+    const dispatch = useDispatch();
+
+    useState(() => {
+        dispatch(fetchMovies());
+    }, [])
+
     return (
         <div className="films content-width-padding content-height-padding">
             <div className="films-header">
