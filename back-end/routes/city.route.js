@@ -1,5 +1,9 @@
-const express = require('express');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cityRouter = express.Router();
 
-const router = express.Router();
+cityRouter.use(bodyParser.json());
 
-module.exports = router;
+module.exports = {
+    cityRouter
+};

@@ -1,16 +1,16 @@
-const CinemaRouter = require('./cinema.router');
-const CityRouter = require('./city.router');
-const ShowtimeRouter = require('./showtime.router');
-const RoomRouter = require('./room.router');
-const MovieRouter = require('./movie.route');
+const { cinemaRouter } = require('./cinema.route');
+const { cityRouter } = require('./city.route');
+const { showtimeRouter } = require('./showtime.route');
+const { roomRouter } = require('./room.route');
+const { movieRouter } = require('./movie.route');
 
 module.exports = {
-    CinemaRouter,
-    CityRouter,
-    ShowtimeRouter,
-    RoomRouter,
-    MovieRouter,
-    };
+    cinemaRouter,
+    cityRouter,
+    showtimeRouter,
+    roomRouter,
+    movieRouter,
+};
 
 
 
