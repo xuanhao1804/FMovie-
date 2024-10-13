@@ -1,5 +1,5 @@
 const express = require('express');
 
-const router = express.Router();
+const cinemaRouter = express.Router();
 
-module.exports = router;
+module.exports = cinemaRouter;

@@ -8,6 +8,8 @@ movieRouter.use(bodyParser.json());
 
 movieRouter.get("/get-all", MovieController.getAllMovie);
 
-module.exports = {
-  movieRouter
-};
+
+
+
+module.exports =  movieRouter
+;
