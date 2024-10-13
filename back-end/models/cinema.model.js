@@ -15,6 +15,9 @@ const CinemaSchema = new Schema({
             ref: 'Room'
         }
     ],
+    address: {
+        type: String,
+    },
     movies: [
         {
             type: Schema.Types.ObjectId,
