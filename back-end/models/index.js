@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
-const Movie = require("./Movie");
+const Movie = require("./movie.model");
+const City = require("./city.model");
+const Cinema = require("./cinema.model");
+const Room = require("./room.model");
+const Showtime = require("./Showtime.model");
+
+
 
 mongoose.Promise = global.Promise;
 
@@ -7,6 +13,10 @@ const db = {};
 
 // db.user = User
 db.movie = Movie
+db.city = City
+db.cinema = Cinema
+db.room = Room  
+db.showtime = Showtime
 
 const connectDB = async () => {
   await mongoose
