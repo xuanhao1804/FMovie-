@@ -11,17 +11,14 @@ const BookingSchema = new Schema({
     status:{
         type: String
     },
-    // createdBy: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Account"
-    // }
-    
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: "Account"
+    },
     tickets:{
         type: Schema.Types.ObjectId,
         ref:"Ticket"
     }
-
-    
 }, { timestamps: true });
 
 const Booking = mongoose.model('Booking', BookingSchema);
