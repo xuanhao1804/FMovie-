@@ -3,7 +3,7 @@ import { Button, Modal } from 'antd';
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const FilmsCard = ({ image, limit, star, video }) => {
+const FilmsCard = ({ _id, image, limit, star, video }) => {
     const [open, setOpen] = useState(false);
     return (
         <>
@@ -17,7 +17,7 @@ const FilmsCard = ({ image, limit, star, video }) => {
                     {star} <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>
                 </span>
                 <div className="films-card-button">
-                    <button  className="films-card-button-detail">XEM CHI TIẾT</button>
+                    <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
                     <button className="films-card-button-booking">ĐẶT VÉ</button>
                 </div>
             </div>
@@ -29,9 +29,9 @@ const FilmsCard = ({ image, limit, star, video }) => {
                 onCancel={() => setOpen(false)}
                 width={1054}
             >
-                
+
                 <iframe width="1004" height="565" src={video} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-               
+
             </Modal>
         </>
     )
