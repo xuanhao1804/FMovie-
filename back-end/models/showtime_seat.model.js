@@ -1,28 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const ShowtimeSchema = new Schema({
-    movie: {
-        type: Schema.Types.ObjectId,
-        ref: 'Movie',
-        required: true,
+const ShowtimeSeatSchema = new Schema({
+    Row: {
+        type: String,
+        required: true, 
     },
-    cinema: {
-        type: Schema.Types.ObjectId,
-        ref: 'Cinema',
-        required: true,
+    column: {
+        type: Number,
+        required: true, 
     },
-    room: {  // Thêm liên kết đến phòng chiếu
-        type: Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true,
-    },
-    Present_time: {
-        type: Date,
-        required: true,  // Bao gồm ngày và giờ chiếu phim
-    }
 }, { timestamps: true });
 
-const Showtime = mongoose.model('showtime', ShowtimeSchema);
+const ShowtimeSeat = mongoose.model('showtime_seat', ShowtimeSeatSchema);
 
-module.exports = Showtime;
+module.exports = ShowtimeSeat;
