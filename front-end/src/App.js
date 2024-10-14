@@ -8,7 +8,7 @@ import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
 import CinemaDetail from "./pages/Cinemas/CinemaHanoi";  // Thêm import CinemaDetail
-
+import FilmDetail from "./pages/FilmDetail/FilmDetail";
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/auth/sign-in" element={<Authentication />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
@@ -26,7 +26,7 @@ function App() {
             <Route path="upcoming" element={<Upcoming />} />
           </Route>
           <Route path="/cinemas/:cinemaId" element={<CinemaDetail />} />
-
+          <Route path="film/detail/:id" element={<FilmDetail />} />
         </Routes>
         <ToastContainer
           position="bottom-left"
