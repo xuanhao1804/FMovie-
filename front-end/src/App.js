@@ -8,6 +8,7 @@ import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
 import FilmDetail from "./pages/FilmDetail/FilmDetail";
+import CustomFooter from "./components/Footer/Footer";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -28,6 +29,7 @@ function App() {
           </Route>
           <Route path="film/detail/:id" element={<FilmDetail />} />
         </Routes>
+        <CustomFooter />
         <ToastContainer
           position="bottom-left"
           autoClose={4000}
