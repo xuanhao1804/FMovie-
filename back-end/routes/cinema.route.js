@@ -1,9 +1,12 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+
+const express = require('express');
+const cinemaController = require('../controllers/cinema.controller');
+const { cinema } = require('../models');
 const cinemaRouter = express.Router();
 
-cinemaRouter.use(bodyParser.json());
+cinemaRouter.get("/get-all",cinemaController.getAllCinema );
 
-module.exports = {
-    cinemaRouter
-};
+cinemaRouter.get("/get-by-city/:id",cinemaController.getCinemaByCity );
+
+module.exports = cinemaRouter;
+

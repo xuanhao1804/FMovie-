@@ -7,14 +7,13 @@ import Header from "./components/Header/Header";
 import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
+import CinemaDetail from "./pages/Cinemas/CinemaHanoi";  // Thêm import CinemaDetail
 import FilmDetail from "./pages/FilmDetail/FilmDetail";
-
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
   return (
     <div className="App">
-
       <BrowserRouter>
         <Header />
         <Routes>
@@ -26,6 +25,7 @@ function App() {
             <Route path="playing" element={<Playing />} />
             <Route path="upcoming" element={<Upcoming />} />
           </Route>
+          <Route path="/cinemas/:cinemaId" element={<CinemaDetail />} />
           <Route path="film/detail/:id" element={<FilmDetail />} />
         </Routes>
         <ToastContainer
