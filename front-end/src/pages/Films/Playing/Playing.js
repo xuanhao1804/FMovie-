@@ -15,7 +15,7 @@ const Playing = () => {
                     state.movies.playingMovies.map((item, index) => {
                         return (
                             <Col key={"film" + item.id} span={6} style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
-                                <FilmsCard image={item.image} limit={item.limit} star={item.star} />
+                                <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.star} />
                             </Col>
                         )
                     })
