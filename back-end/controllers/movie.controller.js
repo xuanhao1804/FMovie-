@@ -25,7 +25,7 @@ const getAllMovie = async (req, res) => {
 
 const getMovieByID = async (req, res) => {
     try {
-        const response = await db.movie.find({
+        const response = await db.movie.findOne({
             _id: req.params.id
         })
         if (response) {

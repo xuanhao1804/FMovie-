@@ -7,6 +7,7 @@ import Header from "./components/Header/Header";
 import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
+import FilmDetail from "./pages/FilmDetail/FilmDetail";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -18,13 +19,14 @@ function App() {
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="home" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/auth/sign-in" element={<Authentication />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
             <Route path="playing" element={<Playing />} />
             <Route path="upcoming" element={<Upcoming />} />
           </Route>
+          <Route path="film/detail/:id" element={<FilmDetail />} />
         </Routes>
         <ToastContainer
           position="bottom-left"

@@ -1,0 +1,57 @@
+.film-detail {
+    &-image {
+        width       : 100%;
+        aspect-ratio: 2/3;
+        object-fit  : contain;
+    }
+
+    &-content {
+        padding       : 0 2rem;
+        display       : flex;
+        flex-direction: column;
+        gap           : 1rem;
+        font-size     : 1rem;
+    }
+
+    &-title {
+        display    : flex;
+        align-items: center;
+        gap        : 2rem;
+
+        &-justify {
+            display        : flex;
+            justify-content: space-between;
+            align-items    : center;
+        }
+    }
+
+    &-age-limit {
+        padding         : 0.1rem 0.25rem;
+        background-color: #ff914d;
+        color           : white;
+        font-size       : 1.2rem;
+    }
+
+    &-name {
+        font-weight: 500;
+    }
+
+    &-duration {
+        display  : flex;
+        gap      : 4rem;
+        font-size: 1rem;
+    }
+
+    &-trailer {
+        margin: 4rem 0;
+    }
+
+    &-book-now {
+        cursor          : pointer;
+        border          : none;
+        padding         : 0.5rem;
+        font-weight     : 600;
+        color           : #f2f2f2;
+        background-color: #ff914d;
+    }
+}
