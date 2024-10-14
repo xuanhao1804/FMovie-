@@ -1,8 +1,10 @@
-const { cinemaRouter } = require('./cinema.route');
-const { cityRouter } = require('./city.route');
-const { showtimeRouter } = require('./showtime.route');
-const { roomRouter } = require('./room.route');
-const { movieRouter } = require('./movie.route');
+
+const CinemaRouter = require('./cinema.route');
+const CityRouter = require('./city.route');
+const ShowtimeRouter = require('./showtime.route');
+const RoomRouter = require('./room.route');
+const MovieRouter = require('./movie.route');
+
 
 module.exports = {
     cinemaRouter,

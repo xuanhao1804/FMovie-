@@ -1,9 +1,9 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+
+const express = require('express');
+const cityController = require('../controllers/city.controller');
 const cityRouter = express.Router();
 
-cityRouter.use(bodyParser.json());
+cityRouter.get("/get-all",cityController.getAllCity );
 
-module.exports = {
-    cityRouter
-};
+module.exports = cityRouter;
+
