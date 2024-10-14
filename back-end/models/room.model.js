@@ -11,9 +11,9 @@ const RoomSchema = new Schema({
         type: String,
         required: true,  // Ví dụ: "Phòng chiếu 1"
     },
-    capacity: {
-        type: Number,  // Sức chứa
-        required: true,
+    seats: {
+        type: Schema.Types.ObjectId,
+        ref: 'Seat',
     },
 }, { timestamps: true });
 
