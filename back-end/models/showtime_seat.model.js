@@ -10,8 +10,12 @@ const ShowtimeSeatSchema = new Schema({
         type: Number,
         required: true, 
     },
+    available:{
+        type: Boolean,
+        required: true
+    }
 }, { timestamps: true });
 
-const ShowtimeSeat = mongoose.model('showtime_seat', ShowtimeSeatSchema);
+const ShowtimeSeat = mongoose.model('Showtime_seat', ShowtimeSeatSchema);
 
 module.exports = ShowtimeSeat;

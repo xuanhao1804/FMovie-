@@ -13,6 +13,6 @@ const SeatSchema = new Schema({
     
 }, { timestamps: true });
 
-const Seat = mongoose.model('seat', SeatSchema);
+const Seat = mongoose.model('Seat', SeatSchema);
 
 module.exports = Seat;

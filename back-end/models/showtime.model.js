@@ -17,12 +17,16 @@ const ShowtimeSchema = new Schema({
         ref: 'Room',
         required: true,
     },
+    showtime_seats: [{
+        type: Schema.Types.ObjectId,
+        ref: "Showtime_seat",
+    }],
     Present_time: {
         type: Date,
         required: true,  // Bao gồm ngày và giờ chiếu phim
     }
 }, { timestamps: true });
 
-const Showtime = mongoose.model('showtime', ShowtimeSchema);
+const Showtime = mongoose.model('Showtime', ShowtimeSchema);
 
 module.exports = Showtime;

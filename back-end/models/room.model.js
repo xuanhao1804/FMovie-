@@ -8,12 +8,12 @@ const RoomSchema = new Schema({
     },
     seats: [{
         type: Schema.Types.ObjectId,
-        ref: 'seat',
+        ref: 'Seat',
         required: true,
     }],
     
 }, { timestamps: true });
 
-const Room = mongoose.model('room', RoomSchema);
+const Room = mongoose.model('Room', RoomSchema);
 
 module.exports = Room;
