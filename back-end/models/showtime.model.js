@@ -12,6 +12,9 @@ const ShowtimeSchema = new Schema({
         ref: 'Cinema',
         required: true,
     },
+    price: {
+        type: Number
+    },
     room: {  // Thêm liên kết đến phòng chiếu
         type: Schema.Types.ObjectId,
         ref: 'Room',
