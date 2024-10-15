@@ -7,7 +7,7 @@ import Header from "./components/Header/Header";
 import Authentication from "./pages/Authentication/Authentication";
 import Playing from "./pages/Films/Playing/Playing";
 import Upcoming from "./pages/Films/Upcoming/Upcoming";
-import CinemaDetail from "./pages/Cinemas/CinemaHanoi";  // Thêm import CinemaDetail
+import CinemaDetail from "./pages/Cinemas/CinemaIntro";  // Thêm import CinemaDetail
 import FilmDetail from "./pages/FilmDetail/FilmDetail";
 import CustomFooter from "./components/Footer/Footer";
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
