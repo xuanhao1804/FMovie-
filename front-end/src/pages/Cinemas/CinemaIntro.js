@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import './CinemaDetail.scss';  // Đảm bảo bạn đã import file CSS
 
+
 const cinemasData = [
     {
         id: "fmovie-hà-nội",
