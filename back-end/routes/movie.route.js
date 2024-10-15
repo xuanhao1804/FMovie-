@@ -7,6 +7,7 @@ const movieRouter = express.Router();
 movieRouter.use(bodyParser.json());
 
 movieRouter.get("/get-all", MovieController.getAllMovie);
+movieRouter.get("/detail/:id", MovieController.getMovieByID)
 
 
 
