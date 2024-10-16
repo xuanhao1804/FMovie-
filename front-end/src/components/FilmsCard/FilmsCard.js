@@ -22,16 +22,12 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
                 </div>
             </div>
             <Modal
-
                 centered
                 open={open}
-
                 onCancel={() => setOpen(false)}
                 width={1054}
             >
-
                 <iframe width="1004" height="565" src={video} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
             </Modal>
         </>
     )

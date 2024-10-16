@@ -86,7 +86,7 @@ const Home = () => {
 
               {state.movies?.playingMovies?.map((item, index) => {
                 return (
-                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.star} video={item.video} />
+                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
                 )
               })
               }
