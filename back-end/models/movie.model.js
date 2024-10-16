@@ -13,6 +13,9 @@ const MovieSchema = new mongoose.Schema({
     studio: {
         type: String
     },
+    price: {
+        type: Number
+    },
     duration: {
         type: Number
     },
