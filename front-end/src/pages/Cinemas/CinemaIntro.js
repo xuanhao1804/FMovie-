@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import './CinemaDetail.css';  // Đảm bảo bạn đã import file CSS
+import './CinemaDetail.scss';  // Đảm bảo bạn đã import file CSS
+
 
 const cinemasData = [
     {

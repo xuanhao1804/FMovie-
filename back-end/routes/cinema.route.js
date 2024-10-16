@@ -1,7 +1,6 @@
 
 const express = require('express');
 const cinemaController = require('../controllers/cinema.controller');
-const { cinema } = require('../models');
 const cinemaRouter = express.Router();
 
 cinemaRouter.get("/get-all",cinemaController.getAllCinema );

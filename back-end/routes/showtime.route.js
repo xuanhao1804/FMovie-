@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const showtimeRouter = express.Router();
 
 
-const showtimeRouter = express.Router();
 
 module.exports = showtimeRouter;
 
