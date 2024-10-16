@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 const SeatSchema = new Schema({
     row: {
         type: String,
-        required: true,  // Ví dụ: "Phòng chiếu 1"
+        required: true,
     },
     column: {
         type: Number,
-        required: true,  // Ví dụ: "Phòng chiếu 1"
+        required: true,
     },
-    
+
 }, { timestamps: true });
 
 const Seat = mongoose.model('Seat', SeatSchema);
