@@ -1,51 +1,51 @@
 .footer {
-    background-color: #f0f0f0;
-    padding: 24px 30px;
+  background-color: #f0f0f0;
+  padding         : 24px 30px;
 
-    &-cert {
-        width: 100%;
-    }
+  &-cert {
+    width: 100%;
+  }
 
-    &-intro {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-  
-    .footer-list {
-      list-style-type: none;
-      padding: 0;
-  
-      li {
-        margin-bottom: 8px;
-      }
-    }
-  
-    .social-icon {
-      font-size: 24px;
-      color: #1890ff;
-    }
-  
-    .mt-16 {
-      margin-top: 16px;
-    }
-  
-    .mt-32 {
-      margin-top: 32px;
-    }
-  
-    .company-logo {
-      width: 100px;
-      margin-bottom: 16px;
-    }
-  
-    .company-info {
-      font-size: 12px;
-      color: #666;
+  &-intro {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+  }
+
+  .footer-list {
+    list-style-type: none;
+    padding        : 0;
+
+    li {
+      margin-bottom: 8px;
     }
   }
 
+  .social-icon {
+    font-size: 24px;
+    color    : #1890ff;
+  }
+
+  .mt-16 {
+    margin-top: 16px;
+  }
+
+  .mt-32 {
+    margin-top: 32px;
+  }
+
+  .company-logo {
+    width        : 100px;
+    margin-bottom: 16px;
+  }
+
+  .company-info {
+    font-size: 12px;
+    color    : #666;
+  }
+}
+
 a {
-    color: #000!important;
-    text-decoration: none;
+  color          : #000;
+  text-decoration: none;
 }
