@@ -7,21 +7,26 @@ import { Dropdown, Button } from 'antd';
 import axios from 'axios';
 
 const Header = () => {
-    const [cities, setCities] = useState([]);  // Dùng để lưu danh sách các rạp chiếu phim
+    const [cities, setCities] = useState([]);  // Dùng để lưu danh sách các thành phố
+    const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim theo city đang hover
+    const [hoveredCity, setHoveredCity] = useState(null); // Dùng để lưu city đang hover
 
-    // Fetch danh sách các rạp chiếu phim khi component được mount
+    // Fetch danh sách các thành phố khi component được mount
     useEffect(() => {
         const fetchCities = async () => {
             try {
-                const response = await axios.get('http://localhost:9999/cinema/get-all');  // Gọi API để lấy danh sách các rạp
+                const response = await axios.get('http://localhost:9999/city/get-all');  // Gọi API để lấy danh sách các thành phố
                 if (response.data.status === 200) {
-                    // Mapping lại dữ liệu rạp để tạo menu dropdown
-                    const cityData = response.data.data.map((cinema, index) => ({
-                        key: index + 1,
+                    const cityData = response.data.data.map((city, index) => ({
+                        key: city._id, // Đảm bảo key là cityId
                         label: (
-                            <Link to={`/cinemas/${cinema.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                                {cinema.name}
-                            </Link>
+                            <div
+                                className="hover-city"
+                                onMouseEnter={() => handleCityHover(city._id)} // Gọi hàm khi hover vào cityId
+                                onMouseLeave={handleCityLeave} // Xóa danh sách rạp khi không hover nữa
+                            >
+                                {city.name}
+                            </div>
                         )
                     }));
                     setCities(cityData);
@@ -31,8 +36,38 @@ const Header = () => {
             }
         };
 
-        fetchCities();  // Gọi hàm lấy danh sách rạp
+        fetchCities();  // Gọi hàm lấy danh sách thành phố
     }, []);
+
+    // Hàm gọi API để lấy danh sách rạp chiếu phim theo cityId
+    const handleCityHover = async (cityId) => {
+        if (!cityId) return; // Kiểm tra nếu cityId không tồn tại
+        setHoveredCity(cityId); // Đặt city đang hover
+        console.log('cityId', cityId);
+        try {
+            const response = await axios.get(`http://localhost:9999/cinema/get-by-city/${cityId}`);
+            if (response.data.status === 200) {
+                const cinemaData = response.data.data.map((cinema, index) => ({
+                    key: index + 1,
+                    label: (
+                        <Link to={`/cinemas/${cinema.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                            {cinema.name}            
+                        </Link>
+                    )
+                }));
+                // console.log('cinemaData', response.data.data.map((cinema, index)=>cinema.name));      
+                setCinemas(cinemaData); // Lưu danh sách rạp vào state
+            }
+        } catch (error) {
+            console.error("Failed to fetch cinemas:", error);
+        }
+    };
+
+    // Hàm xóa danh sách rạp khi không hover vào city nữa
+    const handleCityLeave = () => {
+        // setHoveredCity(null); // Xóa city đang hover
+        // setCinemas([]); // Xóa danh sách rạp
+    };
 
     // Danh sách các loại phim
     const filmsType = [
@@ -59,12 +94,26 @@ const Header = () => {
                         </Link>
                     </Dropdown>
                     {/* Dropdown các rạp chiếu phim */}
-                    <Dropdown menu={{ items: cities }}>
+                    <Dropdown className="dropdown-cities" menu={{ items: cities }} trigger={['hover']}>
                         <Link to={"/cinemas"}>
-                            Rạp chiếu phim <i className="fa-solid fa-chevron-down"></i>
+                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cities-items"></i>
                         </Link>
                     </Dropdown>
                 </div>
+                {/* Danh sách các rạp chiếu phim hiển thị khi hover vào city */}
+                {hoveredCity && (
+                    <div className="cinema-dropdown">
+                        {cinemas.length > 0 ? (
+                            cinemas.map((cinema) => (
+                                <div key={cinema.key} className="cinema-item">
+                                    {cinema.label}
+                                </div>
+                            ))
+                        ) : (
+                            <div>Không có rạp nào</div>
+                        )}
+                    </div>
+                )}
                 {/* Đăng nhập và đăng ký */}
                 <div className="header-item header-item-sm">
                     <Button type="primary" value="large" className="font-size-16">

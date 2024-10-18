@@ -3,9 +3,9 @@ const Movie = require("./movie.model");
 const City = require("./city.model");
 const Cinema = require("./cinema.model");
 const Room = require("./room.model");
-const Showtime = require("./Showtime.model");
-
-
+const Showtime = require("./showtime.model");
+const Booking = require("./booking.model")
+const Seat = require("./Seat.model")
 
 mongoose.Promise = global.Promise;
 
@@ -15,8 +15,10 @@ const db = {};
 db.movie = Movie
 db.city = City
 db.cinema = Cinema
-db.room = Room  
+db.room = Room
 db.showtime = Showtime
+db.seat = Seat
+db.booking = Booking
 
 const connectDB = async () => {
   await mongoose
