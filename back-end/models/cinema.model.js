@@ -7,7 +7,7 @@ const CinemaSchema = new Schema({
     },
     city: {
         type: Schema.Types.ObjectId,
-        ref: 'City',
+        ref: 'city',
     },
     // rooms: [
     //     {
