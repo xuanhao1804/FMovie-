@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom"
 import "./Films.scss"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import { fetchMovies } from "../../reducers/MovieReducer"
 import { useState } from "react"
 

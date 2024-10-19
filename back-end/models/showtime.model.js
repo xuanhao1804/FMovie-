@@ -7,14 +7,13 @@ const ShowtimeSchema = new Schema({
         ref: 'Movie',
         required: true,
     },
-    room: {  // Thêm liên kết đến phòng chiếu
-        type: Schema.Types.ObjectId,
-        ref: 'Room',
-        required: true,
-    },
-    start: {
-        type: Date,
-        required: true,  // Bao gồm ngày và giờ chiếu phim
+    startAt: {
+        date: {
+            type: Date
+        },
+        times: [
+            { type: String }
+        ]
     }
 }, { timestamps: true });
 

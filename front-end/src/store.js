@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit"
 import UserReducer from "./reducers/UserReducer"
 import MovieReducer from "./reducers/MovieReducer"
+import CityReducer from "./reducers/CityReducer"
 import storage from 'redux-persist/lib/storage'
 import {
     persistStore,
@@ -16,7 +17,8 @@ import {
   
 const rootReducer = combineReducers({
     user: UserReducer,
-    movies: MovieReducer
+    movies: MovieReducer,
+    city: CityReducer
 })
 
 const persistConfig = {
