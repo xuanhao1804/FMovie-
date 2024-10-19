@@ -5,7 +5,6 @@ const Cinema = require("./cinema.model");
 const Room = require("./room.model");
 const Showtime = require("./showtime.model");
 const Booking = require("./booking.model")
-const Seat = require("./Seat.model")
 const Account = require("./account.model")
 
 mongoose.Promise = global.Promise;
@@ -18,7 +17,6 @@ db.city = City
 db.cinema = Cinema
 db.room = Room
 db.showtime = Showtime
-db.seat = Seat
 db.booking = Booking
 db.account = Account
 
