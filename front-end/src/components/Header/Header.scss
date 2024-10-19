@@ -1,21 +1,21 @@
 .header {
-    display        : flex;
+    display: flex;
     justify-content: space-between;
-    align-items    : center;
-    font-size      : 1rem;
+    align-items: center;
+    font-size: 1rem;
 
     &-divider {
         text-align: center;
-        padding   : 1rem 0;
+        padding: 1rem 0;
         background: rgb(255, 145, 77);
         background: linear-gradient(145deg, rgba(255, 145, 77, 1) 65%, rgba(255, 255, 254, 1) 100%);
-        color     : white;
+        color: white;
     }
 
     &-item {
-        display    : flex;
+        display: flex;
         align-items: center;
-        gap        : 4rem;
+        gap: 4rem;
 
         &-sm {
             gap: 1rem
@@ -23,6 +23,25 @@
 
         a {
             text-decoration: none;
+        }
+    }
+}
+
+.logout-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    .user {
+        cursor: pointer;
+        &:hover {
+            color: red; // Đổi màu khi hover
+        }
+
+        &-icon {
+            font-size: 24px; // Kích thước biểu tượng
+            margin-right: 8px; // Khoảng cách giữa biểu tượng và nút
+
+            
         }
     }
 }
