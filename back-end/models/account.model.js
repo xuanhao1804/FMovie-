@@ -16,12 +16,12 @@ const AccountSchema = new Schema({
         type: String,
         required: true,
     },
-    gender: {
-        type: Boolean
-    },
     dob: {
         type: Date
-    }
+    },
+    phone: {
+        type: String
+    },
 
 }, { timestamps: true });
 
