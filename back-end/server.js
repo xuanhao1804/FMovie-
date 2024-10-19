@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./models");
 
-const {MovieRouter,CinemaRouter, RoomRouter,ShowtimeRouter,CityRouter, AccountRouter}   = require('./routes');
+const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter } = require('./routes');
 
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
@@ -39,15 +39,15 @@ app.use("/showtime", ShowtimeRouter);
 app.use("/city", CityRouter);
 app.use("/user", AccountRouter);
 
-// io.on("connection", (socket) => {
-//     console.log("An user connect: ", socket.id);
+io.on("connection", (socket) => {
+    console.log("An user connect: ", socket.id);
 
-//     socket.on("disconnect", () => {
-//         console.log("🔥: A user disconnected");
-//     });
-// });
+    socket.on("disconnect", () => {
+        console.log("🔥: A user disconnected");
+    });
+});
 
-// exports.io = io;
+exports.io = io;
 
 server.listen(process.env.PORT || 9999, process.env.HOST_NAME || "localhost", () => {
     console.log(`Server in running at: http://${process.env.HOST_NAME}:${process.env.PORT}`);
