@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./models");
 
-const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter } = require('./routes');
+const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter, BookingRouter } = require('./routes');
 
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
@@ -38,7 +38,7 @@ app.use("/room", RoomRouter);
 app.use("/showtime", ShowtimeRouter);
 app.use("/city", CityRouter);
 app.use("/user", AccountRouter);
-
+app.use("/booking", BookingRouter);
 io.on("connection", (socket) => {
     console.log("An user connect: ", socket.id);
 
