@@ -22,10 +22,18 @@ const BookingSchema = new Schema({
     },
     seats: [
         {
-            type: Schema.Types.ObjectId,
-            ref: "Seat"
+            row: {
+                type: String
+            },
+            column: {
+                type: Number,
+                required: true,
+            },
+            isVip: {
+                type: Boolean
+            }
         }
-    ]
+    ],
 
 }, { timestamps: true });
 

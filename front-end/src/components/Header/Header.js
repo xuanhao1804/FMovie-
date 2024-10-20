@@ -5,6 +5,9 @@ import logo from "../../assets/icon/logo.png";
 import ticket from "../../assets/icon/btn-ticket.webp";
 import { Dropdown, Button } from 'antd';
 import axios from 'axios';
+import { UserOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../reducers/UserReducer";
 
 const Header = () => {
     const [cities, setCities] = useState([]);  // Dùng để lưu danh sách các thành phố
@@ -12,6 +15,13 @@ const Header = () => {
     const [hoveredCity, setHoveredCity] = useState(null); // Dùng để lưu city đang hover
 
     // Fetch danh sách các thành phố khi component được mount
+    const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const handleLogout = () => {
+        dispatch(logout());
+        window.location.href = "/";
+    };
+    // Fetch danh sách các rạp chiếu phim khi component được mount
     useEffect(() => {
         const fetchCities = async () => {
             try {
@@ -115,14 +125,28 @@ const Header = () => {
                     </div>
                 )}
                 {/* Đăng nhập và đăng ký */}
-                <div className="header-item header-item-sm">
-                    <Button type="primary" value="large" className="font-size-16">
-                        <Link to={"/auth/sign-in"}>Đăng nhập</Link>
-                    </Button>
-                    <Button type="success" value="large" className="bg-green text-white font-size-16">
-                        <Link to={"/auth/sign-in"}>Đăng ký</Link>
-                    </Button>
-                </div>
+                {
+                    user.user.token ? (
+                        <div className="logout-container">
+                            <div className="user">
+                                <UserOutlined className="user-icon" />
+                                <span className="user-name">Xin chào {user.user.account.fullname}!</span>
+                            </div>
+                            <Button onClick={handleLogout} type="primary">Đăng xuất</Button>
+                        </div>
+                    ) : (
+                        <div className="header-item header-item-sm">
+                            <Button type="primary" value="large" className="font-size-16">
+                                <Link to={"/auth/sign-in"}>Đăng nhập</Link>
+                            </Button>
+                            <Button type="success" value="large" className="bg-green text-white font-size-16">
+                                <Link to={"/auth/sign-in"}>Đăng ký</Link>
+                            </Button>
+                        </div>
+                    )
+
+                }
+
             </div>
             <div className="header-divider content-width-padding">
                 FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam (Chắc thế)

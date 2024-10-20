@@ -9,21 +9,21 @@ const CinemaSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'city',
     },
-    // rooms: [
-    //     {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Room'
-    //     }
-    // ],
+    rooms: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Room'
+        }
+    ],
     address: {
         type: String,
     },
-    // movies: [
-    //     {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Movie'
-    //     }
-    // ]
+    movies: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Movie'
+        }
+    ]
 }, { timestamps: true });
 
 const Cinema = mongoose.model('cinema', CinemaSchema);

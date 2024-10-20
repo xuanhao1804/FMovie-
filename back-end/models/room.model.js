@@ -6,12 +6,27 @@ const RoomSchema = new Schema({
         type: String,
         required: true,  // Ví dụ: "Phòng chiếu 1"
     },
-    seats: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Seat',
-        required: true,
-    }],
-    
+    showtimes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Showtime',
+        }
+    ],
+    seats: [
+        {
+            row: {
+                type: String
+            },
+            column: {
+                type: Number,
+                required: true,
+            },
+            isVip: {
+                type: Boolean
+            }
+        }
+    ],
+
 }, { timestamps: true });
 
 const Room = mongoose.model('Room', RoomSchema);

@@ -13,7 +13,7 @@ const getAllCity = async (req, res) => {
         } else {
             return res.status(404).json({
                 status: 404,
-                message: "Không tìm thấy phim"
+                message: "Không có dữ liệu"
             });
         }
     } catch (error) {
@@ -25,5 +25,5 @@ const getAllCity = async (req, res) => {
 };
 
 
-const CityController = {getAllCity};
+const CityController = { getAllCity };
 module.exports = CityController;
