@@ -1,14 +1,32 @@
 import "./Booking.scss"
 import { Row, Col, Divider } from "antd"
 import film_blank from "../../assets/icon/film-blank.svg"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CitySelection from "../../components/BookingSelection/CitySelection/CitySelection"
+import { CinemaService } from "../../services/CinemaService"
+import MovieSelection from "../../components/BookingSelection/MovieSelection/MovieSelection"
 
 const Booking = () => {
 
     const [selectedCity, setSelectedCity] = useState("")
+    const [selectedMovie, setSelectedMovie] = useState("")
 
+    const [avaibleMovies, setAvaiableMovies] = useState([])
     const [step, setStep] = useState(1)
+
+    const getMoviesInCity = async () => {
+        const response = await CinemaService.fetchCinemaByCityService(selectedCity._id)
+        if (response.status === 200) {
+            const movies = [...new Set(response.data.flatMap(cinema => cinema.movies))];
+            setAvaiableMovies(movies)
+        }
+    }
+
+    useEffect(() => {
+        if (selectedCity && selectedCity._id) {
+            getMoviesInCity()
+        }
+    }, [selectedCity])
 
     return (
         <div className="booking">
@@ -21,14 +39,17 @@ const Booking = () => {
             </div>
             <div className="booking-content content-width-padding content-height-padding">
                 <Row>
-                    <Col span={16}>
+                    <Col span={17}>
                         <div className="booking-selections px-4">
                             {step === 1 &&
-                                <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
+                                <>
+                                    <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
+                                    <MovieSelection avaibleMovies={avaibleMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} />
+                                </>
                             }
                         </div>
                     </Col>
-                    <Col span={8}>
+                    <Col span={7}>
                         <div className="booking-information d-flex flex-column gap-3">
                             <div className="d-flex gap-3">
                                 <img className="booking-information-film-img" src={film_blank} alt="film-blank" />

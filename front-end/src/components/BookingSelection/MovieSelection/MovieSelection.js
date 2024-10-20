@@ -1,31 +1,41 @@
 import { useSelector } from "react-redux"
-import "./CitySelection.scss"
+import "./MovieSelection.scss"
+import { Col, Row } from "antd"
+import FilmsCard from "../../FilmsCard/FilmsCard"
 
-const CitySelection = ({ selectedCity, setSelectedCity }) => {
+const MovieSelection = ({ avaibleMovies, selectedMovie, setSelectedMovie }) => {
 
-    const { city } = useSelector((state) => state)
+    const { city, movies } = useSelector((state) => state)
 
     return (
-        <div className="city-selection">
+        <div className="movie-selection selection-section">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="fs-5 fw-semibold">
-                    Chọn vị trí{selectedCity && " - " + selectedCity.name}
+                    Chọn Phim
                 </span>
                 {/* <span style={{ aspectRatio: "1" }}>
                     <i className="bg-primary text-white p-1 rounded-circle fa-solid fa-plus"></i>
                 </span> */}
             </div>
-            <div className="city-selection-list">
-                {city && city.list && city.list.length > 0 &&
-                    city.list.map((item, index) => {
-                        return (
-                            <button onClick={() => setSelectedCity(item)} className={item._id === selectedCity._id ? "city-selection-item-selected" : "city-selection-item"} key={"cities-" + index}>{item.name}</button>
-                        )
-                    })
-                }
+            <div>
+                <Row>
+                    {avaibleMovies && movies && avaibleMovies.length > 0 &&
+                        avaibleMovies.map((item, index) => {
+                            const movie = movies.playingMovies?.find(movie => movie._id === item)
+                            console.log(movie)
+                            return (
+                                <Col span={6} style={{ marginBottom: "0.5rem", padding: "0.25rem" }}>
+                                    <div onClick={() => setSelectedMovie(movie._id)} >
+                                        <FilmsCard _id={movie._id} image={movie.image} limit={movie.limit} star={movie.rating} video={movie.video} />
+                                    </div>
+                                </Col>
+                            )
+                        })
+                    }
+                </Row>
             </div>
         </div >
     )
 }
 
-export default CitySelection
+export default MovieSelection

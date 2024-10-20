@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const FilmsCard = ({ _id, image, limit, star, video }) => {
+
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
 
@@ -18,11 +19,15 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
                 <span className="films-card-rating">
                     {star} <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>
                 </span>
-                <div className="films-card-button">
-                    <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
-                    <button onClick={() => navigate("/booking")} className="films-card-button-booking">ĐẶT VÉ</button>
-                </div>
-            </div>
+                {!window.location.pathname.includes("booking") &&
+                    <>
+                        <div className="films-card-button">
+                            <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
+                            <button onClick={() => navigate("/booking")} className="films-card-button-booking">ĐẶT VÉ</button>
+                        </div>
+                    </>
+                }
+            </div >
             <Modal
                 centered
                 open={open}
