@@ -39,14 +39,16 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
                 }
             })
             .exec();
-        cinemas.forEach(cinema => {
-            cinema.rooms.forEach(room => {
-                room.showtimes.forEach(showtime => {
-                    // Lọc các times
-                    showtime.startAt.times = showtime.startAt.times.filter(time => time > currentHourString);
+        if (!date) {
+            cinemas.forEach(cinema => {
+                cinema.rooms.forEach(room => {
+                    room.showtimes.forEach(showtime => {
+                        // Lọc các times
+                        showtime.startAt.times = showtime.startAt.times.filter(time => time > currentHourString);
+                    });
                 });
             });
-        });
+        }
 
         return res.status(200).json({ cinemas });
 
