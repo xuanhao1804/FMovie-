@@ -58,5 +58,16 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
     }
 };
 
-const ShowtimeController = { getShowtimebyDateandMoviesandCinema };
+const getAllShowtime = async (req, res) => {
+    try {
+        const showtimes = await db.showtime.find().exec();
+        return res.status(200).json({ showtimes });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+const ShowtimeController = { getShowtimebyDateandMoviesandCinema,getAllShowtime };
 module.exports = ShowtimeController;

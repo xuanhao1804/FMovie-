@@ -132,4 +132,4 @@ const BookingController = {
     receivehook
 };
 module.exports = BookingController;
-};
+

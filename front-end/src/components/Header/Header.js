@@ -10,74 +10,38 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../reducers/UserReducer";
 
 const Header = () => {
-    const [cities, setCities] = useState([]);  // Dùng để lưu danh sách các thành phố
-    const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim theo city đang hover
-    const [hoveredCity, setHoveredCity] = useState(null); // Dùng để lưu city đang hover
-
-    // Fetch danh sách các thành phố khi component được mount
+    const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
+
     const handleLogout = () => {
         dispatch(logout());
         window.location.href = "/";
     };
+
     // Fetch danh sách các rạp chiếu phim khi component được mount
     useEffect(() => {
-        const fetchCities = async () => {
+        const fetchCinemas = async () => {
             try {
-                const response = await axios.get('http://localhost:9999/city/get-all');  // Gọi API để lấy danh sách các thành phố
+                const response = await axios.get('http://localhost:9999/cinema/get-all');  // Gọi API để lấy danh sách các rạp chiếu phim
                 if (response.data.status === 200) {
-                    const cityData = response.data.data.map((city, index) => ({
-                        key: city._id, // Đảm bảo key là cityId
+                    const cinemaData = response.data.data.map((cinema) => ({
+                        key: cinema._id, // Dùng _id của cinema làm key
                         label: (
-                            <div
-                                className="hover-city"
-                                onMouseEnter={() => handleCityHover(city._id)} // Gọi hàm khi hover vào cityId
-                                onMouseLeave={handleCityLeave} // Xóa danh sách rạp khi không hover nữa
-                            >
-                                {city.name}
-                            </div>
+                            <Link to={`/cinemas-movies/${cinema._id}`}>
+                                {cinema.name}
+                            </Link>
                         )
                     }));
-                    setCities(cityData);
+                    setCinemas(cinemaData);
                 }
             } catch (error) {
-                console.error("Failed to fetch cities:", error);
+                console.error("Failed to fetch cinemas:", error);
             }
         };
 
-        fetchCities();  // Gọi hàm lấy danh sách thành phố
+        fetchCinemas();  // Gọi hàm lấy danh sách rạp chiếu phim
     }, []);
-
-    // Hàm gọi API để lấy danh sách rạp chiếu phim theo cityId
-    const handleCityHover = async (cityId) => {
-        if (!cityId) return; // Kiểm tra nếu cityId không tồn tại
-        setHoveredCity(cityId); // Đặt city đang hover
-        console.log('cityId', cityId);
-        try {
-            const response = await axios.get(`http://localhost:9999/cinema/get-by-city/${cityId}`);
-            if (response.data.status === 200) {
-                const cinemaData = response.data.data.map((cinema, index) => ({
-                    key: index + 1,
-                    label: (
-                        <Link to={`/cinemas/${cinema.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                            {cinema.name}            
-                        </Link>
-                    )
-                }));
-                // console.log('cinemaData', response.data.data.map((cinema, index)=>cinema.name));      
-                setCinemas(cinemaData); // Lưu danh sách rạp vào state
-            }
-        } catch (error) {
-            console.error("Failed to fetch cinemas:", error);
-        }
-    };
-
-    // Hàm xóa danh sách rạp khi không hover vào city nữa
-    const handleCityLeave = () => {
-        // setHoveredCity(null); // Xóa city đang hover
-        // setCinemas([]); // Xóa danh sách rạp
-    };
 
     // Danh sách các loại phim
     const filmsType = [
@@ -104,26 +68,12 @@ const Header = () => {
                         </Link>
                     </Dropdown>
                     {/* Dropdown các rạp chiếu phim */}
-                    <Dropdown className="dropdown-cities" menu={{ items: cities }} trigger={['hover']}>
+                    <Dropdown className="dropdown-cinemas" menu={{ items: cinemas }} trigger={['hover']}>
                         <Link to={"/cinemas"}>
-                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cities-items"></i>
+                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
                         </Link>
                     </Dropdown>
                 </div>
-                {/* Danh sách các rạp chiếu phim hiển thị khi hover vào city */}
-                {hoveredCity && (
-                    <div className="cinema-dropdown">
-                        {cinemas.length > 0 ? (
-                            cinemas.map((cinema) => (
-                                <div key={cinema.key} className="cinema-item">
-                                    {cinema.label}
-                                </div>
-                            ))
-                        ) : (
-                            <div>Không có rạp nào</div>
-                        )}
-                    </div>
-                )}
                 {/* Đăng nhập và đăng ký */}
                 {
                     user.user.token ? (
@@ -144,12 +94,10 @@ const Header = () => {
                             </Button>
                         </div>
                     )
-
                 }
-
             </div>
             <div className="header-divider content-width-padding">
-                FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam (Chắc thế)
+                FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam 
             </div>
         </>
     );
