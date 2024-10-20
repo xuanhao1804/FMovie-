@@ -3,12 +3,14 @@ const db = require("../models");
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
     try {
         let { cityId, movieId, date } = req.body;
-
+        let check = true
         // Nếu 'date' là null, sử dụng ngày hôm nay
         if (!date) {
             date = new Date();  // Lấy ngày hôm nay
+
         } else {
             date = new Date(date);  // Nếu có 'date' thì chuyển về dạng Date
+            check = false
         }
 
         // Đặt thời gian về 0:00 để chỉ lấy phần ngày
@@ -39,7 +41,7 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
                 }
             })
             .exec();
-        if (!date) {
+        if (check) {
             cinemas.forEach(cinema => {
                 cinema.rooms.forEach(room => {
                     room.showtimes.forEach(showtime => {
