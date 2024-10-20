@@ -5,28 +5,55 @@ import { useEffect, useState } from "react"
 import CitySelection from "../../components/BookingSelection/CitySelection/CitySelection"
 import { CinemaService } from "../../services/CinemaService"
 import MovieSelection from "../../components/BookingSelection/MovieSelection/MovieSelection"
+import { ShowtimeService } from "../../services/ShowtimeService"
 
 const Booking = () => {
 
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedMovie, setSelectedMovie] = useState("")
-
-    const [avaibleMovies, setAvaiableMovies] = useState([])
+    const [selectedDate, setSelectedDate] = useState(new Date().setHours(0, 0, 0, 0))
+    const [availableMovies, setAvailableMovies] = useState([])
+    const [movieShowtime, setMovieShowtime] = useState([])
     const [step, setStep] = useState(1)
 
     const getMoviesInCity = async () => {
         const response = await CinemaService.fetchCinemaByCityService(selectedCity._id)
         if (response.status === 200) {
-            const movies = [...new Set(response.data.flatMap(cinema => cinema.movies))];
-            setAvaiableMovies(movies)
+            const movies = [...new Set(response.data.flat())]
+            setAvailableMovies(movies)
+        } else {
+            setAvailableMovies([])
+        }
+    }
+
+    const getMoviesShowtime = async () => {
+        const response = await ShowtimeService.fetchShowtimeByMovieService({
+            cityId: selectedCity._id,
+            movieId: selectedMovie,
+            date: selectedDate
+        })
+        if (response.status === 200) {
+            const movies = [...new Set(response.data.flat())]
+            setAvailableMovies(movies)
+        } else {
+            setAvailableMovies([])
         }
     }
 
     useEffect(() => {
         if (selectedCity && selectedCity._id) {
+            setSelectedMovie("")
             getMoviesInCity()
         }
     }, [selectedCity])
+
+    useEffect(() => {
+        if (selectedMovie) {
+            getMoviesShowtime()
+        } else {
+
+        }
+    }, [selectedMovie])
 
     return (
         <div className="booking">
@@ -44,7 +71,7 @@ const Booking = () => {
                             {step === 1 &&
                                 <>
                                     <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
-                                    <MovieSelection avaibleMovies={avaibleMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} />
+                                    <MovieSelection availableMovies={availableMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} />
                                 </>
                             }
                         </div>

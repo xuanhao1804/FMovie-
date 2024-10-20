@@ -3,12 +3,13 @@ import "./MovieSelection.scss"
 import { Col, Row } from "antd"
 import FilmsCard from "../../FilmsCard/FilmsCard"
 
-const MovieSelection = ({ avaibleMovies, selectedMovie, setSelectedMovie }) => {
+const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie }) => {
 
-    const { city, movies } = useSelector((state) => state)
+    const { movies } = useSelector((state) => state)
 
     return (
         <div className="movie-selection selection-section">
+            {console.log(selectedMovie)}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="fs-5 fw-semibold">
                     Chọn Phim
@@ -19,16 +20,27 @@ const MovieSelection = ({ avaibleMovies, selectedMovie, setSelectedMovie }) => {
             </div>
             <div>
                 <Row>
-                    {avaibleMovies && movies && avaibleMovies.length > 0 &&
-                        avaibleMovies.map((item, index) => {
+                    {movies && availableMovies && availableMovies.length > 0 &&
+                        availableMovies.map((item, index) => {
                             const movie = movies.playingMovies?.find(movie => movie._id === item)
-                            console.log(movie)
+                            if (movie) {
+                                return (
+                                    <Col span={6} style={{ marginBottom: "0.5rem", padding: "0.25rem" }}>
+                                        <div className="movie-selection-item" onClick={() => setSelectedMovie(movie._id)} >
+                                            {movie._id === selectedMovie &&
+                                                <>
+                                                    <div className="movie-selection-item-selected">
+                                                    </div>
+                                                    <i className="movie-selection-item-selected-icon text-green fa-solid fa-circle-check"></i>
+                                                </>
+                                            }
+                                            <FilmsCard _id={movie._id} image={movie.image} limit={movie.limit} star={movie.rating} video={movie.video} />
+                                        </div>
+                                    </Col>
+                                )
+                            }
                             return (
-                                <Col span={6} style={{ marginBottom: "0.5rem", padding: "0.25rem" }}>
-                                    <div onClick={() => setSelectedMovie(movie._id)} >
-                                        <FilmsCard _id={movie._id} image={movie.image} limit={movie.limit} star={movie.rating} video={movie.video} />
-                                    </div>
-                                </Col>
+                                <></>
                             )
                         })
                     }

@@ -23,7 +23,6 @@ const FilmDetail = () => {
 
     return (
         <div className="film-detail content-width-padding content-height-padding">
-            {console.log(film)}
             {film && film._id !== null &&
                 <Row>
                     <Col span={6}>

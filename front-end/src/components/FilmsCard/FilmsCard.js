@@ -3,7 +3,7 @@ import { Button, Modal } from 'antd';
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const FilmsCard = ({ _id, image, limit, star, video }) => {
+const FilmsCard = ({ _id, image, limit, star, video, setSelectedMovie }) => {
 
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
@@ -11,7 +11,11 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
     return (
         <>
             <div className="films-card" style={{ backgroundImage: `url(${image})` }}
-                onClick={() => setOpen(true)}>
+                onClick={() => {
+                    if (!window.location.pathname.includes("booking")) {
+                        setOpen(true)
+                    }
+                }}>
 
                 <span className="films-card-age-limitation">
                     {limit}

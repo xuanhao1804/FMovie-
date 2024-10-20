@@ -31,14 +31,16 @@ const getCinemaByCity = async (req, res) => {
     const cityId = req.params.id; // lấy id của city từ params
     try {
         // Tìm tất cả các rạp thuộc thành phố với cityId
-        const response = await Cinema.find({ city: cityId })
-            // .populate('city', 'name') // Lấy tên thành phố khi liên kết
-            // .exec();
-        
+        let response = await Cinema.find({ city: cityId })
+        // .populate('city', 'name') // Lấy tên thành phố khi liên kết
+        // .exec();
+
         if (response) {
             return res.status(200).json({
                 status: 200,
-                data: response,
+                data: response.map(cinema => {
+                    return cinema.movies
+                }),
             });
         } else {
             return res.status(404).json({
@@ -56,5 +58,5 @@ const getCinemaByCity = async (req, res) => {
 
 
 
-const CinemaController = {getAllCinema, getCinemaByCity};
+const CinemaController = { getAllCinema, getCinemaByCity };
 module.exports = CinemaController;

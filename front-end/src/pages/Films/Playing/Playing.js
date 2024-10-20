@@ -9,7 +9,6 @@ const Playing = () => {
 
     return (
         <div className="content-height-padding">
-            {console.log(state.movies)}
             <Row>
                 {state.movies.playingMovies && state.movies.playingMovies.length > 0 &&
                     state.movies.playingMovies.map((item, index) => {

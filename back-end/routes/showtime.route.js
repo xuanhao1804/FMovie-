@@ -5,6 +5,6 @@ const showtimeRouter = express.Router();
 
 showtimeRouter.use(bodyParser.json());
 
-showtimeRouter.get("/get-all-showtime", ShowtimeController.getShowtimebyDateandMoviesandCinema);
+showtimeRouter.post("/get-all-showtime", ShowtimeController.getShowtimebyDateandMoviesandCinema);
 module.exports = showtimeRouter;
 
