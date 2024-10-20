@@ -4,6 +4,7 @@ const ShowtimeRouter = require('./showtime.route');
 const RoomRouter = require('./room.route');
 const MovieRouter = require('./movie.route');
 const AccountRouter = require('./account.route');
+const BookingRouter = require('./Booking.route');
 
 module.exports = {
     CinemaRouter,
@@ -11,7 +12,8 @@ module.exports = {
     ShowtimeRouter,
     RoomRouter,
     MovieRouter,
-    AccountRouter
+    AccountRouter,
+    BookingRouter
 };
 
 

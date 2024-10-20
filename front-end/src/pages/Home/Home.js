@@ -60,7 +60,7 @@ const Home = () => {
         ))}
       </Carousel>
       <Row justify="center">
-        <Col span={20}>
+        <Col xs={24} sm={24} md={20}>
           <div className="title-section">
             <div className="line"></div>
             <div>LỰA CHỌN PHIM</div>
@@ -69,7 +69,7 @@ const Home = () => {
         </Col>
       </Row>
       <Row justify="center">
-        <Col span={20}>
+        <Col xs={24} sm={24} md={20}>
           <div className="posters-carousel-wrapper">
             <Carousel
               ref={carouselRef}
