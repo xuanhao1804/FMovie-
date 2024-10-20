@@ -5,7 +5,7 @@ import './CinemaDetail.scss';  // Đảm bảo bạn đã import file CSS
 
 const cinemasData = [
     {
-        id: "fmovie-hà-nội",
+        id: "fmovie-giải-phóng",
         name: "Fmovie chi nhánh Hà Nội",
         address: "124 Hoàng Quốc Việt, Cầu Giấy, Hà Nội",
         hotline: "0867 460 053",
@@ -15,7 +15,7 @@ const cinemasData = [
         imageUrl3: "https://iguov8nhvyobj.vcdn.cloud/media/wysiwyg/2022/092022/980x500.jpg",
       },
       {
-        id: "fmovie-hồ-chí-minh",
+        id: "fmovie-saigon-garden",
         name: "Fmovie chi nhánh Hồ Chí Minh",
         address: "Hồ Chí Minh, Vietnam",
         hotline: "0868 123 456",
@@ -25,7 +25,7 @@ const cinemasData = [
         imageUrl3: "https://npr.brightspotcdn.com/dims4/default/4fe4b48/2147483647/strip/true/crop/980x551+0+0/resize/880x495!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Flegacy%2Fuploads%2F2021%2F6%2F28%2FEmpty%20theater%20shutterstock_Fer%20Gregory.jpg",
       },
       {
-        id: "fmovie-đà-nẵng",
+        id: "fmovie-sun-peninsula",
         name: "Fmovie chi nhánh Đà Nẵng",
         address: "Đà Nẵng, Vietnam",
         hotline: "0868 123 456",

@@ -126,4 +126,7 @@ const BookingController = {
     Deletepayment,
     receivehook
 };
+
 module.exports = BookingController;
+
+
