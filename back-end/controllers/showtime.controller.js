@@ -3,7 +3,6 @@ const db = require("../models");
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
     try {
         let { cityId, movieId, date } = req.body;
-
         // Nếu 'date' là null, sử dụng ngày hôm nay
         if (!date) {
             date = new Date();  // Lấy ngày hôm nay
@@ -51,7 +50,6 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
         }
 
         return res.status(200).json({ cinemas });
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -59,11 +57,6 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
         });
     }
 };
-
-
-
-
-
 
 const ShowtimeController = { getShowtimebyDateandMoviesandCinema };
 module.exports = ShowtimeController;

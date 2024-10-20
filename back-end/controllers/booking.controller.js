@@ -116,8 +116,6 @@ const receivehook = async (req, res) => {
         if (code === "00" && db.booking.findById(orderCode).status != "cancelled") {
             await db.booking.findByIdAndUpdate(orderCode, { status: 'paid' });
         }
-
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -134,3 +132,4 @@ const BookingController = {
     receivehook
 };
 module.exports = BookingController;
+};
