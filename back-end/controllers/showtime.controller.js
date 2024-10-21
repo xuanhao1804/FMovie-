@@ -16,6 +16,7 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
             })
             .select('-movies')
             .exec();
+
         const filteredCinemas = cinemas.filter(cinema =>
             cinema.rooms.some(room => room.showtimes.length > 0))
         return res.status(200).json({ filteredCinemas });

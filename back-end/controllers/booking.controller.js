@@ -27,7 +27,7 @@ const CreatePayment = async (req, res) => {
                 await bookingToUpdate.save();
                 console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
             }
-        }, 10000);
+        }, 600000);
         // return res.status(200).json({ savedBooking })
         // //600000 10p    
         const body = {
@@ -92,10 +92,10 @@ const receivehook = async (req, res) => {
             }
         } = req.body;
         const booking = await db.booking.findOne({ orderCode });
-        // Check if the booking exists and its status
+
         if (booking && booking.status !== "cancelled") {
             if (code === "00") {
-                // Update status to 'paid'
+
                 await db.booking.findOneAndUpdate(
                     { orderCode },
                     { status: 'paid' }
