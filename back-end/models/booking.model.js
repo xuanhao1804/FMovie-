@@ -20,6 +20,9 @@ const BookingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Room"
     },
+    orderCode: {
+        type: Number
+    },
     seats: [
         {
             row: {
@@ -34,6 +37,21 @@ const BookingSchema = new Schema({
             }
         }
     ],
+    transaction: {
+        accountNumber: String,
+        amount: Number,
+        description: String,
+        reference: String,
+        transactionDateTime: String,
+        counterAccountBankId: String,
+        counterAccountName: String,
+        counterAccountNumber: String,
+        currency: String,
+        orderCode: Number,
+        paymentLinkId: String,
+        code: String,
+        desc: String
+    }
 
 }, { timestamps: true });
 
