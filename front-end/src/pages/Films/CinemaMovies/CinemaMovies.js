@@ -44,7 +44,9 @@ const CinemaMovies = () => {
                     setError('Không thể tải danh sách suất chiếu');
                 }
             } catch (error) {
-                setError('Lỗi trong quá trình lấy danh sách suất chiếu');
+
+                setError('Tạm Thời chưa có suất chiếu');
+
                 console.error(error);
             } finally {
                 setLoading(false);
@@ -77,8 +79,10 @@ const CinemaMovies = () => {
     }
 
     return (
-        <div className="container" style={{ padding: '0 20px',marginTop: '20px'  }}>
-            {/* Bộ lọc ngày */}
+
+        <div className="container" style={{ padding: '0 20px', marginTop: '20px' }}>
+            {/* Bộ lọc ngày (luôn hiện) */}
+
             <div className="date-filter-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <div className="date-filter" style={{ display: 'flex', gap: '20px' }}>
                     {availableDates.map((date) => (
@@ -109,13 +113,16 @@ const CinemaMovies = () => {
                 </div>
             </div>
 
+    
             {/* Đường ngăn cách màu xanh */}
             <div style={{ borderBottom: '2px solid #0056b3', marginBottom: '20px' }}></div>
-
-            <Row gutter={[16, 16]}>
-                {showtimes.length > 0 ? (
-                    showtimes.map((showtime) => {
+    
+            {/* Hiển thị showtimes */}
+            {showtimes.length > 0 ? (
+                <Row gutter={[16, 16]}>
+                    {showtimes.map((showtime) => {
                         const movie = showtime.movie; // Lấy thông tin phim
+    
 
                         return (
                             <Row key={showtime._id} style={{ marginBottom: '20px', width: '100%' }}>
@@ -160,13 +167,16 @@ const CinemaMovies = () => {
                                 </Col>
                             </Row>
                         );
-                    })
-                ) : (
-                    <div>Không có phim nào cho ngày đã chọn.</div>
-                )}
-            </Row>
+
+                    })}
+                </Row>
+            ) : (
+                <div>Không có phim nào cho ngày đã chọn.</div>
+            )}
         </div>
     );
+    
+
 };
 
 export default CinemaMovies;

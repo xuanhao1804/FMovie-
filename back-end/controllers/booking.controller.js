@@ -5,63 +5,37 @@ const payOS = new PayOS(
     "b91ff654-c857-4367-a7ae-d5dfe083e163",
     "16dbfd121db61219934e9460d5c94e16def9d16c18b9f49b8ef76ce116fb6cec"
 );
-// const CreatePayment = async (req, res) => {
-//     try {
-//         //const { orderCode, amount, description, items, cancelUrl, returnUrl } = req.body;
-//         const body = {
-//             orderCode: 123456789,
-//             amount: 2000,
-//             description: "Thanh toan don hang",
-//             items: [
-//                 {
-//                     name: "Mi tom hao hao",
-//                     quantity: 1,
-//                     price: 2000,
-//                 },
-//             ],
-//             cancelUrl: "http://localhost:3000/cancel.html",
-//             returnUrl: "http://localhost:3000/success.html",
-//         };
-//         const paymentLinkRes = await payOS.createPaymentLink(body);
-//         return res.status(200).json({ checkoutUrl: paymentLinkRes.checkoutUrl });
-
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).json({
-//             message: "Lỗi hệ thống Back-end"
-//         });
-//     }
-// };
 const CreatePayment = async (req, res) => {
     try {
         const { total_price, createdBy, showtime, room, seats } = req.body;
-        // const newBooking = new db.booking({
-        //     total_price,
-        //     status: "pending",
-        //     createdBy,
-        //     showtime,
-        //     room,
-        //     seats
-        // });
+        const orderCode = Date.now();
+        const newBooking = new db.booking({
+            total_price,
+            status: "pending",
+            createdBy,
+            showtime,
+            room,
+            orderCode: orderCode,
+            seats
+        });
+        const savedBooking = await newBooking.save();
 
-
-        // const savedBooking = await newBooking.save();
-        // setTimeout(async () => {
-        //     const bookingToUpdate = await db.booking.findById(savedBooking._id);
-        //     if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
-        //         bookingToUpdate.status = 'cancelled';
-        //         await bookingToUpdate.save();
-        //         console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
-        //     }
-        // }, 60000);
+        setTimeout(async () => {
+            const bookingToUpdate = await db.booking.findById(savedBooking._id);
+            if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
+                bookingToUpdate.status = 'cancelled';
+                await bookingToUpdate.save();
+                console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
+            }
+        }, 600000);
         // return res.status(200).json({ savedBooking })
-        //600000 10p    
+        // //600000 10p    
         const body = {
-            orderCode: 12121,
-            amount: 2000,
-            description: "Thanh toán vé xem phim",
-            cancelUrl: "http://localhost:3000/cancel.html",
-            returnUrl: "http://localhost:3000/success.html",
+            orderCode: orderCode,
+            amount: total_price,
+            description: orderCode,
+            cancelUrl: "http://localhost:3000",
+            returnUrl: "http://localhost:3000",
         };
         const paymentLinkRes = await payOS.createPaymentLink(body);
 
@@ -72,9 +46,10 @@ const CreatePayment = async (req, res) => {
             checkoutlink: paymentLinkRes.checkoutUrl,
             bankAccount: paymentLinkRes.accountNumber,
             bankName: "Ngân hàng TMCP Quân đội",
-            amount: 2000,
+            amount: total_price,
             accountHolder: paymentLinkRes.accountName
         });
+
 
     } catch (error) {
         console.log(error);
@@ -95,19 +70,63 @@ const Deletepayment = async (req, res) => {
         });
     }
 };
+const getBooking = async (req, res) => {
+    try {
+        const id = req.body;
+        const booking = await db.booking.findById(id)
+        return res.status(200).json(booking);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
 const receivehook = async (req, res) => {
     try {
-        // const {
-        //     data: {
-        //         orderCode,
-        //         amount,
-        //         description,
-        //         code, // Mã trạng thái thanh toán
-        //     }
-        // } = req.body;
-        // if (code === "00" && db.booking.findById(orderCode).status != "cancelled") {
-        //     await db.booking.findByIdAndUpdate(orderCode, { status: 'paid' });
-        // }
+        const { data } = req.body
+        const {
+            data: {
+                orderCode,
+                code, // Mã trạng thái thanh toán
+            }
+        } = req.body;
+        const booking = await db.booking.findOne({ orderCode });
+
+        if (booking && booking.status !== "cancelled") {
+            if (code === "00") {
+
+                await db.booking.findOneAndUpdate(
+                    { orderCode },
+                    { status: 'paid' }
+                );
+            }
+        }
+        const updatedBooking = await db.booking.findOneAndUpdate(
+            { orderCode: orderCode },
+            {
+                $set: {
+                    transaction: {
+                        accountNumber: data.accountNumber,
+                        amount: data.amount,
+                        description: data.description,
+                        reference: data.reference,
+                        transactionDateTime: data.transactionDateTime,
+                        virtualAccountNumber: data.virtualAccountNumber || '',
+                        counterAccountBankId: data.counterAccountBankId,
+                        counterAccountBankName: data.counterAccountBankName || '',
+                        counterAccountName: data.counterAccountName,
+                        counterAccountNumber: data.counterAccountNumber,
+                        virtualAccountName: data.virtualAccountName || '',
+                        currency: data.currency,
+                        paymentLinkId: data.paymentLinkId,
+                        code: data.code,
+                        desc: data.desc
+                    }
+                }
+            },
+            { new: true }
+        );
         console.log(req.body)
         return res.json();
 
@@ -124,9 +143,10 @@ const receivehook = async (req, res) => {
 const BookingController = {
     CreatePayment,
     Deletepayment,
-    receivehook
+    receivehook,
+    getBooking
 };
 
-module.exports = BookingController;
 
+module.exports = BookingController;
 
