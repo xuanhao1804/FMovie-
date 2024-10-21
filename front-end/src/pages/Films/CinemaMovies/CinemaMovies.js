@@ -44,7 +44,9 @@ const CinemaMovies = () => {
                     setError('Không thể tải danh sách suất chiếu');
                 }
             } catch (error) {
+
                 setError('Tạm Thời chưa có suất chiếu');
+
                 console.error(error);
             } finally {
                 setLoading(false);
@@ -77,8 +79,10 @@ const CinemaMovies = () => {
     }
 
     return (
+
         <div className="container" style={{ padding: '0 20px', marginTop: '20px' }}>
             {/* Bộ lọc ngày (luôn hiện) */}
+
             <div className="date-filter-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <div className="date-filter" style={{ display: 'flex', gap: '20px' }}>
                     {availableDates.map((date) => (
@@ -108,6 +112,7 @@ const CinemaMovies = () => {
                     ))}
                 </div>
             </div>
+
     
             {/* Đường ngăn cách màu xanh */}
             <div style={{ borderBottom: '2px solid #0056b3', marginBottom: '20px' }}></div>
@@ -118,6 +123,7 @@ const CinemaMovies = () => {
                     {showtimes.map((showtime) => {
                         const movie = showtime.movie; // Lấy thông tin phim
     
+
                         return (
                             <Row key={showtime._id} style={{ marginBottom: '20px', width: '100%' }}>
                                 <Col span={6}>
@@ -161,6 +167,7 @@ const CinemaMovies = () => {
                                 </Col>
                             </Row>
                         );
+
                     })}
                 </Row>
             ) : (
@@ -169,7 +176,7 @@ const CinemaMovies = () => {
         </div>
     );
     
-    
+
 };
 
 export default CinemaMovies;

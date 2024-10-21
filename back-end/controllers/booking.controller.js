@@ -147,4 +147,6 @@ const BookingController = {
     getBooking
 };
 
+
 module.exports = BookingController;
+
