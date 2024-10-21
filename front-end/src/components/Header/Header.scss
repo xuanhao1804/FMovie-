@@ -25,6 +25,26 @@
             text-decoration: none;
         }
     }
+
+
+}
+
+.cinema-item{
+    &:hover {
+        display: none;
+    }
+}
+
+.hover-city {
+    width: 100%;
+}
+
+.dropdown-cities{
+    padding: 5px 0px !important;
+}
+
+.dropdown-cities-items{
+    padding: 5px 0px !important;
 }
 
 .logout-container {
