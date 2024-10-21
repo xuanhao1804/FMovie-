@@ -35,7 +35,6 @@ const FilmDetail = () => {
                                     <h1 className="film-detail-name">{film.name}</h1>
                                     <span className="film-detail-age-limit">{film.limit}</span>
                                 </div>
-                                <Link className="film-detail-book-now" to={"/booking"} >Đặt vé ngay</Link>
                             </div>
                             <div className="film-detail-duration">
                                 <div>

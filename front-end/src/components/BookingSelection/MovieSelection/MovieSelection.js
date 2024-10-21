@@ -9,7 +9,6 @@ const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie }) =>
 
     return (
         <div className="movie-selection selection-section">
-            {console.log(selectedMovie)}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="fs-5 fw-semibold">
                     Chọn Phim
@@ -26,8 +25,8 @@ const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie }) =>
                             if (movie) {
                                 return (
                                     <Col span={6} style={{ marginBottom: "0.5rem", padding: "0.25rem" }}>
-                                        <div className="movie-selection-item" onClick={() => setSelectedMovie(movie._id)} >
-                                            {movie._id === selectedMovie &&
+                                        <div className="movie-selection-item" onClick={() => setSelectedMovie(movie)} >
+                                            {movie._id === selectedMovie._id &&
                                                 <>
                                                     <div className="movie-selection-item-selected">
                                                     </div>

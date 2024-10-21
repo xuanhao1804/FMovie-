@@ -35,54 +35,46 @@ const payOS = new PayOS(
 const CreatePayment = async (req, res) => {
     try {
         const { total_price, createdBy, showtime, room, seats } = req.body;
-        const newBooking = new db.booking({
-            total_price,
-            status: "pending",
-            createdBy,
-            showtime,
-            room,
-            seats
-        });
-
-
-        const savedBooking = await newBooking.save();
-        setTimeout(async () => {
-            const bookingToUpdate = await db.booking.findById(savedBooking._id);
-            if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
-                bookingToUpdate.status = 'cancelled';
-                await bookingToUpdate.save();
-                console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
-            }
-        }, 60000);
-        return res.status(200).json({ savedBooking })
-        //600000 10p    
-        // const body = {
-        //     orderCode: 1122233,
-        //     amount: 2000,
-        //     description: "Thanh toan don hang",
-        //     items: [
-        //         {
-        //             name: "Mi tom hao hao",
-        //             quantity: 1,
-        //             price: 2000,
-        //         },
-        //     ],
-        //     cancelUrl: "http://localhost:3000/cancel.html",
-        //     returnUrl: "http://localhost:3000/success.html",
-        // };
-        // const paymentLinkRes = await payOS.createPaymentLink(body);
-
-
-        // // Trả về JSON bao gồm URL của mã QR và thông tin khác
-        // return res.status(200).json({
-        //     checkoutUrl: paymentLinkRes.qrCode,
-        //     Expired: paymentLinkRes.expiredAt,
-
-        //     bankAccount: paymentLinkRes.accountNumber,
-        //     bankName: "Ngân hàng TMCP Quân đội",
-        //     amount: 2000,
-        //     accountHolder: paymentLinkRes.accountName
+        // const newBooking = new db.booking({
+        //     total_price,
+        //     status: "pending",
+        //     createdBy,
+        //     showtime,
+        //     room,
+        //     seats
         // });
+
+
+        // const savedBooking = await newBooking.save();
+        // setTimeout(async () => {
+        //     const bookingToUpdate = await db.booking.findById(savedBooking._id);
+        //     if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
+        //         bookingToUpdate.status = 'cancelled';
+        //         await bookingToUpdate.save();
+        //         console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
+        //     }
+        // }, 60000);
+        // return res.status(200).json({ savedBooking })
+        //600000 10p    
+        const body = {
+            orderCode: 12121,
+            amount: 2000,
+            description: "Thanh toán vé xem phim",
+            cancelUrl: "http://localhost:3000/cancel.html",
+            returnUrl: "http://localhost:3000/success.html",
+        };
+        const paymentLinkRes = await payOS.createPaymentLink(body);
+
+
+        // Trả về JSON bao gồm URL của mã QR và thông tin khác
+        return res.status(200).json({
+            checkoutUrl: paymentLinkRes.qrCode,
+            checkoutlink: paymentLinkRes.checkoutUrl,
+            bankAccount: paymentLinkRes.accountNumber,
+            bankName: "Ngân hàng TMCP Quân đội",
+            amount: 2000,
+            accountHolder: paymentLinkRes.accountName
+        });
 
     } catch (error) {
         console.log(error);
@@ -105,17 +97,20 @@ const Deletepayment = async (req, res) => {
 };
 const receivehook = async (req, res) => {
     try {
-        const {
-            data: {
-                orderCode,
-                amount,
-                description,
-                code, // Mã trạng thái thanh toán
-            }
-        } = req.body;
-        if (code === "00" && db.booking.findById(orderCode).status != "cancelled") {
-            await db.booking.findByIdAndUpdate(orderCode, { status: 'paid' });
-        }
+        // const {
+        //     data: {
+        //         orderCode,
+        //         amount,
+        //         description,
+        //         code, // Mã trạng thái thanh toán
+        //     }
+        // } = req.body;
+        // if (code === "00" && db.booking.findById(orderCode).status != "cancelled") {
+        //     await db.booking.findByIdAndUpdate(orderCode, { status: 'paid' });
+        // }
+        console.log(req.body)
+        return res.json();
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -131,4 +126,5 @@ const BookingController = {
     Deletepayment,
     receivehook
 };
+
 module.exports = BookingController;

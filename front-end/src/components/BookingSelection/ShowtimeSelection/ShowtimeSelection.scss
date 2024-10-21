@@ -1,0 +1,27 @@
+.showtime-selection {
+
+    &-date {
+        display  : flex;
+        gap      : 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    &-item {
+        background-color: #fff;
+        border          : 0.1rem solid #e8e8e8;
+        padding         : 0.5rem 0.75rem;
+        border-radius   : 0.25rem;
+
+        &-selected {
+            background-color: rgb(3 78 162);
+            border          : none;
+            color           : #fff;
+            padding         : 0.5rem 0.75rem;
+            border-radius   : 0.25rem;
+        }
+    }
+
+    &-icon {
+        aspect-ratio: 1;
+    }
+}

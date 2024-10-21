@@ -6,14 +6,17 @@ import CitySelection from "../../components/BookingSelection/CitySelection/CityS
 import { CinemaService } from "../../services/CinemaService"
 import MovieSelection from "../../components/BookingSelection/MovieSelection/MovieSelection"
 import { ShowtimeService } from "../../services/ShowtimeService"
+import ShowtimeSelection from "../../components/BookingSelection/ShowtimeSelection/ShowtimeSelection"
 
 const Booking = () => {
 
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedMovie, setSelectedMovie] = useState("")
-    const [selectedDate, setSelectedDate] = useState(new Date().setHours(0, 0, 0, 0))
+    const [selectedDate, setSelectedDate] = useState("")
+
     const [availableMovies, setAvailableMovies] = useState([])
     const [movieShowtime, setMovieShowtime] = useState([])
+
     const [step, setStep] = useState(1)
 
     const getMoviesInCity = async () => {
@@ -29,14 +32,17 @@ const Booking = () => {
     const getMoviesShowtime = async () => {
         const response = await ShowtimeService.fetchShowtimeByMovieService({
             cityId: selectedCity._id,
-            movieId: selectedMovie,
-            date: selectedDate
+            movieId: selectedMovie._id,
         })
         if (response.status === 200) {
-            const movies = [...new Set(response.data.flat())]
-            setAvailableMovies(movies)
+            const dates = [...new Set(response.data.flatMap(cinema =>
+                cinema.rooms.flatMap(room =>
+                    room.showtimes.map(showtime => showtime.startAt.date)
+                )
+            ))]
+            setMovieShowtime(response.data)
+            setSelectedDate(dates[0])
         } else {
-            setAvailableMovies([])
         }
     }
 
@@ -72,6 +78,7 @@ const Booking = () => {
                                 <>
                                     <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
                                     <MovieSelection availableMovies={availableMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} />
+                                    <ShowtimeSelection movieShowtime={movieShowtime} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                                 </>
                             }
                         </div>
@@ -79,15 +86,17 @@ const Booking = () => {
                     <Col span={7}>
                         <div className="booking-information d-flex flex-column gap-3">
                             <div className="d-flex gap-3">
-                                <img className="booking-information-film-img" src={film_blank} alt="film-blank" />
-                                <div className="d-flex flex-column gap-2">
-                                    <div className="d-flex justify-content-between gap-4">
-                                        <span className="fs-5 fw-semibold">Movie Name Here</span>
-                                        <span className="film-detail-age-limit" style={{ height: "fit-content" }}>13T</span>
+                                <img className="booking-information-film-img" src={selectedMovie.image || film_blank} alt="film-blank" />
+                                {selectedMovie &&
+                                    <div className="d-flex flex-column gap-2">
+                                        <div className="d-flex justify-content-between gap-4">
+                                            <span className="fs-5 fw-semibold">{selectedMovie.name || ""}</span>
+                                            <span className="film-detail-age-limit" style={{ height: "fit-content" }}>{selectedMovie.limit}</span>
+                                        </div>
+                                        <span>Quốc gia: <span className="fw-semibold">{selectedMovie.country}</span></span>
+                                        <span>Phụ đề: <span className="fw-semibold">Tiếng Việt</span></span>
                                     </div>
-                                    <span>Quốc gia: <span className="fw-semibold">Mỹ</span></span>
-                                    <span>Phụ đề: <span className="fw-semibold">Tiếng Việt</span></span>
-                                </div>
+                                }
                             </div>
                             <div>
                                 <div className="d-flex fs-6 gap-2">
