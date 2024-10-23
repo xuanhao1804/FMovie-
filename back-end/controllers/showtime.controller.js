@@ -1,4 +1,3 @@
-const { lte } = require("lodash");
 const db = require("../models");
 
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
