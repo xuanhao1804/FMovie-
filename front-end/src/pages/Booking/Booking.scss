@@ -49,4 +49,23 @@
         flex-direction: column;
         gap           : 2rem;
     }
+
+    &-step-action {
+        display: flex;
+        gap    : 1rem;
+
+        &-btn {
+            width           : 50%;
+            color           : white;
+            border          : none;
+            font-weight     : 550;
+            background-color: #ff914d;
+            padding         : 0.5rem 1rem;
+            border-radius   : 0.25rem;
+
+            &-disable {
+                background-color: gray;
+            }
+        }
+    }
 }

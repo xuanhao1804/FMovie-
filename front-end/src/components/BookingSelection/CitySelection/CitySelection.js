@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import "./CitySelection.scss"
 
-const CitySelection = ({ selectedCity, setSelectedCity }) => {
+const CitySelection = ({ selectedCity, setSelectedCity, movieSelectionRef }) => {
 
     const { city } = useSelector((state) => state)
     return (
@@ -18,7 +18,10 @@ const CitySelection = ({ selectedCity, setSelectedCity }) => {
                 {city && city.list && city.list.length > 0 &&
                     city.list.map((item, index) => {
                         return (
-                            <button onClick={() => setSelectedCity(item)} className={item._id === selectedCity._id ? "city-selection-item-selected" : "city-selection-item"} key={"cities-" + index}>{item.name}</button>
+                            <button onClick={() => {
+                                setSelectedCity(item)
+                                movieSelectionRef.current.scrollIntoView()
+                            }} className={item._id === selectedCity._id ? "city-selection-item-selected" : "city-selection-item"} key={"cities-" + index}>{item.name}</button>
                         )
                     })
                 }

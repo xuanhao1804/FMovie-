@@ -1,4 +1,4 @@
-const CinemaRouter = require('./cinema.route');
+const CinemaRouter = require('./Cinema.route');
 const CityRouter = require('./city.route');
 const ShowtimeRouter = require('./showtime.route');
 const RoomRouter = require('./room.route');

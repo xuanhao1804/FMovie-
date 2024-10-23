@@ -1,23 +1,29 @@
 import "./Booking.scss"
 import { Row, Col, Divider } from "antd"
 import film_blank from "../../assets/icon/film-blank.svg"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import CitySelection from "../../components/BookingSelection/CitySelection/CitySelection"
 import { CinemaService } from "../../services/CinemaService"
 import MovieSelection from "../../components/BookingSelection/MovieSelection/MovieSelection"
 import { ShowtimeService } from "../../services/ShowtimeService"
 import ShowtimeSelection from "../../components/BookingSelection/ShowtimeSelection/ShowtimeSelection"
+import { getVietnameseDate } from "../../utils/dateUtils"
 
 const Booking = () => {
 
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedMovie, setSelectedMovie] = useState("")
     const [selectedDate, setSelectedDate] = useState("")
+    const [selectedShowtime, setSelectedShowtime] = useState(null)
 
     const [availableMovies, setAvailableMovies] = useState([])
     const [movieShowtime, setMovieShowtime] = useState([])
 
     const [step, setStep] = useState(1)
+
+    const movieSelectionRef = useRef(null)
+    const showtimeSelectionRef = useRef(null)
+    const bookingPreviewRef = useRef(null)
 
     const getMoviesInCity = async () => {
         const response = await CinemaService.fetchCinemaByCityService(selectedCity._id)
@@ -56,13 +62,13 @@ const Booking = () => {
     useEffect(() => {
         if (selectedMovie) {
             getMoviesShowtime()
-        } else {
-
+            setSelectedShowtime(null)
         }
     }, [selectedMovie])
 
     return (
         <div className="booking">
+            {console.log(selectedShowtime === null)}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
@@ -76,15 +82,15 @@ const Booking = () => {
                         <div className="booking-selections px-4">
                             {step === 1 &&
                                 <>
-                                    <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} />
-                                    <MovieSelection availableMovies={availableMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} />
-                                    <ShowtimeSelection movieShowtime={movieShowtime} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                                    <CitySelection selectedCity={selectedCity} setSelectedCity={setSelectedCity} movieSelectionRef={movieSelectionRef} />
+                                    <MovieSelection availableMovies={availableMovies} selectedMovie={selectedMovie} setSelectedMovie={setSelectedMovie} movieSelectionRef={movieSelectionRef} showtimeSelectionRef={showtimeSelectionRef} />
+                                    <ShowtimeSelection movieShowtime={movieShowtime} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedShowtime={selectedShowtime} setSelectedShowtime={setSelectedShowtime} showtimeSelectionRef={showtimeSelectionRef} bookingPreviewRef={bookingPreviewRef} />
                                 </>
                             }
                         </div>
                     </Col>
                     <Col span={7}>
-                        <div className="booking-information d-flex flex-column gap-3">
+                        <div className="booking-information d-flex flex-column gap-3" ref={bookingPreviewRef}>
                             <div className="d-flex gap-3">
                                 <img className="booking-information-film-img" src={selectedMovie.image || film_blank} alt="film-blank" />
                                 {selectedMovie &&
@@ -98,20 +104,27 @@ const Booking = () => {
                                     </div>
                                 }
                             </div>
-                            <div>
-                                <div className="d-flex fs-6 gap-2">
-                                    <span className="fw-semibold">Fmovie Hà Nội</span> - <span>Phòng F1</span>
-                                </div>
-                                <div className="d-flex fs-6 gap-2">
-                                    <span>Thời gian: </span><span className="fw-semibold">19:00</span> - <span>Thứ Bảy,</span><span className="fw-semibold">19/10/2024</span>
-                                </div>
-                            </div>
-                            <Divider
-                                style={{
-                                    borderColor: '#ff914d',
-                                    margin: "0"
-                                }}
-                            />
+                            {selectedShowtime &&
+                                <>
+                                    <div>
+                                        <div className="d-flex fs-6 gap-2">
+                                            <span className="fw-semibold">{selectedShowtime.cinema.name}</span> - <span>{selectedShowtime.room.name}</span>
+                                        </div>
+                                        <div className="d-flex fst-italic gap-2 mb-2">
+                                            {selectedShowtime.cinema.address}
+                                        </div>
+                                        <div className="d-flex fs-6 gap-2">
+                                            <span>Thời gian: </span><span className="fw-semibold">{selectedShowtime.time}</span> - <span>{getVietnameseDate(selectedDate)}</span>
+                                        </div>
+                                    </div>
+                                    <Divider
+                                        style={{
+                                            borderColor: '#ff914d',
+                                            margin: "0"
+                                        }}
+                                    />
+                                </>
+                            }
                             <div className="d-flex flex-column gap-2">
                                 <div>
                                     <div className="d-flex justify-content-between">
@@ -152,6 +165,23 @@ const Booking = () => {
                                 <span>Tổng cộng</span>
                                 <span className="text-orange">360.000 đ</span>
                             </div>
+                        </div>
+                        <div className="booking-step-action mt-4">
+                            <button onClick={() => {
+                                if (step > 1) {
+                                    setStep(step => step - 1)
+                                }
+                            }} className={step === 1 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
+                                Quay lại
+                            </button>
+                            <button onClick={() => {
+                                if (selectedCity && selectedDate && selectedMovie && selectedShowtime) {
+                                    setStep(step => step + 1)
+                                }
+                            }} className="booking-step-action-btn">
+                                Tiếp tục
+                            </button>
+                            {console.log("step: ", step)}
                         </div>
                     </Col>
                 </Row>

@@ -3,12 +3,12 @@ import "./MovieSelection.scss"
 import { Col, Row } from "antd"
 import FilmsCard from "../../FilmsCard/FilmsCard"
 
-const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie }) => {
+const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie, movieSelectionRef, showtimeSelectionRef }) => {
 
     const { movies } = useSelector((state) => state)
 
     return (
-        <div className="movie-selection selection-section">
+        <div className="movie-selection selection-section" ref={movieSelectionRef}>
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="fs-5 fw-semibold">
                     Chọn Phim
@@ -25,7 +25,10 @@ const MovieSelection = ({ availableMovies, selectedMovie, setSelectedMovie }) =>
                             if (movie) {
                                 return (
                                     <Col span={6} style={{ marginBottom: "0.5rem", padding: "0.25rem" }}>
-                                        <div className="movie-selection-item" onClick={() => setSelectedMovie(movie)} >
+                                        <div className="movie-selection-item" onClick={() => {
+                                            setSelectedMovie(movie)
+                                            showtimeSelectionRef.current.scrollIntoView();
+                                        }} >
                                             {movie._id === selectedMovie._id &&
                                                 <>
                                                     <div className="movie-selection-item-selected">

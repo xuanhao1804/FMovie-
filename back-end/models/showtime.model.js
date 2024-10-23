@@ -9,10 +9,11 @@ const ShowtimeSchema = new Schema({
     },
     startAt: {
         date: {
-            type: Date
+            type: Date,
+            required: true,
         },
         times: [
-            { type: String }
+            { type: String, required: true }
         ]
     }
 }, { timestamps: true });
