@@ -10,10 +10,22 @@ import Upcoming from "./pages/Films/Upcoming/Upcoming";
 import CinemaDetail from "./pages/Cinemas/CinemaIntro";  // Thêm import CinemaDetail
 import FilmDetail from "./pages/FilmDetail/FilmDetail";
 import CustomFooter from "./components/Footer/Footer";
+import Booking from "./pages/Booking/Booking";
+import { useDispatch } from "react-redux"
+import { useEffect } from "react";
+import { fetchCities } from "./reducers/CityReducer";
+import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCities())
+  }, [])
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -29,6 +41,8 @@ function App() {
           </Route>
           <Route path="/cinemas/:cinemaId" element={<CinemaDetail />} />
           <Route path="film/detail/:id" element={<FilmDetail />} />
+          <Route path="booking" element={<Booking />} />
+          <Route path="/cinemas-movies/:cinemaId" element={<CinemaMovies />} />
         </Routes>
         <CustomFooter />
         <ToastContainer

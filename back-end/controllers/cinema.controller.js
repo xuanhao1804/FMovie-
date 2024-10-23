@@ -3,6 +3,7 @@ const db = require("../models");
 const Cinema = db.cinema;
 const City = db.city;
 const mongoose = require("mongoose");
+const Showtime = db.showtime;
 
 const getAllCinema = async (req, res) => {
     try {
@@ -29,13 +30,15 @@ const getAllCinema = async (req, res) => {
 
 const getCinemaByCity = async (req, res) => {
     const cityId = req.params.id; // lấy id của city từ params
+    console.log('123',cityId);  
     try {
         // Tìm tất cả các rạp thuộc thành phố với cityId
-        const response = await Cinema.find({ city: cityId })
-            // .populate('city', 'name') // Lấy tên thành phố khi liên kết
-            // .exec();
-        
+        const response = await db.cinema.where({ city: cityId })
+            .populate('city', 'name') // Lấy tên thành phố khi liên kết
+            .exec();
+        console.log('respon',response);
         if (response) {
+            
             return res.status(200).json({
                 status: 200,
                 data: response,
@@ -54,7 +57,54 @@ const getCinemaByCity = async (req, res) => {
     }
 };
 
+const getMoviesByCinema = async (req, res) => {
+    const { cinemaId } = req.params;  // Get the cinemaId from the request parameters
 
+    try {
+        // Find the cinema by its ID and populate the 'movies' field
+        const cinema = await Cinema.findById(cinemaId).populate('movies');
 
-const CinemaController = {getAllCinema, getCinemaByCity};
+        if (!cinema) {
+            return res.status(404).json({ message: "Cinema not found" });
+        }
+
+        // Return the movies from the cinema
+        return res.status(200).json({
+            status: 200,
+            data: cinema.movies
+        });
+    } catch (error) {
+        console.error("Error fetching movies by cinema:", error);
+        return res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getShowtimesByCinema = async (req, res) => {
+    const { cinemaId, date } = req.query;  // Lấy cinemaId và date từ query parameters
+
+    try {
+        // Lấy danh sách suất chiếu theo rạp và ngày
+        const showtimes = await Showtime.find({
+            cinema: cinemaId,
+            'startAt.date': {
+                $gte: new Date(`${date}T00:00:00.000Z`),  // Tìm suất chiếu từ 00:00 ngày đó
+                $lt: new Date(`${date}T23:59:59.999Z`)    // Đến 23:59:59 ngày đó
+            }
+        }).populate('movie cinema'); // Liên kết thông tin phim và rạp
+
+        if (!showtimes.length) {
+            return res.status(404).json({ message: 'Không tìm thấy suất chiếu nào' });
+        }
+
+        return res.status(200).json({
+            status: 200,
+            data: showtimes
+        });
+    } catch (error) {
+        console.error('Error fetching showtimes by cinema:', error);
+        return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
+    }
+};
+
+const CinemaController = {getAllCinema, getCinemaByCity,getMoviesByCinema,getShowtimesByCinema};
 module.exports = CinemaController;

@@ -60,7 +60,7 @@ const Home = () => {
         ))}
       </Carousel>
       <Row justify="center">
-        <Col span={20}>
+        <Col xs={24} sm={24} md={20}>
           <div className="title-section">
             <div className="line"></div>
             <div>LỰA CHỌN PHIM</div>
@@ -69,7 +69,7 @@ const Home = () => {
         </Col>
       </Row>
       <Row justify="center">
-        <Col span={20}>
+        <Col xs={24} sm={24} md={20}>
           <div className="posters-carousel-wrapper">
             <Carousel
               ref={carouselRef}
@@ -86,7 +86,7 @@ const Home = () => {
 
               {state.movies?.playingMovies?.map((item, index) => {
                 return (
-                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.star} video={item.video} />
+                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
                 )
               })
               }
