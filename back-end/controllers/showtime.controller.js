@@ -58,6 +58,8 @@ const getAllShowtime = async (req, res) => {
         });
     }
 };
+
 const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime };
+
 
 module.exports = ShowtimeController;

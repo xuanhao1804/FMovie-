@@ -28,6 +28,26 @@ const CreatePayment = async (req, res) => {
                 console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
             }
         }, 600000);
+        const orderCode = Date.now();
+        const newBooking = new db.booking({
+            total_price,
+            status: "pending",
+            createdBy,
+            showtime,
+            room,
+            orderCode: orderCode,
+            seats
+        });
+        const savedBooking = await newBooking.save();
+
+        setTimeout(async () => {
+            const bookingToUpdate = await db.booking.findById(savedBooking._id);
+            if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
+                bookingToUpdate.status = 'cancelled';
+                await bookingToUpdate.save();
+                console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
+            }
+        }, 600000);
         // return res.status(200).json({ savedBooking })
         // //600000 10p    
         const body = {
@@ -47,8 +67,10 @@ const CreatePayment = async (req, res) => {
             bankAccount: paymentLinkRes.accountNumber,
             bankName: "Ngân hàng TMCP Quân đội",
             amount: total_price,
+            amount: total_price,
             accountHolder: paymentLinkRes.accountName
         });
+
 
 
     } catch (error) {
@@ -63,6 +85,18 @@ const Deletepayment = async (req, res) => {
     try {
         const cancelledPaymentLink = await payOS.cancelPaymentLink(1122233);
         return res.status(200).json(cancelledPaymentLink);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+const getBooking = async (req, res) => {
+    try {
+        const id = req.body;
+        const booking = await db.booking.findById(id)
+        return res.status(200).json(booking);
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -145,6 +179,9 @@ const BookingController = {
     Deletepayment,
     receivehook,
     getBooking
+    receivehook,
+    getBooking
 };
+
 
 module.exports = BookingController;
