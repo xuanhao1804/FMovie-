@@ -1,4 +1,3 @@
-const { lte } = require("lodash");
 const db = require("../models");
 
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
@@ -66,6 +65,8 @@ const getAllShowtime = async (req, res) => {
         });
     }
 };
+
 const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime };
+
 
 module.exports = ShowtimeController;
