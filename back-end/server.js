@@ -16,7 +16,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: process.env.FRONT_END_URL,
+        origin: [process.env.FRONT_END_URL, process.env.ADMIN_PORT_URL],
     },
 });
 
