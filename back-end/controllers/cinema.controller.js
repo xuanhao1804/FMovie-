@@ -30,15 +30,15 @@ const getAllCinema = async (req, res) => {
 
 const getCinemaByCity = async (req, res) => {
     const cityId = req.params.id; // lấy id của city từ params
-    console.log('123',cityId);  
+    console.log('123', cityId);
     try {
         // Tìm tất cả các rạp thuộc thành phố với cityId
         const response = await db.cinema.where({ city: cityId })
             .populate('city', 'name') // Lấy tên thành phố khi liên kết
             .exec();
-        console.log('respon',response);
+        console.log('respon', response);
         if (response) {
-            
+
             return res.status(200).json({
                 status: 200,
                 data: response,
@@ -105,6 +105,40 @@ const getShowtimesByCinema = async (req, res) => {
         return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
     }
 };
+const CreateNewCinema = async (req, res) => {
+    const { name, city, address } = req.body;
+    try {
+        const newCinema = new db.cinema({
+            name,
+            city,
+            address
+        });
 
-const CinemaController = {getAllCinema, getCinemaByCity,getMoviesByCinema,getShowtimesByCinema};
+        const savedCinema = await db.cinema.save();
+        return res.status(201).json(savedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
+const EditCinema = async (req, res) => {
+    const { id } = req.params;
+    const { name, city, address } = req.body;
+    try {
+        const updatedCinema = await Cinema.findByIdAndUpdate(
+            id,
+            { name, city, address },
+            { new: true }
+        );
+        return res.status(200).json(updatedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
+
+const CinemaController = {
+    getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema, CreateNewCinema,
+    EditCinema
+};
 module.exports = CinemaController;

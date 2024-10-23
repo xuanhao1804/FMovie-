@@ -1,0 +1,7 @@
+.ant-modal .ant-modal-footer {
+    display: flex;
+}
+
+.ant-modal .ant-modal-close-x {
+    display: flex;
+}

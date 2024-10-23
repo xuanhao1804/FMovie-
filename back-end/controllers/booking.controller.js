@@ -91,7 +91,7 @@ const receivehook = async (req, res) => {
                 code, // Mã trạng thái thanh toán
             }
         } = req.body;
-        const booking = await db.booking.findOne({ orderCode });
+        const booking = await db.booking.findOne({ orderCode: orderCode });
 
         if (booking && booking.status !== "cancelled") {
             if (code === "00") {
