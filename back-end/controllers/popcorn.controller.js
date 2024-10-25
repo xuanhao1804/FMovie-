@@ -1,19 +1,17 @@
 const db = require("../models");
 
-const getRoomByID = async (req, res) => {
+const getAllPopcorn = async (req, res) => {
     try {
-        const room = await db.room.findOne({
-            _id: req.body.roomID
-        }).select("areas")
-        if (room) {
+        const combos = await db.popcorn.find({})
+        if (combos) {
             return res.status(200).json({
                 status: 200,
-                data: room
+                data: combos
             });
         } else {
             return res.status(404).json({
                 status: 404,
-                message: "Phòng không tồn tại"
+                message: "Không có dữ liệu"
             });
         }
     } catch (error) {
@@ -24,7 +22,7 @@ const getRoomByID = async (req, res) => {
     }
 };
 
-const RoomController = {
-    getRoomByID
+const PopcornController = {
+    getAllPopcorn
 };
-module.exports = RoomController;
+module.exports = PopcornController;

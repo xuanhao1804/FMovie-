@@ -35,7 +35,6 @@ const getCinemaByCity = async (req, res) => {
         const response = await db.cinema.where({ city: cityId })
             .populate('city', 'name') // Lấy tên thành phố khi liên kết
             .exec();
-        console.log('respon', response);
         if (response) {
 
             return res.status(200).json({

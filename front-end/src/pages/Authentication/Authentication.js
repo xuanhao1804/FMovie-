@@ -49,8 +49,7 @@ export default function Authentication() {
     }
     try {
       const rs = await dispatch(loginUser(data));
-      if (rs.payload.token) 
-      {
+      if (rs.payload.token) {
         message.success('Login successful!');
         const { password, ...userData } = rs.payload.account;
         dispatch(saveUserData({ account: userData, token: rs.payload.token }));

@@ -5,7 +5,7 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
         let { cityId, movieId } = req.body;
 
         const currentDate = new Date()
-        const dateLimit = new Date(currentDate.getTime() + 2 * 60 * 60 * 1000);
+        const dateLimit = new Date(currentDate.getTime() + 1 * 60 * 60 * 1000);
 
         let cinemas;
         if (cityId) {

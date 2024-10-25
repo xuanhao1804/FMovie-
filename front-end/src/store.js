@@ -2,6 +2,7 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit"
 import UserReducer from "./reducers/UserReducer"
 import MovieReducer from "./reducers/MovieReducer"
 import CityReducer from "./reducers/CityReducer"
+import PopcornReducer from "./reducers/PopcornReducer"
 import storage from 'redux-persist/lib/storage'
 import {
     persistStore,
@@ -12,13 +13,14 @@ import {
     PERSIST,
     PURGE,
     REGISTER,
-  } from 'redux-persist'
-  
-  
+} from 'redux-persist'
+
+
 const rootReducer = combineReducers({
     user: UserReducer,
     movies: MovieReducer,
-    city: CityReducer
+    city: CityReducer,
+    popcorns: PopcornReducer
 })
 
 const persistConfig = {
