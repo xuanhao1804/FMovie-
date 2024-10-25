@@ -14,9 +14,10 @@ import Booking from "./pages/Booking/Booking";
 import { useDispatch } from "react-redux"
 import { useEffect } from "react";
 import { fetchCities } from "./reducers/CityReducer";
+import { fetchMovies } from "./reducers/MovieReducer";
 import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
+import { fetchPopcorns } from "./reducers/PopcornReducer";
 import ManageMovie from "./pages/ManageMovie/ManageMovie";
-
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchCities())
+    dispatch(fetchMovies())
+    dispatch(fetchPopcorns())
   }, [])
 
   return (

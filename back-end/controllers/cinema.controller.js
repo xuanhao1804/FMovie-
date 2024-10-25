@@ -30,18 +30,18 @@ const getAllCinema = async (req, res) => {
 
 const getCinemaByCity = async (req, res) => {
     const cityId = req.params.id; // lấy id của city từ params
-    console.log('123', cityId);
     try {
         // Tìm tất cả các rạp thuộc thành phố với cityId
         const response = await db.cinema.where({ city: cityId })
             .populate('city', 'name') // Lấy tên thành phố khi liên kết
             .exec();
-        console.log('respon', response);
         if (response) {
 
             return res.status(200).json({
                 status: 200,
-                data: response,
+                data: response.map(cinema => {
+                    return cinema.movies
+                }),
             });
         } else {
             return res.status(404).json({
@@ -113,7 +113,6 @@ const CreateNewCinema = async (req, res) => {
             city,
             address
         });
-
         const savedCinema = await db.cinema.save();
         return res.status(201).json(savedCinema);
     } catch (error) {

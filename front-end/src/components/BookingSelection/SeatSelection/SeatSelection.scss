@@ -1,0 +1,53 @@
+.seat-selection {
+
+    &-list {
+        display   : flex;
+        flex-wrap : wrap;
+        text-align: center;
+    }
+
+    &-item {
+        position        : relative;
+        cursor          : pointer;
+        align-items     : center;
+        background-color: #fff;
+        border          : 0.1rem solid #e8e8e8;
+        padding         : 0.5rem 0;
+        border-radius   : 0.25rem;
+        margin-bottom   : 1rem;
+
+        &-selected {
+            position        : relative;
+            cursor          : pointer;
+            align-items     : center;
+            border          : 0.1rem solid #ff6709;
+            background-color: #ff914d;
+            color           : #fff;
+            padding         : 0.5rem 0;
+            border-radius   : 0.25rem;
+            margin-bottom   : 1rem;
+        }
+
+    }
+
+    &-icon {
+        &-vip {
+            position : absolute;
+            font-size: 1.1rem;
+            color    : rgb(255, 183, 1);
+            top      : -0.9rem;
+            left     : 0;
+            right    : 0;
+        }
+    }
+
+    &-area {
+        &-name {
+            padding      : 0.5rem 0 1rem 0;
+            margin-bottom: 0.5rem;
+            font-weight  : 500;
+            border       : 0.1rem solid #ff914d;
+            border-bottom: none;
+        }
+    }
+}
