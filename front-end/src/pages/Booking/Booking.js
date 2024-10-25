@@ -67,7 +67,7 @@ const Booking = () => {
     const handleCreatePayment = async () => {
         const response = await BookingService.createPaymentService({
             total_price: seatsPrice.normalSeats + seatsPrice.vipSeats + popcornsPrice,
-            createdBy: user && user.account && user.account._id,
+            createdBy: user?.user?.account?._id,
             room: selectedShowtime.room._id,
             showtime: selectedShowtime.showtime,
             time: selectedShowtime.time,
@@ -99,8 +99,9 @@ const Booking = () => {
 
     useEffect(() => {
         socket.on("paymentVerify", (data) => {
-            if (data && user && user.account) {
-                if (data._id === user.account._id && data.status === "paid") {
+            console.log(data)
+            if (data) {
+                if (data.createdBy === user?.user?.account?._id && data.status === "paid") {
                     setStep(step => step += 1)
                 }
             }
