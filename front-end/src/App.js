@@ -19,7 +19,7 @@ import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
 import ManageMovie from "./pages/ManageMovie/ManageMovie";
 
 import { fetchPopcorns } from "./reducers/PopcornReducer";
-import ManageMovie from "./pages/ManageMovie/ManageMovie";
+
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
