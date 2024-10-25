@@ -23,7 +23,41 @@ const getAllCity = async (req, res) => {
         });
     }
 };
+const createNewCity = async (req, res) => {
+    const { name } = req.body;
+    if (!name) {
+        return res.status(400).json({
+            status: 400,
+            message: "City name is required",
+        });
+    }
+
+    try {
+        const existingCity = await City.findOne({ name: name });
+        if (existingCity) {
+            return res.status(409).json({
+                status: 409,
+                message: "City already exists",
+            });
+        }
+
+        const newCity = new City({ name });
+        await newCity.save();
+
+        return res.status(201).json({
+            status: 201,
+            message: "City created successfully",
+            data: newCity,
+        });
+    } catch (error) {
+        console.error("Error creating city:", error);
+        return res.status(500).json({
+            status: 500,
+            message: "Internal server error",
+        });
+    }
+};
 
 
-const CityController = { getAllCity };
+const CityController = { getAllCity, createNewCity };
 module.exports = CityController;

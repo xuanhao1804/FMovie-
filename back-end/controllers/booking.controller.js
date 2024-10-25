@@ -10,7 +10,6 @@ const CreatePayment = async (req, res) => {
     try {
         const { total_price, createdBy, showtime, room, seats } = req.body;
         const orderCode = Date.now();
-
         const newBooking = new db.booking({
             total_price,
             status: "pending",

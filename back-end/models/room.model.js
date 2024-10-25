@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const RoomSchema = new Schema({
     name: {
         type: String,
-        required: true,  // Ví dụ: "Phòng chiếu 1"
+        required: true,
     },
     showtimes: [
         {

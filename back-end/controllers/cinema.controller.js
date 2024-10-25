@@ -7,8 +7,8 @@ const Showtime = db.showtime;
 
 const getAllCinema = async (req, res) => {
     try {
-        const response = await db.cinema.find({
-        })
+        const response = await db.cinema.find({}).populate('city', 'name')
+            .exec();
         if (response) {
             return res.status(200).json({
                 status: 200,
@@ -111,10 +111,9 @@ const CreateNewCinema = async (req, res) => {
         const newCinema = new db.cinema({
             name,
             city,
-            address
+            address,
         });
-
-        const savedCinema = await db.cinema.save();
+        const savedCinema = await newCinema.save();
         return res.status(201).json(savedCinema);
     } catch (error) {
         console.error('Error creating new cinema:', error);
@@ -122,23 +121,64 @@ const CreateNewCinema = async (req, res) => {
     }
 };
 const EditCinema = async (req, res) => {
-    const { id } = req.params;
-    const { name, city, address } = req.body;
     try {
-        const updatedCinema = await Cinema.findByIdAndUpdate(
+        const { id } = req.params;
+        const { name, address, city } = req.body;
+
+        const updatedCinema = await db.cinema.findByIdAndUpdate(
             id,
-            { name, city, address },
+            { name, address, city },
             { new: true }
-        );
-        return res.status(200).json(updatedCinema);
+        ).populate('city', 'name');
+
+        if (!updatedCinema) {
+            return res.status(404).json({ message: 'Cinema not found' });
+        }
+
+        res.status(200).json(updatedCinema);
     } catch (error) {
         console.error('Error creating new cinema:', error);
         return res.status(500).json({ message: 'Error creating new cinema', error });
     }
 };
+const GetAllshowtimeCinemaById = async (req, res) => {
+    const { id } = req.params
+    try {
+        const cinemas = await db.cinema.findById(id)
+            .populate({
+                path: 'rooms',
+                select: '-seats',
+                populate: {
+                    path: 'showtimes',
+                }
+            })
+            .select('-movies')
+            .exec();
+
+        return res.status(200).json({ status: 200, data: cinemas });
+    } catch (error) {
+        console.error('Error Get cinema:', error);
+        return res.status(500).json({ message: 'Error Get cinema', error });
+    }
+};
+const deleteCinema = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedCinema = await Cinema.findByIdAndDelete(id);
+
+        if (!deletedCinema) {
+            return res.status(404).json({ message: 'Cinema not found' });
+        }
+
+        res.status(200).json({ message: 'Cinema deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting cinema:', error);
+        res.status(500).json({ message: 'Error deleting cinema' });
+    }
+};
 
 const CinemaController = {
     getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema, CreateNewCinema,
-    EditCinema
+    EditCinema, GetAllshowtimeCinemaById, deleteCinema
 };
 module.exports = CinemaController;
