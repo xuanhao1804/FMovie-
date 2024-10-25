@@ -7,12 +7,12 @@ cinemaRouter.get("/get-all", cinemaController.getAllCinema);
 
 cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
-cinemaRouter.get("/getshowtimebyid/:id", cinemaController.GetAllshowtimeCinemaById);
+cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
 cinemaRouter.get("/get-movies-by-cinema/:cinemaId", cinemaController.getMoviesByCinema);
-cinemaRouter.post("/create", cinemaController.CreateNewCinema);
-cinemaRouter.put('/update/:id', cinemaController.EditCinema);
-cinemaRouter.delete('/delete/:id', cinemaController.deleteCinema);
+
+
+
 cinemaRouter.get('/get-showtimes', cinemaController.getShowtimesByCinema);
 module.exports = cinemaRouter;
 
