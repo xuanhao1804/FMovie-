@@ -17,6 +17,7 @@ import { fetchCities } from "./reducers/CityReducer";
 import { fetchMovies } from "./reducers/MovieReducer";
 import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
 import { fetchPopcorns } from "./reducers/PopcornReducer";
+import ManageMovie from "./pages/ManageMovie/ManageMovie";
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="film/detail/:id" element={<FilmDetail />} />
           <Route path="booking" element={<Booking />} />
           <Route path="/cinemas-movies/:cinemaId" element={<CinemaMovies />} />
+          <Route path="/managemovie" element={<ManageMovie />} />
         </Routes>
         <CustomFooter />
         <ToastContainer

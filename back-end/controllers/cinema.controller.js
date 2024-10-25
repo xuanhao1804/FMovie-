@@ -105,6 +105,39 @@ const getShowtimesByCinema = async (req, res) => {
         return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
     }
 };
+const CreateNewCinema = async (req, res) => {
+    const { name, city, address } = req.body;
+    try {
+        const newCinema = new db.cinema({
+            name,
+            city,
+            address
+        });
+        const savedCinema = await db.cinema.save();
+        return res.status(201).json(savedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
+const EditCinema = async (req, res) => {
+    const { id } = req.params;
+    const { name, city, address } = req.body;
+    try {
+        const updatedCinema = await Cinema.findByIdAndUpdate(
+            id,
+            { name, city, address },
+            { new: true }
+        );
+        return res.status(200).json(updatedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
 
-const CinemaController = { getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema };
+const CinemaController = {
+    getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema, CreateNewCinema,
+    EditCinema
+};
 module.exports = CinemaController;

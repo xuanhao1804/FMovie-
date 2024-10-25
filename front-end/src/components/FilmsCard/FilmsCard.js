@@ -37,6 +37,12 @@ const FilmsCard = ({ _id, image, limit, star, video, setSelectedMovie }) => {
                 open={open}
                 onCancel={() => setOpen(false)}
                 width={1054}
+                okButtonProps={{
+                    style: { display: 'none' }, // Hide OK button
+                }}
+                cancelButtonProps={{
+                    style: { display: 'none' }, // Hide Cancel button
+                }}
             >
                 <iframe width="1004" height="565" src={video} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </Modal>

@@ -148,7 +148,7 @@ const Booking = () => {
                                 </>
                             }
                             {
-                                step === 4 &&
+                                step === 5 &&
                                 <>
                                     <div className="d-flex justify-content-center align-items-center py-5">
                                         <span>Thanh toán thành công</span>
