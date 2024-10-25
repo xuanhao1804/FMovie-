@@ -1,4 +1,5 @@
 const db = require("../models");
+const server = require("../server");
 const PayOS = require("@payos/node");
 const payOS = new PayOS(
     "64da5e12-cf65-405d-918a-7fe87a176ca5",
@@ -8,17 +9,24 @@ const payOS = new PayOS(
 
 const CreatePayment = async (req, res) => {
     try {
-        const { total_price, createdBy, showtime, room, seats } = req.body;
+        const { total_price, createdBy, room, showtime, time, seats, popcorns } = req.body;
         const orderCode = Date.now();
 
         const newBooking = new db.booking({
             total_price,
             status: "pending",
             createdBy,
-            showtime,
             room,
+<<<<<<< HEAD
             orderCode,
             seats
+=======
+            showtime,
+            time,
+            seats,
+            popcorns,
+            orderCode: orderCode,
+>>>>>>> 29d0ce4573609c235aa193fe714ae00a4c4699ba
         });
         const savedBooking = await newBooking.save();
 
@@ -126,10 +134,16 @@ const receiveHook = async (req, res) => {
             },
             { new: true }
         );
+<<<<<<< HEAD
         console.log(updatedBooking);
         console.log('Webhook received:', req.body);
         return res.json();
 
+=======
+        console.log(updatedBooking)
+        server.io.emit("paymentVerify", updatedBooking);
+        return res.status(200).json({});
+>>>>>>> 29d0ce4573609c235aa193fe714ae00a4c4699ba
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -144,5 +158,9 @@ const BookingController = {
     receiveHook,
     getBooking
 };
+<<<<<<< HEAD
 
 module.exports = BookingController;
+=======
+module.exports = BookingController;
+>>>>>>> 29d0ce4573609c235aa193fe714ae00a4c4699ba

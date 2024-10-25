@@ -12,18 +12,22 @@ const RoomSchema = new Schema({
             ref: 'Showtime',
         }
     ],
-    seats: [
+    areas: [
         {
-            row: {
+            name: {
                 type: String
             },
-            column: {
+            col: {
                 type: Number,
-                required: true,
             },
-            isVip: {
-                type: Boolean
-            }
+            seats: [
+                {
+                    position: {
+                        type: Number,
+                        isVip: Boolean
+                    }
+                }
+            ]
         }
     ],
 
