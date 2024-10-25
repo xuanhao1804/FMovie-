@@ -126,7 +126,7 @@ const receiveHook = async (req, res) => {
             },
             { new: true }
         );
-
+        console.log(updatedBooking);
         console.log('Webhook received:', req.body);
         return res.json();
 
