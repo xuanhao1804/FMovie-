@@ -99,7 +99,6 @@ const Booking = () => {
 
     useEffect(() => {
         socket.on("paymentVerify", (data) => {
-            console.log(data)
             if (data) {
                 if (data.createdBy === user?.user?.account?._id && data.status === "paid") {
                     setStep(step => step += 1)
