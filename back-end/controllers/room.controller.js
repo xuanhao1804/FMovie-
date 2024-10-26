@@ -1,5 +1,4 @@
 const db = require("../models");
-
 const getRoomByID = async (req, res) => {
     try {
         const room = await db.room.findOne({
