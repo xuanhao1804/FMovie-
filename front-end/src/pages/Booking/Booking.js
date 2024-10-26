@@ -15,6 +15,7 @@ import PaymentSelection from "../../components/BookingSelection/PaymentSelection
 import { BookingService } from "../../services/BookingService"
 
 import { socket } from "../../App"
+import { Link } from "react-router-dom"
 
 const Booking = () => {
 
@@ -90,6 +91,8 @@ const Booking = () => {
             getMoviesShowtime()
             setSelectedShowtime(null)
             setSelectedSeats([])
+        } else {
+            setMovieShowtime([])
         }
     }, [selectedMovie])
 
@@ -117,7 +120,7 @@ const Booking = () => {
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
                 <span className={step === 3 ? "booking-step-selecting" : step > 3 ? "booking-step-selected" : "booking-step-title"}>Đồ ăn & nước uống</span>
                 <span className={step === 4 ? "booking-step-selecting" : step > 4 ? "booking-step-selected" : "booking-step-title"}>Thanh toán</span>
-                <span className={step === 5 ? "booking-step-selecting" : step > 5 ? "booking-step-selected" : "booking-step-title"}>Xác nhận</span>
+                <span className={step === 5 ? "booking-step-selected" : "booking-step-title"}>Xác nhận</span>
             </div>
             <div className="booking-content content-width-padding content-height-padding">
                 <Row>
@@ -150,9 +153,22 @@ const Booking = () => {
                             {
                                 step === 5 &&
                                 <>
-                                    <div className="d-flex justify-content-center align-items-center py-5">
-                                        <span>Thanh toán thành công</span>
-                                        <span>Cảm ơn bạn đã lựa chọn Fmovie</span>
+                                    <div className="bg-white d-flex flex-column gap-5 py-5">
+                                        <div className="d-flex justify-content-center align-items-center"><i style={{ fontSize: "4rem", color: "#00cf1c" }} className=" fa-solid fa-circle-check"></i></div>
+                                        <div className="d-flex flex-column align-items-center">
+                                            <span className="fs-5">Thanh toán thành công</span>
+                                            <span className="fs-6">Cảm ơn quý khách đã lựa chọn Fmovie</span>
+                                        </div>
+                                        <div className="d-flex justify-content-center gap-3">
+                                            <Link to={"/"} className="btn btn-outline-primary">
+                                                <i class="fa-solid fa-house"></i> Trang chủ
+                                            </Link>
+                                            <button onClick={() => {
+                                                setSelectedMovie("")
+                                                setSelectedPopcorns([])
+                                                setStep(1)
+                                            }} className="btn btn-outline-warning"><i class="fa-solid fa-film"></i> Chọn phim khác</button>
+                                        </div>
                                     </div>
                                 </>
                             }
@@ -260,35 +276,37 @@ const Booking = () => {
                                 <NumericFormat value={seatsPrice.normalSeats + seatsPrice.vipSeats + popcornsPrice} decimalSeparator="," thousandSeparator="." displayType="text" className="fw-semibold text-orange" suffix=" đ" />
                             </div>
                         </div>
-                        <div className="booking-step-action mt-4">
-                            <button onClick={() => {
-                                if (step > 1) {
-                                    setStep(step => step - 1)
-                                }
-                            }} className={step === 1 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
-                                Quay lại
-                            </button>
-                            <button onClick={() => {
-                                switch (step) {
-                                    case 1:
-                                        if (selectedCity && selectedDate && selectedMovie && selectedShowtime) {
-                                            setStep(step => step + 1)
-                                        }
-                                        break;
-                                    case 2:
-                                    case 3:
-                                        if (selectedSeats.length > 0) {
-                                            setStep(step => step + 1)
-                                        }
-                                        break;
-                                    default:
-                                        break;
-                                }
+                        {step !== 5 &&
+                            <div className="booking-step-action mt-4">
+                                <button onClick={() => {
+                                    if (step > 1) {
+                                        setStep(step => step - 1)
+                                    }
+                                }} className={step === 1 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
+                                    Quay lại
+                                </button>
+                                <button onClick={() => {
+                                    switch (step) {
+                                        case 1:
+                                            if (selectedCity && selectedDate && selectedMovie && selectedShowtime) {
+                                                setStep(step => step + 1)
+                                            }
+                                            break;
+                                        case 2:
+                                        case 3:
+                                            if (selectedSeats.length > 0) {
+                                                setStep(step => step + 1)
+                                            }
+                                            break;
+                                        default:
+                                            break;
+                                    }
 
-                            }} className={step === 4 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
-                                Tiếp tục
-                            </button>
-                        </div>
+                                }} className={step === 4 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
+                                    Tiếp tục
+                                </button>
+                            </div>
+                        }
                     </Col>
                 </Row>
             </div>
