@@ -51,15 +51,15 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const ManageMovie = React.lazy(() => import('./views/ManageMovie/ManageMovie'))
 const ManageCinema = React.lazy(() => import('./views/ManageCinema/ManageCinema'))
-
 const ManageShowtime = React.lazy(() => import('./views/ManageShowtime/ManageShowtime'))
+const ManagePopCorn = React.lazy(() => import('./views/ManagePopCorn/ManagePopCorn'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/cinema', name: 'Cinema', element: ManageCinema, exact: true },
   { path: '/film', name: 'Film', element: ManageMovie, exact: true },
   { path: '/showtime/:id', name: 'Showtime', element: ManageShowtime, exact: true },
-
+  { path: '/popcorn', name: 'PopCorn', element: ManagePopCorn, exact: true },
 
 ]
 

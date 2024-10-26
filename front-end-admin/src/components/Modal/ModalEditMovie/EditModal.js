@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Form, Input, Select, Button, message, List } from 'antd';
+import { Modal, Form, Input, Select, Button, message, List, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const { Option } = Select;
@@ -10,6 +11,8 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
     const [newActor, setNewActor] = useState('');
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [newGenre, setNewGenre] = useState('');
+    const [imageUrl, setImageUrl] = useState(null);
+
 
     useEffect(() => {
         if (movie) {
@@ -21,30 +24,55 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 country: movie.country,
                 studio: movie.studio,
                 status: movie.status,
-                limit: movie.limit, // Set limit value
-                description: movie.description, // Set description value
-                genres: movie.genres,
+                limit: movie.limit,
+                image: movie.image ? [{ url: movie.image }] : [],
+                description: movie.description,
             });
-            setActors(movie.actors || []); // Initialize actors if available
-            setSelectedGenres(movie.genres || []); // Initialize genres if available
+            setActors(movie.actors || []);
+            setSelectedGenres(movie.genres || []);
+            setImageUrl(movie.image);
         }
     }, [movie, form]);
 
-    const handleFinish = async (values) => {
-        const updatedMovie = {
-            ...values,
-            actors,
-            genres: selectedGenres
-        }; // Add actors and selected genres to the submitted values
+    const handleImageChange = ({ fileList }) => {
+        form.setFieldsValue({ image: fileList });
+        if (fileList.length > 0 && fileList[0].originFileObj) {
+            const url = URL.createObjectURL(fileList[0].originFileObj);
+            setImageUrl(url);
+        } else {
+            setImageUrl(null);
+        }
+    };
 
+    const handleFinish = async (values) => {
+        const updatedMovie = { ...values };
+
+        const formData = new FormData();
+        for (const key in updatedMovie) {
+            formData.append(key, updatedMovie[key]);
+        }
+
+        selectedGenres.forEach((genre) => {
+            formData.append('genres[]', genre);
+        });
+
+        actors.forEach((actor) => {
+            formData.append('actors[]', actor);
+        });
+        if (values.image && values.image.length > 0 && values.image[0].originFileObj) {
+            formData.append('image', values.image[0].originFileObj); // Thêm file vào formData
+        }
         try {
-            // Call your API to update the movie
-            const response = await axios.put(`http://localhost:9999/movie/update/${movie._id}`, updatedMovie);
-            if (response.status === 200) {
-                message.success('Movie updated successfully!');
-                onOk(); // Close the modal after successful update
-                fetchData();
-            }
+            await axios.put(`http://localhost:9999/movie/update/${movie._id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            message.success('Movie updated successfully!');
+            form.resetFields();
+            setImageUrl(null);
+            onOk();
+            fetchData();
         } catch (error) {
             message.error('Failed to update movie. Please try again.');
         }
@@ -52,31 +80,31 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
 
     const addActor = () => {
         if (newActor) {
-            setActors([...actors, newActor]); // Add the new actor to the list
-            setNewActor(''); // Reset the new actor input field
+            setActors([...actors, newActor]);
+            setNewActor('');
         } else {
-            message.warning('Please enter an actor name!'); // Warning if the input is empty
+            message.warning('Please enter an actor name!');
         }
     };
 
     const removeActor = (index) => {
-        const updatedActors = actors.filter((_, i) => i !== index); // Remove actor by index
+        const updatedActors = actors.filter((_, i) => i !== index);
         setActors(updatedActors);
     };
 
     const addGenre = () => {
         if (newGenre && !selectedGenres.includes(newGenre)) {
-            setSelectedGenres([...selectedGenres, newGenre]); // Add the new genre to the list
-            setNewGenre(''); // Reset the new genre input field
+            setSelectedGenres([...selectedGenres, newGenre]);
+            setNewGenre('');
         } else if (selectedGenres.includes(newGenre)) {
-            message.warning('This genre is already added!'); // Warning if genre already exists
+            message.warning('This genre is already added!');
         } else {
-            message.warning('Please enter a genre!'); // Warning if the input is empty
+            message.warning('Please enter a genre!');
         }
     };
 
     const removeGenre = (index) => {
-        const updatedGenres = selectedGenres.filter((_, i) => i !== index); // Remove genre by index
+        const updatedGenres = selectedGenres.filter((_, i) => i !== index);
         setSelectedGenres(updatedGenres);
     };
 
@@ -124,13 +152,31 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                     <Input.TextArea rows={4} />
                 </Form.Item>
 
+                <Form.Item label="Upload Image"
+                    getValueFromEvent={(e) => e && e.fileList}
+                    valuePropName="fileList"
+                    name="image">
+                    <Upload
+                        listType="picture"
+                        beforeUpload={() => false} // Prevent auto-upload
+                        onChange={handleImageChange}
+                    >
+                        <Button icon={<UploadOutlined />}>Upload New Image</Button>
+                    </Upload>
+                    {imageUrl && (
+                        <div style={{ marginTop: 10 }}>
+                            <img src={imageUrl} alt="uploaded" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
+                        </div>
+                    )}
+                </Form.Item>
+
                 {/* Genres Selection */}
                 <Form.Item label="Select Genres">
                     <Select
                         mode="multiple"
                         placeholder="Select existing genres"
                         value={selectedGenres}
-                        onChange={setSelectedGenres} // Update selected genres
+                        onChange={setSelectedGenres}
                         style={{ width: '100%', marginBottom: 8 }}
                     >
                         {existingGenres.map((genre) => (
@@ -144,7 +190,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                     <Input
                         value={newGenre}
                         placeholder="Add a new genre"
-                        onChange={(e) => setNewGenre(e.target.value)} // Update new genre input
+                        onChange={(e) => setNewGenre(e.target.value)}
                         style={{ marginBottom: 8 }}
                     />
                     <Button type="dashed" onClick={addGenre} style={{ width: '100%', marginBottom: 8 }}>
@@ -168,7 +214,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                     <Input
                         value={newActor}
                         placeholder="Add a new actor"
-                        onChange={(e) => setNewActor(e.target.value)} // Update new actor input
+                        onChange={(e) => setNewActor(e.target.value)}
                         style={{ marginBottom: 8 }}
                     />
                     <Button type="dashed" onClick={addActor} style={{ width: '100%', marginBottom: 8 }}>
@@ -188,8 +234,8 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">
-                        Save Changes
+                    <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                        Update Movie
                     </Button>
                 </Form.Item>
             </Form>
