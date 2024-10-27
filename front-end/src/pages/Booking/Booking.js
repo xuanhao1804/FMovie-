@@ -15,9 +15,11 @@ import PaymentSelection from "../../components/BookingSelection/PaymentSelection
 import { BookingService } from "../../services/BookingService"
 
 import { socket } from "../../App"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 const Booking = () => {
+
+    const location = useLocation()
 
     const { popcorns, user } = useSelector((state) => state)
 
@@ -32,6 +34,8 @@ const Booking = () => {
     const [paymentInformation, setPaymentInformation] = useState(null)
 
     const [step, setStep] = useState(1)
+
+    const [isGetFromDetail, setIsGetFromDetail] = useState(false)
 
     const movieSelectionRef = useRef(null)
     const showtimeSelectionRef = useRef(null)
@@ -61,7 +65,11 @@ const Booking = () => {
                 )
             ))]
             setMovieShowtime(response.data)
-            setSelectedDate(dates.sort((a, b) => new Date(a) - new Date(b))[0])
+            if (isGetFromDetail === true) {
+                setSelectedDate(location.state.selectedDate)
+            } else {
+                setSelectedDate(dates.sort((a, b) => new Date(a) - new Date(b))[0])
+            }
         }
     }
 
@@ -79,20 +87,27 @@ const Booking = () => {
     }
 
     useEffect(() => {
-        if (selectedCity && selectedCity._id) {
+        if (selectedCity && selectedCity._id && isGetFromDetail === false) {
             setSelectedMovie("")
             setSelectedShowtime(null)
-            setSelectedSeats([])
         }
     }, [selectedCity])
 
     useEffect(() => {
         if (selectedMovie) {
             getMoviesShowtime()
-            setSelectedShowtime(null)
-            setSelectedSeats([])
+            if (isGetFromDetail === false) {
+                setSelectedShowtime(null)
+            } else {
+                setIsGetFromDetail(false)
+            }
+            if (selectedSeats.length > 0) {
+                setSelectedSeats([])
+            }
         } else {
-            setMovieShowtime([])
+            if (movieShowtime.length > 0) {
+                setMovieShowtime([])
+            }
         }
     }, [selectedMovie])
 
@@ -113,8 +128,24 @@ const Booking = () => {
         };
     }, [socket])
 
+    useEffect(() => {
+        if (location && location.state) {
+            setIsGetFromDetail(true)
+            if (location.state.selectedCity) {
+                setSelectedCity(location.state.selectedCity)
+            }
+            if (location.state.selectedMovie) {
+                setSelectedMovie(location.state.selectedMovie)
+            }
+            if (location.state.selectedShowtime) {
+                setSelectedShowtime(location.state.selectedShowtime)
+            }
+        }
+    }, [location.state])
+
     return (
         <div className="booking">
+            {console.log("render: ", selectedCity, selectedMovie, selectedShowtime)}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>

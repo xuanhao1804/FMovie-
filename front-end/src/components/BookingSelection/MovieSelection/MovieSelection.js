@@ -23,7 +23,6 @@ const MovieSelection = ({ selectedCity, selectedMovie, setSelectedMovie, movieSe
     useEffect(() => {
         if (selectedCity && selectedCity._id) {
             getMoviesInCity()
-            setSelectedMovie("")
         }
     }, [selectedCity])
 
