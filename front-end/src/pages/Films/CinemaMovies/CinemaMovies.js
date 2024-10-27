@@ -13,10 +13,8 @@ const CinemaMovies = () => {
     const { cinemaId } = useParams();
     const [showtimes, setShowtimes] = useState([]);
     const [filteredShowtimes, setFilteredShowtimes] = useState([]); // Lưu các suất chiếu đã lọc
-    const [selectedDate, setSelectedDate] = useState(
-        moment().format("YYYY-MM-DD")
-    );
-    const [selectedTime, setSelectedTime] = useState(null); // Trạng thái lưu suất chiếu được chọn
+    const [selectedDate, setSelectedDate] = useState(moment().format("YYYY-MM-DD"));
+    const [selectedTime, setSelectedTime] = useState(null); // Thêm state cho selectedTime
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -35,9 +33,7 @@ const CinemaMovies = () => {
         const fetchShowtimes = async () => {
             try {
                 // Gọi API lấy suất chiếu
-                const response = await axios.get(
-                    `http://localhost:9999/cinema/movies/${cinemaId}`
-                );
+                const response = await axios.get(`http://localhost:9999/cinema/movies/${cinemaId}`);
                 console.log("Response from API:", response.data); // Log dữ liệu trả về từ API
 
                 if (response.data.status === 200) {
@@ -68,18 +64,30 @@ const CinemaMovies = () => {
         const filtered = allShowtimes.filter(
             (showtime) => moment(showtime.startAt.date).format("YYYY-MM-DD") === date
         );
-        setFilteredShowtimes(filtered);
+        setFilteredShowtimes(groupShowtimesByMovie(filtered)); // Nhóm các suất chiếu theo phim
         console.log("Filtered showtimes:", filtered);
+    };
+
+    // Hàm nhóm suất chiếu theo phim
+    const groupShowtimesByMovie = (showtimes) => {
+        const movieMap = {};
+        showtimes.forEach((showtime) => {
+            const movieId = showtime.movie._id;
+            if (!movieMap[movieId]) {
+                movieMap[movieId] = {
+                    movie: showtime.movie,
+                    times: [],
+                };
+            }
+            movieMap[movieId].times.push(showtime.startAt.times);
+        });
+
+        return Object.values(movieMap);
     };
 
     // Xử lý chọn ngày
     const handleDateSelect = (date) => {
         setSelectedDate(date);
-    };
-
-    // Xử lý khi nhấn vào suất chiếu
-    const handleShowtimeClick = (time) => {
-        setSelectedTime(time); // Lưu lại suất chiếu đã chọn
     };
 
     const formatDay = (date) => {
@@ -99,7 +107,6 @@ const CinemaMovies = () => {
     return (
         <div className="container" style={{ padding: "0 20px", marginTop: "20px" }}>
             {/* Bộ lọc ngày (luôn hiện) */}
-
             <div
                 className="date-filter-wrapper"
                 style={{
@@ -150,14 +157,11 @@ const CinemaMovies = () => {
             {/* Hiển thị showtimes */}
             {filteredShowtimes.length > 0 ? (
                 <Row gutter={[16, 16]}>
-                    {filteredShowtimes.map((showtime) => {
-                        const movie = showtime.movie; // Lấy thông tin phim
+                    {filteredShowtimes.map((group) => {
+                        const { movie, times } = group;
 
                         return (
-                            <Row
-                                key={showtime._id}
-                                style={{ marginBottom: "20px", width: "100%" }}
-                            >
+                            <Row key={movie._id} style={{ marginBottom: "20px", width: "100%" }}>
                                 <Col span={6}>
                                     {/* FilmCard không còn nút "Đặt Vé" */}
                                     <FilmsCard2
@@ -179,32 +183,20 @@ const CinemaMovies = () => {
                                 >
                                     <div>
                                         <h3>{movie.name}</h3>
-                                        <p style={{ fontWeight: "bold" }}>Suất chiếu:</p>{" "}
-                                        {/* In đậm chữ "Suất chiếu" */}
-                                        {/* Render các giờ chiếu dưới dạng button */}
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                gap: "10px",
-                                                marginTop: "10px",
-                                            }}
-                                        >
-                                            {showtime.startAt.times.map((time, index) => (
+                                        <p style={{ fontWeight: "bold" }}>Suất chiếu:</p>
+                                        {/* Hiển thị tất cả các giờ chiếu của phim */}
+                                        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+                                            {times.flat().map((time, index) => (
                                                 <Button
                                                     key={index}
+                                                    onClick={() => setSelectedTime(time)}
                                                     type={selectedTime === time ? "primary" : "default"}
-                                                    onClick={() => handleShowtimeClick(time)}
-                                                    style={{
-                                                        backgroundColor:
-                                                            selectedTime === time ? "#0056b3" : "transparent",
-                                                        color: selectedTime === time ? "white" : "#555",
-                                                    }}
                                                 >
                                                     {time}
                                                 </Button>
                                             ))}
                                         </div>
-                                        {/* Nút "Đặt Vé" bên dưới suất chiếu */}
+                                        {/* Nút "Đặt Vé" */}
                                         <Button type="primary" style={{ marginTop: "15px" }}>
                                             Đặt Vé
                                         </Button>
