@@ -151,7 +151,7 @@ const getBookedSeats = async (req, res) => {
         }).select("room showtime time status seats");
         return res.status(200).json({
             status: 200,
-            data: bookings
+            data: bookings.flatMap(item => item.seats)
         });
     } catch (error) {
         console.error(error);
