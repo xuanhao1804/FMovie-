@@ -11,6 +11,7 @@ import { logout } from "../../reducers/UserReducer";
 
 const Header = () => {
     const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim
+    const [selectedCinema, setSelectedCinema] = useState("Rạp chiếu phim"); // Dùng để lưu tên rạp đã chọn
     const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
@@ -28,9 +29,13 @@ const Header = () => {
                     const cinemaData = response.data.data.map((cinema) => ({
                         key: cinema._id, // Dùng _id của cinema làm key
                         label: (
-                            <Link to={`/cinemas-movies/${cinema._id}`}>
-                                {cinema.name}
-                            </Link>
+                            <div
+                                onClick={() => setSelectedCinema(cinema.name)} // Cập nhật tên rạp khi chọn
+                            >
+                                <Link to={`/cinemas-movies/${cinema._id}`}>
+                                    {cinema.name}
+                                </Link>
+                            </div>
                         )
                     }));
                     setCinemas(cinemaData);
@@ -69,9 +74,9 @@ const Header = () => {
                     </Dropdown>
                     {/* Dropdown các rạp chiếu phim */}
                     <Dropdown className="dropdown-cinemas" menu={{ items: cinemas }} trigger={['hover']}>
-                        <Link to={"/cinemas"}>
-                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
-                        </Link>
+                        <span>
+                            {selectedCinema} <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
+                        </span>
                     </Dropdown>
                 </div>
                 {/* Đăng nhập và đăng ký */}

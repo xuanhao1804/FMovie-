@@ -1,18 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Row, Col, Button } from 'antd';
-import axios from 'axios';
-import './CinemaMovies.scss';
-import moment from 'moment';
-import 'moment/locale/vi';
-import FilmsCard2 from '../../../components/FilmsCard/FilmCard2';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Row, Col, Button } from "antd";
+import axios from "axios";
+import "./CinemaMovies.scss";
+import moment from "moment";
+import "moment/locale/vi";
+import FilmsCard2 from "../../../components/FilmsCard/FilmCard2";
 
-moment.locale('vi');
+moment.locale("vi");
 
 const CinemaMovies = () => {
     const { cinemaId } = useParams();
     const [showtimes, setShowtimes] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
+    const [filteredShowtimes, setFilteredShowtimes] = useState([]); // Lưu các suất chiếu đã lọc
+    const [selectedDate, setSelectedDate] = useState(
+        moment().format("YYYY-MM-DD")
+    );
     const [selectedTime, setSelectedTime] = useState(null); // Trạng thái lưu suất chiếu được chọn
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,7 +24,7 @@ const CinemaMovies = () => {
     const generateDates = () => {
         const dates = [];
         for (let i = 0; i < 4; i++) {
-            dates.push(moment().add(i, 'days').format('YYYY-MM-DD'));
+            dates.push(moment().add(i, "days").format("YYYY-MM-DD"));
         }
         return dates;
     };
@@ -31,30 +34,43 @@ const CinemaMovies = () => {
     useEffect(() => {
         const fetchShowtimes = async () => {
             try {
-                const response = await axios.get(`http://localhost:9999/cinema/get-showtimes`, {
-                    params: {
-                        cinemaId,
-                        date: selectedDate
-                    }
-                });
+                // Gọi API lấy suất chiếu
+                const response = await axios.get(
+                    `http://localhost:9999/cinema/movies/${cinemaId}`
+                );
+                console.log("Response from API:", response.data); // Log dữ liệu trả về từ API
 
                 if (response.data.status === 200) {
-                    setShowtimes(response.data.data);
+                    // Cập nhật suất chiếu vào state
+                    setShowtimes(response.data.data.showtimes);
+                    filterShowtimesByDate(response.data.data.showtimes, selectedDate); // Lọc theo ngày đã chọn
                 } else {
-                    setError('Không thể tải danh sách suất chiếu');
+                    setError("Không thể tải danh sách suất chiếu");
+                    console.log("Error message:", response.data.message); // Log lỗi nếu có
                 }
             } catch (error) {
-
-                setError('Tạm Thời chưa có suất chiếu');
-
-                console.error(error);
+                setError("Tạm thời chưa có suất chiếu");
+                console.error("Error fetching showtimes:", error); // Log lỗi kết nối API
             } finally {
                 setLoading(false);
             }
         };
 
         fetchShowtimes();
-    }, [cinemaId, selectedDate]);
+    }, [cinemaId]);
+
+    useEffect(() => {
+        filterShowtimesByDate(showtimes, selectedDate); // Lọc suất chiếu mỗi khi ngày thay đổi
+    }, [selectedDate, showtimes]);
+
+    // Hàm lọc suất chiếu theo ngày
+    const filterShowtimesByDate = (allShowtimes, date) => {
+        const filtered = allShowtimes.filter(
+            (showtime) => moment(showtime.startAt.date).format("YYYY-MM-DD") === date
+        );
+        setFilteredShowtimes(filtered);
+        console.log("Filtered showtimes:", filtered);
+    };
 
     // Xử lý chọn ngày
     const handleDateSelect = (date) => {
@@ -67,7 +83,9 @@ const CinemaMovies = () => {
     };
 
     const formatDay = (date) => {
-        return moment(date).isSame(moment(), 'day') ? 'Hôm Nay' : moment(date).format('dddd');
+        return moment(date).isSame(moment(), "day")
+            ? "Hôm Nay"
+            : moment(date).format("dddd");
     };
 
     if (loading) {
@@ -79,53 +97,67 @@ const CinemaMovies = () => {
     }
 
     return (
-
-        <div className="container" style={{ padding: '0 20px', marginTop: '20px' }}>
+        <div className="container" style={{ padding: "0 20px", marginTop: "20px" }}>
             {/* Bộ lọc ngày (luôn hiện) */}
 
-            <div className="date-filter-wrapper" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <div className="date-filter" style={{ display: 'flex', gap: '20px' }}>
+            <div
+                className="date-filter-wrapper"
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginBottom: "20px",
+                }}
+            >
+                <div className="date-filter" style={{ display: "flex", gap: "20px" }}>
                     {availableDates.map((date) => (
                         <div
                             key={date}
-                            className={`date-item ${selectedDate === date ? 'active' : ''}`}
+                            className={`date-item ${selectedDate === date ? "active" : ""}`}
                             onClick={() => handleDateSelect(date)}
                             style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                padding: '10px',
-                                cursor: 'pointer',
-                                borderRadius: '8px',
-                                backgroundColor: selectedDate === date ? '#0056b3' : 'transparent',
-                                color: selectedDate === date ? 'white' : '#555',
-                                width: '80px',
-                                height: '80px',
-                                textAlign: 'center'
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                padding: "10px",
+                                cursor: "pointer",
+                                borderRadius: "8px",
+                                backgroundColor:
+                                    selectedDate === date ? "#0056b3" : "transparent",
+                                color: selectedDate === date ? "white" : "#555",
+                                width: "80px",
+                                height: "80px",
+                                textAlign: "center",
                             }}
                         >
-                            <span style={{ fontWeight: selectedDate === date ? 'bold' : 'normal' }}>
+                            <span
+                                style={{
+                                    fontWeight: selectedDate === date ? "bold" : "normal",
+                                }}
+                            >
                                 {formatDay(date)}
                             </span>
-                            <span>{moment(date).format('DD/MM')}</span>
+                            <span>{moment(date).format("DD/MM")}</span>
                         </div>
                     ))}
                 </div>
             </div>
 
-    
             {/* Đường ngăn cách màu xanh */}
-            <div style={{ borderBottom: '2px solid #0056b3', marginBottom: '20px' }}></div>
-    
+            <div
+                style={{ borderBottom: "2px solid #0056b3", marginBottom: "20px" }}
+            ></div>
+
             {/* Hiển thị showtimes */}
-            {showtimes.length > 0 ? (
+            {filteredShowtimes.length > 0 ? (
                 <Row gutter={[16, 16]}>
-                    {showtimes.map((showtime) => {
+                    {filteredShowtimes.map((showtime) => {
                         const movie = showtime.movie; // Lấy thông tin phim
-    
 
                         return (
-                            <Row key={showtime._id} style={{ marginBottom: '20px', width: '100%' }}>
+                            <Row
+                                key={showtime._id}
+                                style={{ marginBottom: "20px", width: "100%" }}
+                            >
                                 <Col span={6}>
                                     {/* FilmCard không còn nút "Đặt Vé" */}
                                     <FilmsCard2
@@ -136,20 +168,36 @@ const CinemaMovies = () => {
                                         video={movie.video}
                                     />
                                 </Col>
-                                <Col span={18} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <Col
+                                    span={18}
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        paddingLeft: "20px",
+                                    }}
+                                >
                                     <div>
                                         <h3>{movie.name}</h3>
-                                        <p style={{ fontWeight: 'bold' }}>Suất chiếu:</p> {/* In đậm chữ "Suất chiếu" */}
+                                        <p style={{ fontWeight: "bold" }}>Suất chiếu:</p>{" "}
+                                        {/* In đậm chữ "Suất chiếu" */}
                                         {/* Render các giờ chiếu dưới dạng button */}
-                                        <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                gap: "10px",
+                                                marginTop: "10px",
+                                            }}
+                                        >
                                             {showtime.startAt.times.map((time, index) => (
                                                 <Button
                                                     key={index}
                                                     type={selectedTime === time ? "primary" : "default"}
                                                     onClick={() => handleShowtimeClick(time)}
                                                     style={{
-                                                        backgroundColor: selectedTime === time ? '#0056b3' : 'transparent',
-                                                        color: selectedTime === time ? 'white' : '#555',
+                                                        backgroundColor:
+                                                            selectedTime === time ? "#0056b3" : "transparent",
+                                                        color: selectedTime === time ? "white" : "#555",
                                                     }}
                                                 >
                                                     {time}
@@ -157,17 +205,13 @@ const CinemaMovies = () => {
                                             ))}
                                         </div>
                                         {/* Nút "Đặt Vé" bên dưới suất chiếu */}
-                                        <Button
-                                            type="primary"
-                                            style={{ marginTop: '15px' }}
-                                        >
+                                        <Button type="primary" style={{ marginTop: "15px" }}>
                                             Đặt Vé
                                         </Button>
                                     </div>
                                 </Col>
                             </Row>
                         );
-
                     })}
                 </Row>
             ) : (
@@ -175,8 +219,6 @@ const CinemaMovies = () => {
             )}
         </div>
     );
-    
-
 };
 
 export default CinemaMovies;

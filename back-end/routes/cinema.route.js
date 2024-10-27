@@ -14,5 +14,7 @@ cinemaRouter.get("/get-movies-by-cinema/:cinemaId", cinemaController.getMoviesBy
 
 
 cinemaRouter.get('/get-showtimes', cinemaController.getShowtimesByCinema);
+
+cinemaRouter.get('/movies/:cinemaId', cinemaController.getMoviesAndShowtimesByCinema);
 module.exports = cinemaRouter;
 
