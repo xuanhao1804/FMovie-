@@ -67,7 +67,6 @@ const getAllShowtime = async (req, res) => {
 const getShowtimebyCinemaAdmin = async (req, res) => {
     try {
         const { id } = req.params;
-        const { movieId } = req.body;
         const showtime = await db.cinema.findById(id)
             .populate({
                 path: 'rooms',
@@ -86,9 +85,62 @@ const getShowtimebyCinemaAdmin = async (req, res) => {
         });
     }
 };
+const CreateNewShowtime = async (req, res) => {
+    const { movieId, date, time, long, roomId } = req.body;
+    try {
+        const durationMovies = await db.movie.findById(movieId);
+        const startOfDay = new Date(`${date}T00:00:00Z`);
+        const endOfDay = new Date(`${date}T23:59:59.999Z`);
+        const existingRoom = await db.room.findById(roomId)
+            .populate({
+                path: 'showtimes',
+                match: {
+                    'startAt.date': {
+                        $gte: startOfDay,
+                        $lte: endOfDay,
+                    },
+                }
+            })
+            .exec();
 
+        const existingShowtimes = existingRoom.showtimes || [];
 
-const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime, getShowtimebyCinemaAdmin };
+        const newShowtimeTime = new Date(`${date}T${time}:00Z`).getTime();
+
+        // Check for overlapping showtimes
+        for (const showtime of existingShowtimes) {
+            const existingShowtimeStart = new Date(`${date}T${showtime.startAt.time}:00Z`).getTime();
+            const existingShowtimeEnd = existingShowtimeStart + durationMovies.duration * 60000;
+            const newShowtimeEnd = newShowtimeTime + long * 60000;
+            // Check for overlap
+            if (
+                (newShowtimeTime < existingShowtimeEnd && newShowtimeTime >= existingShowtimeStart) || // New starts during existing
+                (newShowtimeEnd > existingShowtimeStart && newShowtimeEnd <= existingShowtimeEnd) || // New ends during existing
+                (newShowtimeTime <= existingShowtimeStart && newShowtimeEnd >= existingShowtimeEnd) // New encompasses existing
+            ) {
+                return res.status(400).json({
+                    message: 'Bị trùng lặp thời gian chiếu phim.',
+                });
+            }
+        }
+        const newShowtime = new db.showtime({
+            movie: movieId,
+            startAt: { date, time },
+            room: roomId,
+        });
+        const savedShowtime = await newShowtime.save();
+        await db.room.findByIdAndUpdate(roomId, { $push: { showtimes: savedShowtime._id } }, { new: true });
+        return res.status(201).json({
+            message: 'Showtime created successfully',
+            showtime: existingRoom.showtimes,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Lỗi hệ thống Back-end" });
+    }
+};
+
+const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime, getShowtimebyCinemaAdmin, CreateNewShowtime };
 
 
 module.exports = ShowtimeController;

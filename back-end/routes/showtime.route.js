@@ -10,6 +10,6 @@ showtimeRouter.post("/get-all-showtime", ShowtimeController.getShowtimebyDateand
 
 showtimeRouter.get("/get-all", ShowtimeController.getAllShowtime);
 showtimeRouter.get("/get-all-showtime-cinema/:id", ShowtimeController.getShowtimebyCinemaAdmin);
-
+showtimeRouter.post("/create", ShowtimeController.CreateNewShowtime);
 module.exports = showtimeRouter;
 
