@@ -11,7 +11,7 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
             cinemas = await db.cinema.find({ city: cityId })
                 .populate({
                     path: 'rooms',
-                    select: '-seats',
+                    select: '-areas',
                     populate: {
                         path: 'showtimes',
                         match: {

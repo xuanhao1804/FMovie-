@@ -147,11 +147,47 @@ const Deletemovie = async (req, res) => {
     }
 };
 
+const getMovieByCityID = async (req, res) => {
+    try {
+        const { city } = req.body;
+        const currentDate = new Date()
+        const dateLimit = new Date(currentDate.getTime() + 1 * 60 * 60 * 1000);
+
+        const cinemas = await db.cinema.find({
+            city: city
+        }).select("rooms")
+            .populate({
+                path: 'rooms',
+                select: 'showtimes',
+                populate: {
+                    path: 'showtimes',
+                    match: {
+                        "startAt.date": { $gt: dateLimit }
+                    }
+                }
+            })
+        const uniqueMovies = Array.from(new Set(cinemas.flatMap(cinema =>
+            cinema.rooms.flatMap(room =>
+                room.showtimes.map(showtime => showtime.movie.toString())
+            )
+        )));
+        return res.status(200).json({
+            status: 200,
+            data: uniqueMovies
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
 
 module.exports = {
     getAllMovie,
     getMovieByID,
     CreatnewMovie,
     Editmovie,
-    Deletemovie
+    Deletemovie,
+    getMovieByCityID
 };

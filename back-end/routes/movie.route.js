@@ -12,6 +12,7 @@ movieRouter.post("/create", uploadCloud.single('image'), MovieController.Creatne
 movieRouter.put("/update/:id", uploadCloud.single('image'), MovieController.Editmovie);
 movieRouter.get("/detail/:id", MovieController.getMovieByID)
 movieRouter.delete("/delete/:id", MovieController.Deletemovie)
+movieRouter.post("/get-by-city", MovieController.getMovieByCityID);
 
 
 

@@ -8,7 +8,7 @@ const CitySelection = ({ selectedCity, setSelectedCity, movieSelectionRef }) => 
         <div className="city-selection selection-section">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <span className="fs-5 fw-semibold">
-                    Chọn vị trí{selectedCity && " - " + selectedCity.name}
+                    Chọn vị trí
                 </span>
                 {/* <span style={{ aspectRatio: "1" }}>
                     <i className="bg-primary text-white p-1 rounded-circle fa-solid fa-plus"></i>

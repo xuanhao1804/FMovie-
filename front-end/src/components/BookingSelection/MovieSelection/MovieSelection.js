@@ -2,7 +2,7 @@ import { useSelector } from "react-redux"
 import "./MovieSelection.scss"
 import { Col, Row } from "antd"
 import FilmsCard from "../../FilmsCard/FilmsCard"
-import { CinemaService } from "../../../services/CinemaService"
+import { MovieService } from "../../../services/MovieService"
 import { useEffect, useState } from "react"
 
 const MovieSelection = ({ selectedCity, selectedMovie, setSelectedMovie, movieSelectionRef, showtimeSelectionRef }) => {
@@ -11,10 +11,10 @@ const MovieSelection = ({ selectedCity, selectedMovie, setSelectedMovie, movieSe
     const [availableMovies, setAvailableMovies] = useState([])
 
     const getMoviesInCity = async () => {
-        const response = await CinemaService.fetchCinemaByCityService(selectedCity._id)
+        const response = await MovieService.fetchMovieByCityService({ city: selectedCity })
+        console.log(response)
         if (response.status === 200) {
-            const movies = [...new Set(response.data.flat())]
-            setAvailableMovies(movies)
+            setAvailableMovies(response.data)
         } else {
             setAvailableMovies([])
         }
@@ -23,7 +23,6 @@ const MovieSelection = ({ selectedCity, selectedMovie, setSelectedMovie, movieSe
     useEffect(() => {
         if (selectedCity && selectedCity._id) {
             getMoviesInCity()
-            setSelectedMovie("")
         }
     }, [selectedCity])
 

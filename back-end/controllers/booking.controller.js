@@ -9,7 +9,7 @@ const payOS = new PayOS(
 
 const CreatePayment = async (req, res) => {
     try {
-        const { total_price, createdBy, room, showtime, time, seats, popcorns } = req.body;
+        const { total_price, createdBy, room, showtime, seats, popcorns } = req.body;
         const orderCode = Date.now();
 
         const newBooking = new db.booking({
@@ -18,7 +18,6 @@ const CreatePayment = async (req, res) => {
             createdBy,
             room,
             showtime,
-            time,
             seats,
             popcorns,
             orderCode: orderCode,
@@ -138,6 +137,32 @@ const receiveHook = async (req, res) => {
         });
     }
 };
+
+const getBookedSeats = async (req, res) => {
+    try {
+        const { room, showtime } = req.body;
+        const bookings = await db.booking.find({
+            room: room,
+            showtime: showtime,
+            status: { $in: ["paid", "pending"] }
+        }).select("room showtime status seats")
+        const bookedSeats = bookings.flatMap(item =>
+            item.seats.map(seat => ({
+                area: seat.area,
+                position: seat.position
+            }))
+        );
+        return res.status(200).json({
+            status: 200,
+            data: bookedSeats
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
 const GetAllBookingAdmin = async (req, res) => {
     try {
         const response = await db.booking.find({})
@@ -157,6 +182,7 @@ const BookingController = {
     DeletePayment,
     receiveHook,
     getBooking,
-    GetAllBookingAdmin
+    GetAllBookingAdmin,
+    getBookedSeats
 };
 module.exports = BookingController;
