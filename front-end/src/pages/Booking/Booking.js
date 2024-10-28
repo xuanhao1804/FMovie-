@@ -145,7 +145,6 @@ const Booking = () => {
 
     return (
         <div className="booking">
-            {console.log("render: ", selectedCity, selectedMovie, selectedShowtime)}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
@@ -166,7 +165,7 @@ const Booking = () => {
                             }
                             {step === 2 &&
                                 <>
-                                    <SeatSelection selectedRoom={selectedShowtime && selectedShowtime.room && selectedShowtime.room._id} selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} />
+                                    <SeatSelection selectedShowtime={selectedShowtime} selectedSeats={selectedSeats} setSelectedSeats={setSelectedSeats} />
                                 </>
                             }
                             {
@@ -341,7 +340,7 @@ const Booking = () => {
                     </Col>
                 </Row>
             </div>
-        </div >
+        </div>
     )
 }
 

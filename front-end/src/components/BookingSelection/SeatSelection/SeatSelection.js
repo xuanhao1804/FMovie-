@@ -3,16 +3,31 @@ import cinema_screen from "../../../assets/icon/cinema-screen.png"
 import { Divider } from "antd"
 import { useEffect, useState } from "react"
 import { RoomService } from "../../../services/RoomService"
-const SeatSelection = ({ selectedRoom, selectedSeats, setSelectedSeats }) => {
+import { BookingService } from "../../../services/BookingService"
+const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) => {
 
     const [roomAreas, setRoomAreas] = useState([]);
+    const [bookedSeats, setBookedSeats] = useState([]);
 
     const fetchSeatsByRoom = async () => {
-        const response = await RoomService.fetchRoomByIDService({ roomID: selectedRoom })
+        const response = await RoomService.fetchRoomByIDService({ roomID: selectedShowtime.room._id })
         if (response.status === 200) {
             setRoomAreas(response.data.areas)
         } else {
             setRoomAreas([])
+        }
+    }
+
+    const fetchBookedSeats = async () => {
+        const response = await BookingService.getBookedSeats({
+            room: selectedShowtime.room._id,
+            showtime: selectedShowtime.showtime,
+            time: selectedShowtime.time
+        })
+        if (response.status === 200) {
+            setBookedSeats(response.data)
+        } else {
+            console.log(response)
         }
     }
 
@@ -28,13 +43,15 @@ const SeatSelection = ({ selectedRoom, selectedSeats, setSelectedSeats }) => {
     };
 
     useEffect(() => {
-        if (selectedRoom) {
+        if (selectedShowtime.room._id) {
             fetchSeatsByRoom();
+            fetchBookedSeats();
         }
-    }, [selectedRoom])
+    }, [selectedShowtime.room._id])
 
     return (
         <div className="seat-selection selection-section" >
+            {console.log(bookedSeats)}
             <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex flex-column align-items-center gap-2">
                     <i class="fs-4 fa-solid fa-door-open"></i>
@@ -57,8 +74,12 @@ const SeatSelection = ({ selectedRoom, selectedSeats, setSelectedSeats }) => {
                                 <div className="seat-selection-list">
                                     {area.seats && area.seats.map((seat, index) => {
                                         return (
-                                            <div onClick={() => handleChangeSelectedSeats(area.name, seat.position, seat.isVip)}
-                                                className={selectedSeats && selectedSeats.length > 0 && selectedSeats.findIndex(currentSeat => currentSeat.area === area.name && currentSeat.position === seat.position) > -1 ? "seat-selection-item-selected" : "seat-selection-item"} style={{ flex: `1 0 calc(${(100 / area.col)}%)` }}>
+                                            <div onClick={() => {
+                                                if (!bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position)) {
+                                                    handleChangeSelectedSeats(area.name, seat.position, seat.isVip)
+                                                }
+                                            }}
+                                                className={bookedSeats && bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position) ? "seat-selection-item-unavailable" : selectedSeats && selectedSeats.length > 0 && selectedSeats.findIndex(currentSeat => currentSeat.area === area.name && currentSeat.position === seat.position) > -1 ? "seat-selection-item-selected" : "seat-selection-item"} style={{ flex: `1 0 calc(${(100 / area.col)}%)` }}>
                                                 <span>{area.name + seat.position}</span>
                                                 {seat.isVip === true &&
                                                     <i className="seat-selection-icon-vip fa-solid fa-crown"></i>
@@ -71,6 +92,22 @@ const SeatSelection = ({ selectedRoom, selectedSeats, setSelectedSeats }) => {
                         )
                     })
                 }
+            </div>
+            <div className="seat-selection-annotation border-top py-2">
+                <div className="seat-selection-item seat-selection-item-annotation">
+                    Có sẵn
+                </div>
+                <div className="seat-selection-item-selected seat-selection-item-annotation">
+                    Đang chọn
+                </div>
+                <div className="seat-selection-item-unavailable seat-selection-item-annotation">
+                    Hết chỗ
+                </div>
+                <div className="seat-selection-annotation-isvip">
+                    <i className="seat-selection-annotation-isvip-icon fa-solid fa-crown">
+                    </i>
+                    <span className="seat-selection-annotation-isvip-text">VIP</span>
+                </div>
             </div>
         </div >
     )
