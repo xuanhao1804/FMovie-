@@ -1,11 +1,8 @@
-import { useSelector } from "react-redux"
 import "./ShowtimeSelection.scss"
 import { getVietnameseDate } from "../../../utils/dateUtils"
-import { useNavigate } from "react-router-dom"
 
 const ShowtimeSelection = ({ movieShowtime, selectedDate, setSelectedDate, selectedShowtime, setSelectedShowtime, showtimeSelectionRef, bookingPreviewRef }) => {
 
-    const navigate = useNavigate()
 
     return (
         <div className="showtime-selection selection-section" ref={showtimeSelectionRef}>

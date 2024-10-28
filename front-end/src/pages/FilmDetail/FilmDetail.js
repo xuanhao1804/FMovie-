@@ -151,7 +151,11 @@ const FilmDetail = () => {
                                                     .filter(showtime => showtime.startAt.date === selectedDate)
                                                     .flatMap(showtime =>
                                                         showtime.startAt.times.map(time => ({
-                                                            room: room.name,
+                                                            room: {
+                                                                _id: room._id,
+                                                                name: room.name
+                                                            },
+                                                            _id: showtime._id,
                                                             time: time
                                                         }))
                                                     )
@@ -159,11 +163,19 @@ const FilmDetail = () => {
                                                 return (
                                                     <button onClick={() => navigate("/booking", {
                                                         state: {
-                                                            city: cinema.city,
-                                                            movie: id,
-                                                            cinema: cinema._id,
-                                                            room: showtime.room,
-                                                            time: showtime.time
+                                                            selectedCity: { _id: cinema.city },
+                                                            selectedShowtime: {
+                                                                cinema: {
+                                                                    _id: cinema._id,
+                                                                    name: cinema.name,
+                                                                    address: cinema.address
+                                                                },
+                                                                showtime: showtime._id,
+                                                                room: showtime.room,
+                                                                time: showtime.time
+                                                            },
+                                                            selectedMovie: film,
+                                                            selectedDate: selectedDate
                                                         }
                                                     })} className={"showtime-selection-item"} key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
                                                         {showtime.time}

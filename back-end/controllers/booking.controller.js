@@ -140,10 +140,32 @@ const receiveHook = async (req, res) => {
     }
 };
 
+const getBookedSeats = async (req, res) => {
+    try {
+        const { room, showtime, time } = req.body;
+        const bookings = await db.booking.find({
+            room: room,
+            showtime: showtime,
+            time: time,
+            status: { $in: ["paid", "pending"] }
+        }).select("room showtime time status seats");
+        return res.status(200).json({
+            status: 200,
+            data: bookings.flatMap(item => item.seats)
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+
 const BookingController = {
     CreatePayment,
     DeletePayment,
     receiveHook,
-    getBooking
+    getBooking,
+    getBookedSeats
 };
 module.exports = BookingController;
