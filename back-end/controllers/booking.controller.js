@@ -129,9 +129,21 @@ const receiveHook = async (req, res) => {
             },
             { new: true }
         );
-        console.log(updatedBooking)
         server.io.emit("paymentVerify", updatedBooking);
         return res.status(200).json({});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+const GetAllBookingAdmin = async (req, res) => {
+    try {
+        const response = await db.booking.find({})
+            .populate({ path: "createdBy", select: "fullname" })
+        return res.status(200).json(response)
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -144,6 +156,7 @@ const BookingController = {
     CreatePayment,
     DeletePayment,
     receiveHook,
-    getBooking
+    getBooking,
+    GetAllBookingAdmin
 };
 module.exports = BookingController;

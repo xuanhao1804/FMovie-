@@ -1,12 +1,11 @@
 const db = require("../models");
+const { findById } = require("../models/movie.model");
 
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
     try {
         let { cityId, movieId } = req.body;
-
         const currentDate = new Date()
         const dateLimit = new Date(currentDate.getTime() + 1 * 60 * 60 * 1000);
-
         let cinemas;
         if (cityId) {
             cinemas = await db.cinema.find({ city: cityId })
@@ -65,8 +64,31 @@ const getAllShowtime = async (req, res) => {
         });
     }
 };
+const getShowtimebyCinemaAdmin = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { movieId } = req.body;
+        const showtime = await db.cinema.findById(id)
+            .populate({
+                path: 'rooms',
+                select: '-areas',
+                populate: {
+                    path: 'showtimes',
+                }
+            })
+            .select('-movies')
+            .exec();
+        return res.status(200).json({ showtime })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
 
-const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime };
+
+const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime, getShowtimebyCinemaAdmin };
 
 
 module.exports = ShowtimeController;

@@ -18,12 +18,7 @@ const CinemaSchema = new Schema({
     address: {
         type: String,
     },
-    movies: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: 'Movie'
-        }
-    ]
+
 }, { timestamps: true });
 
 const Cinema = mongoose.model('cinema', CinemaSchema);
