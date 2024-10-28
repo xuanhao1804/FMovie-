@@ -145,7 +145,6 @@ const Booking = () => {
 
     return (
         <div className="booking">
-            {console.log("render: ", selectedShowtime)}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
@@ -230,7 +229,7 @@ const Booking = () => {
                                             {selectedShowtime.cinema.address}
                                         </div>
                                         <div className="d-flex fs-6 gap-2">
-                                            <span>Thời gian: </span><span className="fw-semibold">{selectedShowtime.time}</span> - <span>{getVietnameseDate(selectedDate)}</span>
+                                            <span>Thời gian: </span><span className="fw-semibold">{selectedShowtime.showtime?.startAt?.time}</span> - <span>{getVietnameseDate(selectedDate)}</span>
                                         </div>
                                     </div>
                                     <Divider
@@ -341,7 +340,7 @@ const Booking = () => {
                     </Col>
                 </Row>
             </div>
-        </div >
+        </div>
     )
 }
 

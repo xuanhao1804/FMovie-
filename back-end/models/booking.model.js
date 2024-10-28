@@ -20,9 +20,6 @@ const BookingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Showtime"
     },
-    time: {
-        type: String
-    },
     seats: [
         {
             area: {
