@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
 import { Modal, Form, Input, Select, Button, message, List, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+
 import axios from 'axios';
 
 const { Option } = Select;
@@ -12,8 +14,6 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
     const [selectedGenres, setSelectedGenres] = useState([]);
     const [newGenre, setNewGenre] = useState('');
     const [imageUrl, setImageUrl] = useState(null);
-
-
     useEffect(() => {
         if (movie) {
             form.setFieldsValue({
@@ -169,6 +169,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         </div>
                     )}
                 </Form.Item>
+
 
                 {/* Genres Selection */}
                 <Form.Item label="Select Genres">

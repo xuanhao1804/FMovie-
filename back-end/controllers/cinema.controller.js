@@ -4,6 +4,7 @@ const Cinema = db.cinema;
 const City = db.city;
 const mongoose = require("mongoose");
 const Showtime = db.showtime;
+const Room = db.room;
 
 const getAllCinema = async (req, res) => {
     try {
@@ -30,18 +31,18 @@ const getAllCinema = async (req, res) => {
 
 const getCinemaByCity = async (req, res) => {
     const cityId = req.params.id; // lấy id của city từ params
-    console.log('123',cityId);  
     try {
         // Tìm tất cả các rạp thuộc thành phố với cityId
         const response = await db.cinema.where({ city: cityId })
             .populate('city', 'name') // Lấy tên thành phố khi liên kết
             .exec();
-        console.log('respon',response);
         if (response) {
-            
+
             return res.status(200).json({
                 status: 200,
-                data: response,
+                data: response.map(cinema => {
+                    return cinema.movies
+                }),
             });
         } else {
             return res.status(404).json({
@@ -105,6 +106,94 @@ const getShowtimesByCinema = async (req, res) => {
         return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
     }
 };
+const CreateNewCinema = async (req, res) => {
+    const { name, city, address } = req.body;
+    try {
+        const newCinema = new db.cinema({
+            name,
+            city,
+            address
+        });
+        const savedCinema = await db.cinema.save();
+        return res.status(201).json(savedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
+const EditCinema = async (req, res) => {
+    const { id } = req.params;
+    const { name, city, address } = req.body;
+    try {
+        const updatedCinema = await Cinema.findByIdAndUpdate(
+            id,
+            { name, city, address },
+            { new: true }
+        );
+        return res.status(200).json(updatedCinema);
+    } catch (error) {
+        console.error('Error creating new cinema:', error);
+        return res.status(500).json({ message: 'Error creating new cinema', error });
+    }
+};
 
-const CinemaController = {getAllCinema, getCinemaByCity,getMoviesByCinema,getShowtimesByCinema};
+const getMoviesAndShowtimesByCinema = async (req, res) => {
+    const { cinemaId } = req.params;  // Lấy cinemaId từ params
+    try {
+        // Tìm rạp chiếu phim theo ID và populate các phòng chiếu
+        const cinema = await Cinema.findById(cinemaId).populate('rooms');
+        console.log('Rooms:', cinema.rooms); // Log ra danh sách phòng chiếu
+
+        if (!cinema) {
+            return res.status(404).json({ message: "Không tìm thấy rạp" });
+        }
+
+        let allShowtimes = [];
+        let allMovies = [];
+
+        // Duyệt qua từng phòng chiếu của rạp
+        for (const room of cinema.rooms) {
+            console.log(`Room ID: ${room._id}, Room name: ${room.name}`);  // Log thông tin phòng chiếu
+
+            // Lấy tất cả suất chiếu của từng phòng (populate showtimes)
+            const populatedRoom = await Room.findById(room._id).populate({
+                path: 'showtimes',   // Populate suất chiếu
+                populate: { path: 'movie' }  // Populate movie trong showtimes
+            });
+            console.log('populatedRoom:', populatedRoom); // Log ra thông tin phòng chiếu đã populate
+            if (populatedRoom.showtimes.length > 0) {
+                allShowtimes.push(...populatedRoom.showtimes); // Lưu tất cả suất chiếu vào mảng
+            }
+
+            // Duyệt qua các suất chiếu để lấy phim tương ứng
+            for (const showtime of populatedRoom.showtimes) {
+                const movie = showtime.movie;
+                if (movie && !allMovies.some(m => m._id.equals(movie._id))) {
+                    allMovies.push(movie); // Lưu phim vào mảng nếu chưa có
+                }
+            }
+        }
+        console.log('respond data:', allMovies, allShowtimes); // Log ra dữ liệu trả về
+        // Trả về dữ liệu gồm danh sách các phim và các suất chiếu
+        return res.status(200).json({
+            status: 200,
+            data: {
+                cinema: cinema.name,
+                movies: allMovies, // Danh sách các phim của rạp
+                showtimes: allShowtimes // Danh sách tất cả các suất chiếu
+            }
+        });
+    } catch (error) {
+        console.error("Lỗi khi lấy phim và suất chiếu:", error);
+        return res.status(500).json({ message: "Lỗi hệ thống Backend" });
+    }
+};
+
+
+
+
+const CinemaController = {
+    getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema, CreateNewCinema,
+    EditCinema, getMoviesAndShowtimesByCinema
+};
 module.exports = CinemaController;

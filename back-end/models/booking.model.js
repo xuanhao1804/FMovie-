@@ -12,31 +12,42 @@ const BookingSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Account"
     },
-    showtime: {
-        type: Schema.Types.ObjectId,
-        ref: "Showtime"
-    },
     room: {
         type: Schema.Types.ObjectId,
         ref: "Room"
     },
-    orderCode: {
-        type: Number
+    showtime: {
+        type: Schema.Types.ObjectId,
+        ref: "Showtime"
     },
     seats: [
         {
-            row: {
+            area: {
                 type: String
             },
-            column: {
-                type: Number,
-                required: true,
+            position: {
+                type: Number
             },
             isVip: {
                 type: Boolean
             }
         }
     ],
+    popcorns: [
+        {
+            popcorn: {
+                type: Schema.Types.ObjectId,
+                ref: "Popcorn"
+            },
+            quantity: {
+                type: Number
+            }
+        }
+    ],
+    orderCode: {
+        type: Number
+    },
+
     transaction: {
         accountNumber: String,
         amount: Number,

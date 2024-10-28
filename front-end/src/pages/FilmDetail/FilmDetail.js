@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { MovieService } from "../../services/MovieService"
-import { Col, Row } from "antd"
+import { Col, Divider, Row } from "antd"
 import "./FilmDetail.scss"
+import { ShowtimeService } from "../../services/ShowtimeService"
+import { getVietnameseDate } from "../../utils/dateUtils"
 
 const FilmDetail = () => {
 
     const { id } = useParams()
 
+    const navigate = useNavigate()
+
     const [film, setFilm] = useState({})
+    const [filmShowtimes, setFilmShowtimes] = useState([])
+
+    const [selectedDate, setSelectedDate] = useState("")
 
     const fetchFilmDetail = async () => {
         const response = await MovieService.fetchMovieDetailService(id)
@@ -17,13 +24,30 @@ const FilmDetail = () => {
         }
     }
 
+    const fetchFilmShowtimes = async () => {
+        const response = await ShowtimeService.fetchShowtimeByMovieService({
+            movieId: id
+        })
+        if (response.status === 200) {
+            setFilmShowtimes(response.data);
+            const dates = [...new Set(response.data.flatMap(cinema =>
+                cinema.rooms.flatMap(room =>
+                    room.showtimes.map(showtime => showtime.startAt.date)
+                )
+            ))]
+            setSelectedDate(dates[0])
+        }
+    }
+
     useEffect(() => {
-        fetchFilmDetail()
+        if (id) {
+            fetchFilmDetail()
+            fetchFilmShowtimes();
+        }
     }, [id])
 
     return (
         <div className="film-detail content-width-padding content-height-padding">
-            {console.log(film)}
             {film && film._id !== null &&
                 <Row>
                     <Col span={6}>
@@ -36,7 +60,6 @@ const FilmDetail = () => {
                                     <h1 className="film-detail-name">{film.name}</h1>
                                     <span className="film-detail-age-limit">{film.limit}</span>
                                 </div>
-                                <Link className="film-detail-book-now" to={"/booking"} >Đặt vé ngay</Link>
                             </div>
                             <div className="film-detail-duration">
                                 <div>
@@ -87,6 +110,86 @@ const FilmDetail = () => {
                     </Col>
                 </Row>
             }
+            <Divider />
+            <div className="d-flex flex-column gap-3">
+                <div className="border-start border-4 border-primary ps-2 fs-5 fw-semibold">Lịch chiếu phim</div>
+                <div className="showtime-selection-date">
+                    {
+                        [...new Set(filmShowtimes.flatMap(cinema =>
+                            cinema.rooms.flatMap(room =>
+                                room.showtimes.map(showtime => showtime.startAt.date)
+                            )
+                        ))].map((item, index) => {
+                            return (
+                                <button onClick={() => setSelectedDate(item)} className={item === selectedDate ? "showtime-selection-item-selected" : "showtime-selection-item"} key={"detail-showtimes-" + item}>
+                                    {getVietnameseDate(item)}
+                                </button>
+                            )
+                        })
+                    }
+                    <Divider
+                        style={{
+                            borderColor: '#00BECF',
+                            margin: "1rem 0"
+                        }}
+                    />
+                </div>
+                <div className="showtime-selection-times">
+                    {
+                        filmShowtimes.filter(cinema =>
+                            cinema.rooms.some(room =>
+                                room.showtimes.some(showtime => showtime.startAt.date === selectedDate)
+                            )
+                        ).map((cinema, index) => {
+                            return (
+                                <div className="showtime-selection-cinemas mb-4">
+                                    <div className="fs-5 mb-2">{cinema.name}</div>
+                                    <div className="d-flex gap-2">
+                                        {
+                                            cinema.rooms.flatMap(room =>
+                                                room.showtimes
+                                                    .filter(showtime => showtime.startAt.date === selectedDate)
+                                                    .flatMap(showtime =>
+                                                        showtime.startAt.times.map(time => ({
+                                                            room: {
+                                                                _id: room._id,
+                                                                name: room.name
+                                                            },
+                                                            _id: showtime._id,
+                                                            time: time
+                                                        }))
+                                                    )
+                                            ).map((showtime, index) => {
+                                                return (
+                                                    <button onClick={() => navigate("/booking", {
+                                                        state: {
+                                                            selectedCity: { _id: cinema.city },
+                                                            selectedShowtime: {
+                                                                cinema: {
+                                                                    _id: cinema._id,
+                                                                    name: cinema.name,
+                                                                    address: cinema.address
+                                                                },
+                                                                showtime: showtime._id,
+                                                                room: showtime.room,
+                                                                time: showtime.time
+                                                            },
+                                                            selectedMovie: film,
+                                                            selectedDate: selectedDate
+                                                        }
+                                                    })} className={"showtime-selection-item"} key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
+                                                        {showtime.time}
+                                                    </button>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </div>
         </div>
     )
 }

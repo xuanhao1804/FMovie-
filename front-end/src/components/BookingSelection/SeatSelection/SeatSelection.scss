@@ -1,0 +1,95 @@
+.seat-selection {
+
+    &-list {
+        display   : flex;
+        flex-wrap : wrap;
+        text-align: center;
+    }
+
+    &-item {
+        position        : relative;
+        cursor          : pointer;
+        align-items     : center;
+        background-color: #fff;
+        border          : 0.1rem solid #cccccc;
+        padding         : 0.5rem;
+        border-radius   : 0.25rem;
+        margin-bottom   : 1rem;
+
+        &-selected {
+            position        : relative;
+            cursor          : pointer;
+            align-items     : center;
+            border          : 0.1rem solid #ff6709;
+            background-color: #ff914d;
+            color           : #fff;
+            padding         : 0.5rem 0;
+            border-radius   : 0.25rem;
+            margin-bottom   : 1rem;
+        }
+
+        &-unavailable {
+            position        : relative;
+            align-items     : center;
+            border          : 0.1rem solid #cccccc;
+            background-color: #cccccc;
+            color           : #000;
+            padding         : 0.5rem 0;
+            border-radius   : 0.25rem;
+            margin-bottom   : 1rem;
+        }
+
+        &-annotation {
+            cursor       : auto;
+            width        : fit-content;
+            padding      : 0.5rem 0.25rem;
+            font-weight  : 600;
+            margin-bottom: 0;
+        }
+    }
+
+    &-icon {
+        &-vip {
+            position : absolute;
+            font-size: 1.1rem;
+            color    : rgb(255, 183, 1);
+            top      : -0.9rem;
+            left     : 0;
+            right    : 0;
+        }
+    }
+
+    &-area {
+        &-name {
+            padding      : 0.5rem 0 1rem 0;
+            margin-bottom: 0.5rem;
+            font-weight  : 500;
+            border       : 0.1rem solid #ff914d;
+            border-bottom: none;
+        }
+    }
+
+    &-annotation {
+        display    : flex;
+        align-items: center;
+        gap        : 2rem;
+
+        &-isvip {
+            position: relative;
+
+            &-text {
+                position   : absolute;
+                color      : #000;
+                font-weight: 600;
+                z-index    : 2;
+                top        : 1.4rem;
+                left       : 1rem;
+            }
+
+            &-icon {
+                color    : rgb(255, 183, 1);
+                font-size: 3rem;
+            }
+        }
+    }
+}

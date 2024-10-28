@@ -214,4 +214,6 @@ const ShowtimeManagement = () => {
     );
 };
 
+
 export default ShowtimeManagement;
+

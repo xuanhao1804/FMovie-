@@ -7,10 +7,14 @@ cinemaRouter.get("/get-all", cinemaController.getAllCinema);
 
 cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
+cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
-cinemaRouter.get("/get-movies-by-cinema/:cinemaId",cinemaController.getMoviesByCinema );
+cinemaRouter.get("/get-movies-by-cinema/:cinemaId", cinemaController.getMoviesByCinema);
+
 
 
 cinemaRouter.get('/get-showtimes', cinemaController.getShowtimesByCinema);
+
+cinemaRouter.get('/movies/:cinemaId', cinemaController.getMoviesAndShowtimesByCinema);
 module.exports = cinemaRouter;
 

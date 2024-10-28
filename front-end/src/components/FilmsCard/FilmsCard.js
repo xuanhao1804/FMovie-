@@ -3,14 +3,19 @@ import { Button, Modal } from 'antd';
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const FilmsCard = ({ _id, image, limit, star, video }) => {
+const FilmsCard = ({ _id, image, limit, star, video, setSelectedMovie }) => {
+
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
 
     return (
         <>
             <div className="films-card" style={{ backgroundImage: `url(${image})` }}
-                onClick={() => setOpen(true)}>
+                onClick={() => {
+                    if (!window.location.pathname.includes("booking")) {
+                        setOpen(true)
+                    }
+                }}>
 
                 <span className="films-card-age-limitation">
                     {limit}
@@ -18,16 +23,26 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
                 <span className="films-card-rating">
                     {star} <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>
                 </span>
-                <div className="films-card-button">
-                    <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
-                    <button onClick={() => navigate("/booking")} className="films-card-button-booking">ĐẶT VÉ</button>
-                </div>
-            </div>
+                {!window.location.pathname.includes("booking") &&
+                    <>
+                        <div className="films-card-button">
+                            <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
+                            <button onClick={() => navigate("/booking")} className="films-card-button-booking">ĐẶT VÉ</button>
+                        </div>
+                    </>
+                }
+            </div >
             <Modal
                 centered
                 open={open}
                 onCancel={() => setOpen(false)}
                 width={1054}
+                okButtonProps={{
+                    style: { display: 'none' }, // Hide OK button
+                }}
+                cancelButtonProps={{
+                    style: { display: 'none' }, // Hide Cancel button
+                }}
             >
                 <iframe width="1004" height="565" src={video} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </Modal>

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+
 import { Modal, Form, Input, Select, Upload, Button, message, InputNumber } from 'antd';
+
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -187,7 +189,9 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     label="Price"
                     rules={[{ required: true, message: 'Please input the price!' }]
                     }>
+
                     <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
+
                 </Form.Item>
                 <Form.Item
                     name="video"
@@ -201,7 +205,9 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     label="Limit"
                     rules={[{ required: true, message: 'Please input the limit!' }]}
                 >
+
                     <InputNumber style={{ width: '100%' }} placeholder="Enter limit" min={0} max={22} />
+
                 </Form.Item>
                 <Form.Item label="Image">
                     <Upload

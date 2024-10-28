@@ -40,6 +40,9 @@ const MovieSchema = new mongoose.Schema({
     description: {
         type: String
     },
+    publicId: {
+        type: String
+    },
     status: {
         type: String
     }

@@ -14,7 +14,11 @@ import Booking from "./pages/Booking/Booking";
 import { useDispatch } from "react-redux"
 import { useEffect } from "react";
 import { fetchCities } from "./reducers/CityReducer";
+import { fetchMovies } from "./reducers/MovieReducer";
 import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
+import ManageMovie from "./pages/ManageMovie/ManageMovie";
+
+import { fetchPopcorns } from "./reducers/PopcornReducer";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -24,6 +28,8 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchCities())
+    dispatch(fetchMovies())
+    dispatch(fetchPopcorns())
   }, [])
 
   return (
@@ -43,6 +49,7 @@ function App() {
           <Route path="film/detail/:id" element={<FilmDetail />} />
           <Route path="booking" element={<Booking />} />
           <Route path="/cinemas-movies/:cinemaId" element={<CinemaMovies />} />
+          <Route path="/managemovie" element={<ManageMovie />} />
         </Routes>
         <CustomFooter />
         <ToastContainer
