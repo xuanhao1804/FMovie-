@@ -230,7 +230,7 @@ const Booking = () => {
                                             {selectedShowtime.cinema.address}
                                         </div>
                                         <div className="d-flex fs-6 gap-2">
-                                            <span>Thời gian: </span><span className="fw-semibold">{selectedShowtime.time}</span> - <span>{getVietnameseDate(selectedDate)}</span>
+                                            <span>Thời gian: </span><span className="fw-semibold">{selectedShowtime.showtime?.startAt?.time}</span> - <span>{getVietnameseDate(selectedDate)}</span>
                                         </div>
                                     </div>
                                     <Divider

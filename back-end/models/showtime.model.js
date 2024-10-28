@@ -12,9 +12,9 @@ const ShowtimeSchema = new Schema({
             type: Date,
             required: true,
         },
-        times: [
-            { type: String, required: true }
-        ]
+        time: {
+            type: String, required: true
+        }
     }
 }, { timestamps: true });
 

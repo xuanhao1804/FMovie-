@@ -3,7 +3,6 @@ import { getVietnameseDate } from "../../../utils/dateUtils"
 
 const ShowtimeSelection = ({ movieShowtime, selectedDate, setSelectedDate, selectedShowtime, setSelectedShowtime, showtimeSelectionRef, bookingPreviewRef }) => {
 
-
     return (
         <div className="showtime-selection selection-section" ref={showtimeSelectionRef}>
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -41,16 +40,7 @@ const ShowtimeSelection = ({ movieShowtime, selectedDate, setSelectedDate, selec
                                         cinema.rooms.flatMap(room =>
                                             room.showtimes
                                                 .filter(showtime => showtime.startAt.date === selectedDate)
-                                                .flatMap(showtime =>
-                                                    showtime.startAt.times.map(time => ({
-                                                        room: {
-                                                            _id: room._id,
-                                                            name: room.name
-                                                        },
-                                                        _id: showtime._id,
-                                                        time: time
-                                                    }))
-                                                )
+                                                .map(showtime => ({ ...showtime, room: { name: room.name, _id: room._id } }))
                                         ).map((showtime, index) => {
                                             return (
                                                 <button
@@ -61,22 +51,21 @@ const ShowtimeSelection = ({ movieShowtime, selectedDate, setSelectedDate, selec
                                                                 name: cinema.name,
                                                                 address: cinema.address
                                                             },
-                                                            showtime: showtime._id,
+                                                            showtime: showtime,
                                                             room: showtime.room,
-                                                            time: showtime.time
                                                         })
                                                         if (bookingPreviewRef) {
                                                             bookingPreviewRef.current.scrollIntoView()
                                                         }
                                                     }}
-                                                    className={(selectedShowtime && selectedShowtime.cinema && selectedShowtime.room && selectedShowtime.cinema._id === cinema._id && selectedShowtime.room._id === showtime.room._id && selectedShowtime.showtime === showtime._id && selectedShowtime.time === showtime.time)
+                                                    className={(selectedShowtime && selectedShowtime.cinema && selectedShowtime.room && selectedShowtime.cinema._id === cinema._id && selectedShowtime.room._id === showtime.room._id && selectedShowtime.showtime._id === showtime._id)
                                                         ?
                                                         "showtime-selection-item-selected"
                                                         :
                                                         "showtime-selection-item"
                                                     }
                                                     key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
-                                                    {showtime.time}
+                                                    {showtime.startAt.time}
                                                 </button>
                                             )
                                         })
