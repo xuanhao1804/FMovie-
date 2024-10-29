@@ -9,6 +9,8 @@ const { TabPane } = Tabs;
 
 export default function Authentication() {
   const [form] = Form.useForm();
+  const [register_form] = Form.useForm();
+  const [recover_form] = Form.useForm();
   const [activeTab, setActiveTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
@@ -31,8 +33,12 @@ export default function Authentication() {
     }
     setLoading(true);
     try {
-      await dispatch(createUser(data));
-      message.success('User registered successfully!');
+      const res = await dispatch(createUser(data));
+      if (res.payload.errors) {
+        message.error(res.payload.errors[0].msg);
+      }
+      else
+        message.success('User registered successfully!');
       //reset form fields
       form.resetFields();
     } catch (error) {
@@ -108,7 +114,7 @@ export default function Authentication() {
   );
 
   const renderRegisterForm = () => (
-    <Form form={form} name="register" onFinish={handleSignUp} className="register-form">
+    <Form form={register_form} name="register" onFinish={handleSignUp} className="register-form">
       <Form.Item
         name="name"
         rules={[{ required: true, message: 'Please input your Name!' }]}
@@ -180,7 +186,7 @@ export default function Authentication() {
   );
 
   const renderRecoverForm = () => (
-    <Form form={form} name="recover" onFinish={handlePasswordRecovery} className="recover-form">
+    <Form form={recover_form} name="recover" onFinish={handlePasswordRecovery} className="recover-form">
       <Form.Item
         name="email"
         rules={[
