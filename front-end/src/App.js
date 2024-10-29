@@ -19,6 +19,8 @@ import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
 import ManageMovie from "./pages/ManageMovie/ManageMovie";
 
 import { fetchPopcorns } from "./reducers/PopcornReducer";
+import ForgotPassword from "./pages/ResetPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -40,6 +42,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/auth/sign-in" element={<Authentication />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
             <Route path="playing" element={<Playing />} />

@@ -7,4 +7,10 @@ accountRoute.post("/sign-up", validateSignUp, accountController.signUp)
 
 accountRoute.post("/sign-in", validateSignIn, accountController.signIn)
 
+accountRoute.post("/send-mail", accountController.sendMail)
+
+accountRoute.post("/verify-otp", accountController.verifyOTP)
+
+accountRoute.post("/reset-password", accountController.resetPassword)
+
 module.exports = accountRoute;
