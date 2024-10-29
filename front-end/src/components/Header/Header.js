@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.scss";
 import logo from "../../assets/icon/logo.png";
 import ticket from "../../assets/icon/btn-ticket.webp";
@@ -10,6 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../reducers/UserReducer";
 
 const Header = () => {
+
+    const navigate = useNavigate()
+
     const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim
     const [selectedCinema, setSelectedCinema] = useState("Rạp chiếu phim"); // Dùng để lưu tên rạp đã chọn
     const user = useSelector((state) => state.user);
@@ -83,7 +86,7 @@ const Header = () => {
                 {
                     user.user.token ? (
                         <div className="logout-container">
-                            <div className="user">
+                            <div onClick={() => navigate("/user-profile")} className="user">
                                 <UserOutlined className="user-icon" />
                                 <span className="user-name">Xin chào {user.user.account.fullname}!</span>
                             </div>
@@ -102,7 +105,7 @@ const Header = () => {
                 }
             </div>
             <div className="header-divider content-width-padding">
-                FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam 
+                FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam
             </div>
         </>
     );

@@ -165,11 +165,42 @@ const getBookedSeats = async (req, res) => {
     }
 };
 
+const getUserBookedHistory = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const bookings = await db.booking.find({
+            createdBy: userId
+        }).select("-transaction").populate({
+            path: "room",
+            select: "-showtimes -areas"
+        }).populate({
+            path: "showtime",
+            populate: {
+                path: "movie",
+                select: "name"
+            }
+        }).populate({
+            path: "popcorns.popcorn",
+            select: "name"
+        })
+        return res.status(200).json({
+            status: 200,
+            data: bookings
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+
 const BookingController = {
     CreatePayment,
     DeletePayment,
     receiveHook,
     getBooking,
-    getBookedSeats
+    getBookedSeats,
+    getUserBookedHistory
 };
 module.exports = BookingController;

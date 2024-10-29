@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Tabs, DatePicker, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { createUser, loginUser, saveUserData } from '../../reducers/UserReducer';
+import { useNavigate } from "react-router-dom"
 import './Authentication.scss';
 
 const { TabPane } = Tabs;
@@ -12,9 +13,13 @@ export default function Authentication() {
   const [activeTab, setActiveTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
-  if (user.user.account) {
-    window.location.href = '/';
-  }
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user.user.account) {
+      window.location.href = '/';
+    }
+  }, [user])
 
   const dispatch = useDispatch();
 
@@ -53,7 +58,7 @@ export default function Authentication() {
         message.success('Login successful!');
         const { password, ...userData } = rs.payload.account;
         dispatch(saveUserData({ account: userData, token: rs.payload.token }));
-        window.location.href = '/';
+        navigate(-1)
       }
       else
         message.error('Email or password is incorrect');
