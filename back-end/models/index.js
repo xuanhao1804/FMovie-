@@ -7,7 +7,7 @@ const Showtime = require("./showtime.model");
 const Booking = require("./booking.model")
 const Account = require("./account.model");
 const Popcorn = require("./popcorn.model");
-
+const OTP = require("./otp.model");
 mongoose.Promise = global.Promise;
 
 const db = {};
@@ -21,6 +21,7 @@ db.showtime = Showtime
 db.booking = Booking
 db.account = Account
 db.popcorn = Popcorn
+db.otp = OTP
 
 const connectDB = async () => {
   await mongoose
