@@ -110,7 +110,7 @@ export default function Authentication() {
         <Input.Password prefix={<LockOutlined />} placeholder="Password" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button" loading={loading}>
+        <Button onClick={handleLogin} type="primary" htmlType="submit" className="login-form-button" loading={loading}>
           Log in
         </Button>
         Or <a href="#" onClick={() => setActiveTab('recover')}>Forgot password</a>

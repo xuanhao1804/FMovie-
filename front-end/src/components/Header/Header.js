@@ -8,6 +8,7 @@ import axios from 'axios';
 import { UserOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../reducers/UserReducer";
+import TakeTicket from "../TakeTicket/TakeTicket";
 
 const Header = () => {
 
@@ -82,7 +83,10 @@ const Header = () => {
                         </span>
                     </Dropdown>
                 </div>
-                {/* Đăng nhập và đăng ký */}
+                {
+                    user?.user?.account?.roles?.includes("seller") &&
+                    <TakeTicket />
+                }
                 {
                     user.user.token ? (
                         <div className="logout-container">

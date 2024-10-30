@@ -20,6 +20,7 @@ import ManageMovie from "./pages/ManageMovie/ManageMovie";
 
 import { fetchPopcorns } from "./reducers/PopcornReducer";
 import UserProfile from "./pages/UserProfile/UserProfile";
+import AutoScrollToTop from "./components/AutoScrollToTop/AutoScrollToTop";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -36,6 +37,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <AutoScrollToTop />
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import "./UserProfile.scss"
 import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Col, Row } from "antd";
 import { BookingService } from "../../services/BookingService";
 import { getVietnameseDate } from "../../utils/dateUtils";
 import { NumericFormat } from "react-number-format";
+import { bookingStatus } from "../../utils/bookingUtils";
 
 const UserProfile = () => {
 
@@ -32,6 +33,7 @@ const UserProfile = () => {
 
     return (
         <div className="user-profile content-width-padding content-height-padding d-flex gap-4">
+            {console.log(userHistory)}
             <div className="user-profile-info w-25 p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3">
                     Thông tin người dùng
@@ -64,7 +66,7 @@ const UserProfile = () => {
                 </div>
                 <table className="user-profile-history-table table w-100">
                     <thead>
-                        <tr>
+                        <tr className="text-nowrap">
                             <th scope="col">#</th>
                             <th scope="col">Phim</th>
                             <th scope="col">Phòng</th>
@@ -73,6 +75,7 @@ const UserProfile = () => {
                             <th scope="col">Popcorns</th>
                             <th scope="col">Ngày đặt</th>
                             <th scope="col">Tổng tiền</th>
+                            <th scope="col">Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,9 +85,14 @@ const UserProfile = () => {
                                     return (
                                         <tr>
                                             <th scope="row">{index + 1}</th>
-                                            <td>{item.showtime.movie.name}</td>
+                                            <td >
+                                                <Link className="user-profile-history-table-item-name" target="_black" to={`/film/detail/${item.showtime.movie._id}`}>{item.showtime.movie.name}</Link>
+                                            </td>
                                             <td>{item.room.name}</td>
-                                            <td>{getVietnameseDate(item.showtime.startAt.date, true)}</td>
+                                            <td>
+                                                <div>Giờ: <span className="text-primary">{item.showtime.startAt.time}</span></div>
+                                                <div>{getVietnameseDate(item.showtime.startAt.date, true)}</div>
+                                            </td>
                                             <td>{item.seats.map((item, index) => {
                                                 return (
                                                     <div>{item.area + item.position} {item.isVip ? " - (VIP)" : ""}</div>
@@ -100,7 +108,8 @@ const UserProfile = () => {
                                                 <span>Không</span>
                                             }</td>
                                             <td>{getVietnameseDate(item.createdAt, true)}</td>
-                                            <td><NumericFormat value={item.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td><NumericFormat className="text-success" value={item.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td><span style={{ color: bookingStatus[item.status].textColor }}>{bookingStatus[item.status].text}</span></td>
                                         </tr>
                                     )
                                 })
