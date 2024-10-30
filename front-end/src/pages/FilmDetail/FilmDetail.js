@@ -35,7 +35,7 @@ const FilmDetail = () => {
                     room.showtimes.map(showtime => showtime.startAt.date)
                 )
             ))]
-            setSelectedDate(dates[0])
+            setSelectedDate(dates.sort((a, b) => new Date(a) - new Date(b))[0])
         }
     }
 
@@ -119,7 +119,7 @@ const FilmDetail = () => {
                             cinema.rooms.flatMap(room =>
                                 room.showtimes.map(showtime => showtime.startAt.date)
                             )
-                        ))].map((item, index) => {
+                        ))].sort((a, b) => new Date(a) - new Date(b)).map((item, index) => {
                             return (
                                 <button onClick={() => setSelectedDate(item)} className={item === selectedDate ? "showtime-selection-item-selected" : "showtime-selection-item"} key={"detail-showtimes-" + item}>
                                     {getVietnameseDate(item)}
@@ -149,16 +149,7 @@ const FilmDetail = () => {
                                             cinema.rooms.flatMap(room =>
                                                 room.showtimes
                                                     .filter(showtime => showtime.startAt.date === selectedDate)
-                                                    .flatMap(showtime =>
-                                                        showtime.startAt.times.map(time => ({
-                                                            room: {
-                                                                _id: room._id,
-                                                                name: room.name
-                                                            },
-                                                            _id: showtime._id,
-                                                            time: time
-                                                        }))
-                                                    )
+                                                    .map(showtime => ({ ...showtime, room: { name: room.name, _id: room._id } }))
                                             ).map((showtime, index) => {
                                                 return (
                                                     <button onClick={() => navigate("/booking", {
@@ -170,15 +161,14 @@ const FilmDetail = () => {
                                                                     name: cinema.name,
                                                                     address: cinema.address
                                                                 },
-                                                                showtime: showtime._id,
+                                                                showtime: showtime,
                                                                 room: showtime.room,
-                                                                time: showtime.time
                                                             },
                                                             selectedMovie: film,
                                                             selectedDate: selectedDate
                                                         }
                                                     })} className={"showtime-selection-item"} key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
-                                                        {showtime.time}
+                                                        {showtime.startAt.time}
                                                     </button>
                                                 )
                                             })
