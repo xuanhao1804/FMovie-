@@ -2,7 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { UserService } from "../services/UserService";
 
 const initialState = {
-    user: {}
+    user: {},
+    recoverEmail: "",
+    canResetPassword: false
 }
 
 export const createUser = createAsyncThunk("/user/createUser", async (data) => {
@@ -15,6 +17,21 @@ export const loginUser = createAsyncThunk("/user/loginUser", async (data) => {
     return response
 })
 
+export const resetPassword = createAsyncThunk("/user/resetPassword", async (data) => {
+    const response = await UserService.resetPasswordService(data)
+    return response
+})
+
+export const verifyOTP = createAsyncThunk("/user/verifyOTP", async (data) => {
+    const response = await UserService.verifyOTPService(data)
+    return response
+})
+
+export const sendEmail = createAsyncThunk("/user/sendEmail", async (data) => {
+    const response = await UserService.sendEmailService(data)
+    return response
+})
+
 export const userSlice = createSlice({
     name: "user",
     initialState,
@@ -24,10 +41,16 @@ export const userSlice = createSlice({
         },
         logout: (state) => {
             state.user = {}
+        },
+        setRecoverEmail: (state, action) => {
+            state.recoverEmail = action.payload
+        },
+        setCanResetPassword: (state, action) => {
+            state.canResetPassword = action.payload
         }
     }
 })
 
-export const { saveUserData, logout } = userSlice.actions
+export const { saveUserData, logout, setRecoverEmail, setCanResetPassword } = userSlice.actions
 
 export default userSlice.reducer

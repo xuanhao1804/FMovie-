@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Tabs, DatePicker, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser, loginUser, saveUserData } from '../../reducers/UserReducer';
 import { useNavigate } from "react-router-dom"
+import { createUser, loginUser, saveUserData, setRecoverEmail, sendEmail } from '../../reducers/UserReducer';
 import './Authentication.scss';
 
 const { TabPane } = Tabs;
@@ -16,14 +16,12 @@ export default function Authentication() {
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
   const navigate = useNavigate()
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (user.user.account) {
       window.location.href = '/';
     }
   }, [user])
-
-  const dispatch = useDispatch();
 
   const handleSignUp = async (values) => {
     const data = {
@@ -75,10 +73,22 @@ export default function Authentication() {
 
   const handlePasswordRecovery = async (values) => {
     setLoading(true);
-    // Implement actual password recovery logic here
-    console.log('Password recovery for:', values.email);
+    try {
+      const res = await dispatch(sendEmail({ email: values.recovery_email }));
+      console.log(res)
+      if (!res.payload.success) {
+        message.error(res.payload.message);
+      }
+      else {
+        dispatch(setRecoverEmail(values.recovery_email));
+        window.location.href = '/auth/forgot-password';
+      }
+    } catch (error) {
+      message.error('Password recovery failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
     setLoading(false);
-    message.info('Password recovery instructions sent to your email.');
   };
 
   const validatePassword = (_, value) => {
@@ -193,7 +203,7 @@ export default function Authentication() {
   const renderRecoverForm = () => (
     <Form form={recover_form} name="recover" onFinish={handlePasswordRecovery} className="recover-form">
       <Form.Item
-        name="email"
+        name="recovery_email"
         rules={[
           { required: true, message: 'Please input your Email!' },
           { type: 'email', message: 'Please enter a valid email!' }

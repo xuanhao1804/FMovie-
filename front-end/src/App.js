@@ -21,6 +21,8 @@ import ManageMovie from "./pages/ManageMovie/ManageMovie";
 import { fetchPopcorns } from "./reducers/PopcornReducer";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import AutoScrollToTop from "./components/AutoScrollToTop/AutoScrollToTop";
+import ForgotPassword from "./pages/ResetPassword/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
@@ -43,7 +45,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/auth/sign-in" element={<Authentication />} />
+
           <Route path="user-profile" element={<UserProfile />} />
+
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
             <Route path="playing" element={<Playing />} />
