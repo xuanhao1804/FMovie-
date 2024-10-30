@@ -150,38 +150,40 @@ const FilmDetail = () => {
                                                 room.showtimes
                                                     .filter(showtime => showtime.startAt.date === selectedDate)
                                                     .flatMap(showtime =>
-                                                        showtime.startAt.times.map(time => ({
-                                                            room: {
-                                                                _id: room._id,
-                                                                name: room.name
-                                                            },
-                                                            _id: showtime._id,
-                                                            time: time
-                                                        }))
-                                                    )
-                                            ).map((showtime, index) => {
-                                                return (
-                                                    <button onClick={() => navigate("/booking", {
-                                                        state: {
-                                                            selectedCity: { _id: cinema.city },
-                                                            selectedShowtime: {
-                                                                cinema: {
-                                                                    _id: cinema._id,
-                                                                    name: cinema.name,
-                                                                    address: cinema.address
+                                                        Array.isArray(showtime.startAt.times) ?
+                                                            showtime.startAt.times.map(time => ({
+                                                                room: {
+                                                                    _id: room._id,
+                                                                    name: room.name
                                                                 },
-                                                                showtime: showtime._id,
-                                                                room: showtime.room,
-                                                                time: showtime.time
-                                                            },
-                                                            selectedMovie: film,
-                                                            selectedDate: selectedDate
-                                                        }
-                                                    })} className={"showtime-selection-item"} key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
-                                                        {showtime.time}
-                                                    </button>
-                                                )
-                                            })
+                                                                _id: showtime._id,
+                                                                time: time
+                                                            })) : []
+                                                    )
+                                            )
+                                                .map((showtime, index) => {
+                                                    return (
+                                                        <button onClick={() => navigate("/booking", {
+                                                            state: {
+                                                                selectedCity: { _id: cinema.city },
+                                                                selectedShowtime: {
+                                                                    cinema: {
+                                                                        _id: cinema._id,
+                                                                        name: cinema.name,
+                                                                        address: cinema.address
+                                                                    },
+                                                                    showtime: showtime._id,
+                                                                    room: showtime.room,
+                                                                    time: showtime.time
+                                                                },
+                                                                selectedMovie: film,
+                                                                selectedDate: selectedDate
+                                                            }
+                                                        })} className={"showtime-selection-item"} key={"detail-showtimes-" + showtime.room + "-" + showtime.time}>
+                                                            {showtime.time}
+                                                        </button>
+                                                    )
+                                                })
                                         }
                                     </div>
                                 </div>
