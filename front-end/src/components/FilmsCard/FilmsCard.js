@@ -1,12 +1,14 @@
 import "./FilmsCard.scss"
 import { Button, Modal } from 'antd';
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
-const FilmsCard = ({ _id, image, limit, star, video, setSelectedMovie }) => {
+const FilmsCard = ({ _id, image, limit, star, video }) => {
 
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
+    const { user } = useSelector((state) => state.user)
 
     return (
         <>
@@ -27,7 +29,13 @@ const FilmsCard = ({ _id, image, limit, star, video, setSelectedMovie }) => {
                     <>
                         <div className="films-card-button">
                             <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
-                            <button onClick={() => navigate("/booking")} className="films-card-button-booking">ĐẶT VÉ</button>
+                            <button onClick={() => {
+                                if (user.account) {
+                                    navigate("/booking")
+                                } else {
+                                    navigate("/auth/sign-in")
+                                }
+                            }} className="films-card-button-booking">ĐẶT VÉ</button>
                         </div>
                     </>
                 }

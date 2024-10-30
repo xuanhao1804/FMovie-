@@ -47,7 +47,10 @@ const BookingSchema = new Schema({
     orderCode: {
         type: Number
     },
-
+    assignedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "Account"
+    },
     transaction: {
         accountNumber: String,
         amount: Number,

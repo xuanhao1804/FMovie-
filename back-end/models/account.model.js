@@ -11,7 +11,9 @@ const AccountSchema = new Schema({
         type: String,
         required: true,
     },
-    roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
+    roles: [{
+        type: String
+    }],
     fullname: {
         type: String,
         required: true,

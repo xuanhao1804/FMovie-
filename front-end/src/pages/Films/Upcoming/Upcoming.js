@@ -13,7 +13,7 @@ const Upcoming = () => {
                 {state.movies.upcomingMovies && state.movies.upcomingMovies.length > 0 &&
                     state.movies.upcomingMovies.map((item, index) => {
                         return (
-                            <Col key={"film" + item.id} span={6} style={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
+                            <Col key={"film" + item.id} span={6} style={{ marginBottom: "1rem", padding: "1rem" }}>
                                 <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
                             </Col>
                         )

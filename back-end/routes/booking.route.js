@@ -11,5 +11,7 @@ bookingRoute.get("/getbooking", BookingController.getBooking)
 bookingRoute.get("/get-all", BookingController.GetAllBookingAdmin)
 bookingRoute.post("/create-payment", BookingController.CreatePayment)
 bookingRoute.post("/get-booked-seats", BookingController.getBookedSeats)
+bookingRoute.post("/get-history", BookingController.getUserBookedHistory)
+bookingRoute.post("/get-ticket", BookingController.getUserTicket)
 
 module.exports = bookingRoute;

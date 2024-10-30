@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Tabs, DatePicker, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { createUser, loginUser, saveUserData } from '../../reducers/UserReducer';
+import { useNavigate } from "react-router-dom"
+import { createUser, loginUser, saveUserData, setRecoverEmail, sendEmail } from '../../reducers/UserReducer';
 import './Authentication.scss';
 
 const { TabPane } = Tabs;
 
 export default function Authentication() {
   const [form] = Form.useForm();
+  const [register_form] = Form.useForm();
+  const [recover_form] = Form.useForm();
   const [activeTab, setActiveTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
-  if (user.user.account) {
-    window.location.href = '/';
-  }
-
+  const navigate = useNavigate()
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (user.user.account) {
+      window.location.href = '/';
+    }
+  }, [user])
 
   const handleSignUp = async (values) => {
     const data = {
@@ -31,8 +36,12 @@ export default function Authentication() {
     }
     setLoading(true);
     try {
-      await dispatch(createUser(data));
-      message.success('User registered successfully!');
+      const res = await dispatch(createUser(data));
+      if (res.payload.errors) {
+        message.error(res.payload.errors[0].msg);
+      }
+      else
+        message.success('User registered successfully!');
       //reset form fields
       form.resetFields();
     } catch (error) {
@@ -53,7 +62,7 @@ export default function Authentication() {
         message.success('Login successful!');
         const { password, ...userData } = rs.payload.account;
         dispatch(saveUserData({ account: userData, token: rs.payload.token }));
-        window.location.href = '/';
+        navigate(-1)
       }
       else
         message.error('Email or password is incorrect');
@@ -64,10 +73,22 @@ export default function Authentication() {
 
   const handlePasswordRecovery = async (values) => {
     setLoading(true);
-    // Implement actual password recovery logic here
-    console.log('Password recovery for:', values.email);
+    try {
+      const res = await dispatch(sendEmail({ email: values.recovery_email }));
+      console.log(res)
+      if (!res.payload.success) {
+        message.error(res.payload.message);
+      }
+      else {
+        dispatch(setRecoverEmail(values.recovery_email));
+        window.location.href = '/auth/forgot-password';
+      }
+    } catch (error) {
+      message.error('Password recovery failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
     setLoading(false);
-    message.info('Password recovery instructions sent to your email.');
   };
 
   const validatePassword = (_, value) => {
@@ -99,7 +120,7 @@ export default function Authentication() {
         <Input.Password prefix={<LockOutlined />} placeholder="Password" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button" loading={loading}>
+        <Button onClick={handleLogin} type="primary" htmlType="submit" className="login-form-button" loading={loading}>
           Log in
         </Button>
         Or <a href="#" onClick={() => setActiveTab('recover')}>Forgot password</a>
@@ -108,7 +129,7 @@ export default function Authentication() {
   );
 
   const renderRegisterForm = () => (
-    <Form form={form} name="register" onFinish={handleSignUp} className="register-form">
+    <Form form={register_form} name="register" onFinish={handleSignUp} className="register-form">
       <Form.Item
         name="name"
         rules={[{ required: true, message: 'Please input your Name!' }]}
@@ -180,9 +201,9 @@ export default function Authentication() {
   );
 
   const renderRecoverForm = () => (
-    <Form form={form} name="recover" onFinish={handlePasswordRecovery} className="recover-form">
+    <Form form={recover_form} name="recover" onFinish={handlePasswordRecovery} className="recover-form">
       <Form.Item
-        name="email"
+        name="recovery_email"
         rules={[
           { required: true, message: 'Please input your Email!' },
           { type: 'email', message: 'Please enter a valid email!' }
