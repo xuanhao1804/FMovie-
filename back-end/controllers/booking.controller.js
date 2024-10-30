@@ -165,11 +165,87 @@ const getBookedSeats = async (req, res) => {
     }
 };
 
+const getUserBookedHistory = async (req, res) => {
+    try {
+        const { userId } = req.body;
+        const bookings = await db.booking.find({
+            createdBy: userId
+        }).select("-transaction").populate({
+            path: "room",
+            select: "-showtimes -areas"
+        }).populate({
+            path: "showtime",
+            populate: {
+                path: "movie",
+                select: "name"
+            }
+        }).populate({
+            path: "popcorns.popcorn",
+            select: "name"
+        })
+        return res.status(200).json({
+            status: 200,
+            data: bookings
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+
+const getUserTicket = async (req, res) => {
+    try {
+        const { orderCode } = req.body;
+        let booking = await db.booking.findOne({
+            orderCode: orderCode,
+        }).select("status updatedAt")
+        if (booking) {
+            if (booking.status === "cancelled") {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Đơn đã bị hủy"
+                });
+            } else {
+                if (booking.status === "end") {
+                    let d = new Date(booking.updatedAt);
+                    return res.status(400).json({
+                        status: 400,
+                        message: "Vé đã được lấy vào lúc: " + [d.getMonth() + 1,
+                        d.getDate(), d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':')
+                    });
+                } else {
+                    booking.status = "end"
+                    await booking.save()
+                    return res.status(404).json({
+                        status: 201,
+                        message: "Xác nhận thành công. Đang xuất vé ..."
+                    });
+                }
+            }
+        } else {
+            return res.status(404).json({
+                status: 404,
+                message: "Không tìm thấy đơn"
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+
 const BookingController = {
     CreatePayment,
     DeletePayment,
     receiveHook,
     getBooking,
-    getBookedSeats
+    getBookedSeats,
+    getUserBookedHistory,
+    getUserTicket
 };
+
 module.exports = BookingController;

@@ -12,7 +12,6 @@ const MovieSelection = ({ selectedCity, selectedMovie, setSelectedMovie, movieSe
 
     const getMoviesInCity = async () => {
         const response = await MovieService.fetchMovieByCityService({ city: selectedCity })
-        console.log(response)
         if (response.status === 200) {
             setAvailableMovies(response.data)
         } else {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Tabs, DatePicker, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom"
 import { createUser, loginUser, saveUserData, setRecoverEmail, sendEmail } from '../../reducers/UserReducer';
 import './Authentication.scss';
 
@@ -14,12 +15,13 @@ export default function Authentication() {
   const [activeTab, setActiveTab] = useState('login');
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate()
   const dispatch = useDispatch();
-  
-  if (user.user.account) {
-    window.location.href = '/';
-  }
-
+  useEffect(() => {
+    if (user.user.account) {
+      window.location.href = '/';
+    }
+  }, [user])
 
   const handleSignUp = async (values) => {
     const data = {
@@ -60,7 +62,7 @@ export default function Authentication() {
         message.success('Login successful!');
         const { password, ...userData } = rs.payload.account;
         dispatch(saveUserData({ account: userData, token: rs.payload.token }));
-        window.location.href = '/';
+        navigate(-1)
       }
       else
         message.error('Email or password is incorrect');
@@ -72,13 +74,12 @@ export default function Authentication() {
   const handlePasswordRecovery = async (values) => {
     setLoading(true);
     try {
-      const res = await dispatch(sendEmail({email: values.recovery_email}));
+      const res = await dispatch(sendEmail({ email: values.recovery_email }));
       console.log(res)
       if (!res.payload.success) {
         message.error(res.payload.message);
       }
-      else
-      {
+      else {
         dispatch(setRecoverEmail(values.recovery_email));
         window.location.href = '/auth/forgot-password';
       }
@@ -119,7 +120,7 @@ export default function Authentication() {
         <Input.Password prefix={<LockOutlined />} placeholder="Password" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button" loading={loading}>
+        <Button onClick={handleLogin} type="primary" htmlType="submit" className="login-form-button" loading={loading}>
           Log in
         </Button>
         Or <a href="#" onClick={() => setActiveTab('recover')}>Forgot password</a>

@@ -10,5 +10,7 @@ bookingRoute.post("/receivehook", BookingController.receiveHook)
 bookingRoute.get("/getbooking", BookingController.getBooking)
 bookingRoute.post("/create-payment", BookingController.CreatePayment)
 bookingRoute.post("/get-booked-seats", BookingController.getBookedSeats)
+bookingRoute.post("/get-history", BookingController.getUserBookedHistory)
+bookingRoute.post("/get-ticket", BookingController.getUserTicket)
 
 module.exports = bookingRoute;

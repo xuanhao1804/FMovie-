@@ -39,6 +39,24 @@ body {
     height: auto;
 }
 
+.square-16 {
+    width       : 1rem;
+    height      : auto;
+    aspect-ratio: 1;
+}
+
+.square-32 {
+    width       : 2rem;
+    height      : auto;
+    aspect-ratio: 1;
+}
+
+.square-64 {
+    width       : 4rem;
+    height      : auto;
+    aspect-ratio: 1;
+}
+
 .text-dark {
     color: #383838;
 }

@@ -1,10 +1,14 @@
-export const getVietnameseDate = (date) => {
+export const getVietnameseDate = (date, hideWeekday = false) => {
     const options = {
-        weekday: "long",
         year: "numeric",
         month: "numeric",
         day: "numeric",
     };
+
+    if (!hideWeekday) {
+        options.weekday = "long";
+    }
+
     let vietnameseDate = new Date(date).toLocaleDateString("vi-VN", options)
     return vietnameseDate
 }

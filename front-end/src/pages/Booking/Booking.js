@@ -15,11 +15,13 @@ import PaymentSelection from "../../components/BookingSelection/PaymentSelection
 import { BookingService } from "../../services/BookingService"
 
 import { socket } from "../../App"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 const Booking = () => {
 
     const location = useLocation()
+
+    const navigate = useNavigate()
 
     const { popcorns, user } = useSelector((state) => state)
 
@@ -52,6 +54,12 @@ const Booking = () => {
             return total + (popcorn.quantity * popcorns.list.find(p => p._id === popcorn._id).price)
         }, 0)
     }, [selectedPopcorns])
+
+    useEffect(() => {
+        if (!user.user || !user.user.account) {
+            navigate("/auth/sign-in")
+        }
+    }, [])
 
     const getMoviesShowtime = async () => {
         const response = await ShowtimeService.fetchShowtimeByMovieService({
