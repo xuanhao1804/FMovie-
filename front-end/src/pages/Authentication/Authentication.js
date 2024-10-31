@@ -32,7 +32,7 @@ export default function Authentication() {
       password: values.password,
       confirmPassword: values.confirmPassword,
       agreement: values.agreement,
-      role: 'user'
+      roles: ['user']
     }
     setLoading(true);
     try {

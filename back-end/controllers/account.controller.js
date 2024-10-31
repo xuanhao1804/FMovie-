@@ -11,13 +11,14 @@ const signUp = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, fullname, dob, phone } = req.body;
+    const { email, password, fullname, dob, phone, roles } = req.body;
     const account = new Account({
       email,
       password,
       fullname,
       dob,
-      phone
+      phone,
+      roles
     });
 
     await account.save();
