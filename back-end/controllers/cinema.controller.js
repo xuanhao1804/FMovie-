@@ -106,6 +106,28 @@ const getShowtimesByCinema = async (req, res) => {
         return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
     }
 };
+
+const getRoomByCinema = async (req, res) => {
+    try {
+        // Lấy danh sách suất chiếu theo rạp và ngày
+        const rooms = await db.cinema.findOne({
+            _id: req.body.cinemaId,
+        }).select("rooms")
+            .populate({
+                path: "rooms",
+                select: "name areas"
+            })
+
+        return res.status(200).json({
+            status: 200,
+            data: rooms
+        });
+    } catch (error) {
+        console.error('Error fetching showtimes by cinema:', error);
+        return res.status(500).json({ message: 'Lỗi hệ thống Backend' });
+    }
+};
+
 const CreateNewCinema = async (req, res) => {
     const { name, city, address } = req.body;
     try {
@@ -194,6 +216,7 @@ const getMoviesAndShowtimesByCinema = async (req, res) => {
 
 const CinemaController = {
     getAllCinema, getCinemaByCity, getMoviesByCinema, getShowtimesByCinema, CreateNewCinema,
-    EditCinema, getMoviesAndShowtimesByCinema
+    EditCinema, getMoviesAndShowtimesByCinema,
+    getRoomByCinema
 };
 module.exports = CinemaController;

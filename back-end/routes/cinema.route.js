@@ -11,7 +11,7 @@ cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
 cinemaRouter.get("/get-movies-by-cinema/:cinemaId", cinemaController.getMoviesByCinema);
 
-
+cinemaRouter.post("/get-rooms", cinemaController.getRoomByCinema);
 
 cinemaRouter.get('/get-showtimes', cinemaController.getShowtimesByCinema);
 
