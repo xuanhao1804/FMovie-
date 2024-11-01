@@ -11,7 +11,6 @@ import useCinemas from './components/useCinemas';
 const NavComponent = () => {
   const cinemas = useCinemas();
 
-
   return [
     {
       component: CNavItem,
@@ -25,35 +24,35 @@ const NavComponent = () => {
     },
     {
       component: CNavTitle,
-      name: 'Management',
+      name: 'Quản lý',
     },
     {
       component: CNavItem,
-      name: 'Film',
+      name: 'Phim',
       to: '/film',
       icon: <FontAwesomeIcon icon={faFilm} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
     },
     {
       component: CNavItem,
-      name: 'Cinema',
+      name: 'Rạp chiếu phim',
       to: '/cinema',
       icon: <FontAwesomeIcon icon={faTheaterMasks} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
     },
     {
       component: CNavItem,
-      name: 'Ticket',
+      name: 'Vé',
       to: '/ticket',
       icon: <FontAwesomeIcon icon={faTicket} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
     },
     {
       component: CNavItem,
-      name: 'PopCorn',
+      name: 'Bỏng ngô & nước uống',
       to: '/popcorn',
       icon: <FontAwesomeIcon icon={faCookieBite} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
     },
     {
       component: CNavGroup,
-      name: 'Room',
+      name: 'Phòng',
       icon: <FontAwesomeIcon icon={faClipboardList} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
       items: Array.isArray(cinemas) ? cinemas.map(cinema => ({
         component: CNavItem,
@@ -69,7 +68,7 @@ const NavComponent = () => {
         component: CNavItem,
         name: cinema.name,
         to: `/showtime/${cinema._id}`,
-      })) : [], 
+      })) : [],
     },
   ];
 };
