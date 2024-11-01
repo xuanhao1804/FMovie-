@@ -23,9 +23,63 @@ const getRoomByID = async (req, res) => {
     }
 };
 
-const CreatnewRoomforCinema = async (req, res) => {
+const creatNewRoom = async (req, res) => {
     try {
+        if (req.body) {
+            const newRoom = await db.room.create({
+                name: req.body.roomName,
+                showtimes: [],
+                areas: req.body.areas
+            })
+            if (newRoom) {
+                console.log(newRoom)
+                const cinema = await db.cinema.findOne({
+                    _id: req.body.cinemaId
+                })
+                cinema.rooms.push(newRoom._id)
+                await cinema.save()
+                return res.status(201).json({
+                    message: "Thêm mới thành công",
+                    room: newRoom
+                });
+            } else {
+                return res.status(500).json({
+                    message: "Có lỗi xảy ra, vui lòng thử lại"
+                });
+            }
+        } else {
+            return res.status(422).json({
+                message: "Thiếu dữ liệu"
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
 
+const editRoom = async (req, res) => {
+    try {
+        if (req.body) {
+            const updatedRoom = await db.room.findOneAndUpdate(
+                { _id: req.body.id },
+                {
+                    name: req.body.name,
+                    areas: req.body.areas
+                },
+                { new: true } // Return the updated document
+            );
+            return res.status(201).json({
+                message: "Cập nhật thành công",
+                room: updatedRoom
+            });
+        } else {
+            return res.status(422).json({
+                message: "Thiếu dữ liệu"
+            });
+        }
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -36,6 +90,7 @@ const CreatnewRoomforCinema = async (req, res) => {
 
 const RoomController = {
     getRoomByID,
-    CreatnewRoomforCinema
+    creatNewRoom,
+    editRoom
 };
 module.exports = RoomController;

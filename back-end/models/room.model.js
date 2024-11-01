@@ -24,7 +24,12 @@ const RoomSchema = new Schema({
                 {
                     position: {
                         type: Number,
-                        isVip: Boolean
+                    },
+                    isVip: {
+                        type: Boolean
+                    },
+                    isEnable: {
+                        type: Boolean
                     }
                 }
             ]

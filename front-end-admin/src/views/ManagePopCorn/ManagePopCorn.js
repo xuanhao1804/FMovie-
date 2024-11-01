@@ -8,6 +8,7 @@ const ManagePopcorn = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [selectedPopcorn, setSelectedPopcorn] = useState(null);
+
     const columns = [
         {
             title: 'No.',
