@@ -51,7 +51,6 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
 
     return (
         <div className="seat-selection selection-section" >
-            {console.log(bookedSeats)}
             <div className="d-flex justify-content-between align-items-center">
                 <div className="d-flex flex-column align-items-center gap-2">
                     <i class="fs-4 fa-solid fa-door-open"></i>
