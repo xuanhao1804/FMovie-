@@ -88,19 +88,25 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
                                 <div className="seat-selection-area-name">Khu {area.name}</div>
                                 <div className="seat-selection-list">
                                     {area.seats && area.seats.map((seat, index) => {
-                                        return (
-                                            <div onClick={() => {
-                                                if (!bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position)) {
-                                                    handleChangeSelectedSeats(area.name, seat.position, seat.isVip)
-                                                }
-                                            }}
-                                                className={bookedSeats && bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position) ? "seat-selection-item-unavailable" : selectedSeats && selectedSeats.length > 0 && selectedSeats.findIndex(currentSeat => currentSeat.area === area.name && currentSeat.position === seat.position) > -1 ? "seat-selection-item-selected" : "seat-selection-item"} style={{ flex: `1 0 calc(${(100 / area.col)}%)` }}>
-                                                <span>{area.name + seat.position}</span>
-                                                {seat.isVip === true &&
-                                                    <i className="seat-selection-icon-vip fa-solid fa-crown"></i>
-                                                }
-                                            </div>
-                                        )
+                                        if (seat.isEnable) {
+                                            return (
+                                                <div onClick={() => {
+                                                    if (!bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position)) {
+                                                        handleChangeSelectedSeats(area.name, seat.position, seat.isVip)
+                                                    }
+                                                }}
+                                                    className={bookedSeats && bookedSeats.find(bookedSeat => bookedSeat.area === area.name && bookedSeat.position === seat.position) ? "seat-selection-item-unavailable" : selectedSeats && selectedSeats.length > 0 && selectedSeats.findIndex(currentSeat => currentSeat.area === area.name && currentSeat.position === seat.position) > -1 ? "seat-selection-item-selected" : "seat-selection-item"} style={{ flex: `1 0 calc(${(100 / area.col)}%)` }}>
+                                                    <span>{area.name + seat.position}</span>
+                                                    {seat.isVip === true &&
+                                                        <i className="seat-selection-icon-vip fa-solid fa-crown"></i>
+                                                    }
+                                                </div>
+                                            )
+                                        } else {
+                                            return (
+                                                <div className="seat-selection-item"></div>
+                                            )
+                                        }
                                     })}
                                 </div>
                             </div>

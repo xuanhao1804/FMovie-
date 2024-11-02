@@ -208,10 +208,58 @@ const resetPassword = async (req, res) => {
   }
 }
 
+
+const getAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const account = await Account.findById(id);
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    return res.status(200).json({ success: true, data: account });
+  } catch (error) {
+    console.error('Error fetching account:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch account', error: error.message });
+  }
+};
+
+const updateAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body; // Nhận tất cả dữ liệu cần cập nhật từ req.body
+
+    const account = await Account.findByIdAndUpdate(id, updatedData, { new: true });
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    return res.status(200).json({ success: true, data: account, message: 'Account updated successfully' });
+  } catch (error) {
+    console.error('Error updating account:', error);
+    res.status(500).json({ success: false, message: 'Failed to update account', error: error.message });
+  }
+};
+
+
+
+const getAllAccounts = async (req, res) => {
+  try {
+    const accounts = await Account.find(); // Lấy tất cả các tài khoản
+    return res.status(200).json({ success: true, data: accounts });
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch accounts', error: error.message });
+  }
+};
+
+
+
 module.exports = {
   signUp,
   signIn,
   sendMail,
   verifyOTP,
-  resetPassword
+  resetPassword,
+  getAccount,
+  updateAccount,
+  getAllAccounts
 };
