@@ -1,64 +1,101 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Carousel, Row, Col } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import '../../../node_modules/antd/dist/antd';
-import './Home.scss';
 import { useSelector, useDispatch } from "react-redux";
+import { fetchMovies } from "../../reducers/MovieReducer";
+import { fetchCarousels } from "../../reducers/CarouselReducer";
+import { useNavigate } from 'react-router-dom'; 
 import FilmsCard from '../../components/FilmsCard/FilmsCard';
-import { fetchMovies } from "../../reducers/MovieReducer"
-import { useState } from "react"
+import './Home.scss';
 
-
-const carouselimg = [
-  {
-    url: 'https://www.galaxycine.vn/media/2024/2/22/galaxy-banner-1800x1200px_1708583876401.jpg',
-  },
-  {
-    url: 'https://nativespeaker.vn/uploaded/page_1601_1712215670_1713753865.jpg',
-  },
-  {
-    url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7Uo41ys1S7mFlsPObCnnEQMAiv4hOnf4daQ&s',
-  },
-  {
-    url: 'https://img.freepik.com/premium-vector/movie-cinema-premiere-background_41737-251.jpg',
-  },
-];
 
 const CustomLeftArrow = ({ onClick }) => (
-  <LeftOutlined className="custom-arrow" onClick={onClick} />
+  <LeftOutlined className="custom-arrow arrow-left" onClick={onClick} />
 );
 
 const CustomRightArrow = ({ onClick }) => (
-  <RightOutlined className="custom-arrow" onClick={onClick} />
+  <RightOutlined className="custom-arrow arrow-right" onClick={onClick} />
 );
 
 const Home = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const mainCarouselRef = useRef(null);
+  const postersCarouselRef = useRef(null);
 
-  useState(() => {
+  useEffect(() => {
     dispatch(fetchMovies());
-  }, [])
-  const state = useSelector((state) => state);
+    dispatch(fetchCarousels());
+  }, [dispatch]);
 
-  const carouselRef = useRef(null);
+  const carousels = useSelector((state) => state.carousels?.carousels || []);
+  const moviesState = useSelector((state) => state.movies);
 
-  const goToNextSlide = () => {
-    carouselRef.current.next();
+  const goToNextMainSlide = () => {
+    if (mainCarouselRef.current) {
+      mainCarouselRef.current.next();
+    }
   };
 
-  const goToPrevSlide = () => {
-    carouselRef.current.prev();
+  const goToPrevMainSlide = () => {
+    if (mainCarouselRef.current) {
+      mainCarouselRef.current.prev();
+    }
   };
+
+  const goToNextPosterSlide = () => {
+    if (postersCarouselRef.current) {
+      postersCarouselRef.current.next();
+    }
+  };
+
+  const goToPrevPosterSlide = () => {
+    if (postersCarouselRef.current) {
+      postersCarouselRef.current.prev();
+    }
+  };
+
+  const handleCarouselClick = (carousel) => {
+    console.log('Carousel clicked:', carousel);
+    if (carousel.linkType === 'movie' && carousel.linkUrl) {
+      // Thay thế `navigate` bằng `window.location.href`
+      window.location.href = carousel.linkUrl;
+    } else if (carousel.linkType === 'external' && carousel.linkUrl) {
+      window.open(carousel.linkUrl, '_blank');
+    } else {
+      console.log('No valid link found for this carousel item');
+    }
+  };
+  
+  
+  
+  
+  
+  
 
   return (
     <div className="home-container">
-      <Carousel arrows={true} infinite={false} className="main-carousel">
-        {carouselimg.map((imageUrl, index) => (
-          <div key={index}>
-            <img src={imageUrl.url} alt={`Slide ${index + 1}`} />
-          </div>
-        ))}
-      </Carousel>
+      <div className="main-carousel-wrapper">
+      <Carousel ref={mainCarouselRef} arrows={false} infinite={true} className="main-carousel">
+  {carousels.map((carousel, index) => (
+    <div
+      key={index}
+      onClick={() => handleCarouselClick(carousel)}
+      style={{ cursor: 'pointer' }}
+    >
+      <img src={carousel.imageUrl} alt={`Slide ${index + 1}`} />
+    </div>
+  ))}
+</Carousel>
+
+        <div className="arrow-left">
+          <CustomLeftArrow onClick={goToPrevMainSlide} />
+        </div>
+        <div className="arrow-right">
+          <CustomRightArrow onClick={goToNextMainSlide} />
+        </div>
+      </div>
+
       <Row justify="center">
         <Col xs={24} sm={24} md={20}>
           <div className="title-section">
@@ -72,7 +109,7 @@ const Home = () => {
         <Col xs={24} sm={24} md={20}>
           <div className="posters-carousel-wrapper">
             <Carousel
-              ref={carouselRef}
+              ref={postersCarouselRef}
               slidesToShow={4}
               slidesToScroll={1}
               autoplay={true}
@@ -83,22 +120,17 @@ const Home = () => {
               arrows={false}
               className="posters-carousel"
             >
-
-              {state.movies?.playingMovies?.map((item, index) => {
-                return (
-                  <div className='px-4'>
-                    <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
-                  </div>
-                )
-              })
-              }
+              {moviesState?.playingMovies?.map((item, index) => (
+                <div className='px-4' key={index}>
+                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
+                </div>
+              ))}
             </Carousel>
-
-            <div className="arrow-left">
-              <CustomLeftArrow onClick={goToPrevSlide} />
+            <div className="arrow-left posters-arrow">
+              <CustomLeftArrow onClick={goToPrevPosterSlide} />
             </div>
-            <div className="arrow-right">
-              <CustomRightArrow onClick={goToNextSlide} />
+            <div className="arrow-right posters-arrow">
+              <CustomRightArrow onClick={goToNextPosterSlide} />
             </div>
           </div>
         </Col>
