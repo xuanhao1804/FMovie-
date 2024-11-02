@@ -85,7 +85,7 @@ const Login = () => {
 
               <div className="login-center-buttons">
                 <button type="button" onClick={handleLogin}>
-                  Log In
+                  Đăng nhập
                 </button>
               </div>
 
@@ -95,7 +95,7 @@ const Login = () => {
                   href="/forgot-password"
                   style={{ fontSize: '12px', textDecoration: 'none', color: '#007bff' }}
                 >
-                  Forgot password?
+                  Quên mật khẩu?
                 </a>
               </div>
             </form>
