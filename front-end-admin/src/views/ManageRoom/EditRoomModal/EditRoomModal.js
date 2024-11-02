@@ -95,7 +95,7 @@ const EditRoomModal = ({ isModalOpen, setIsOpenModal, room, availableRoom, setRo
                         areas: areas.map(({ totalSeat, ...rest }) => rest)
                     })
                     setRooms(prevRooms => prevRooms.map(room =>
-                        room._id === data.room._id
+                        room._id === data?.room?._id
                             ? { ...room, name: data.room.name, areas: data.room.areas }
                             : room
                     ));

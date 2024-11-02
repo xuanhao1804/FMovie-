@@ -1,5 +1,5 @@
 import "./Booking.scss"
-import { Row, Col, Divider } from "antd"
+import { Row, Col, Divider, message } from "antd"
 import film_blank from "../../assets/icon/film-blank.svg"
 import { useEffect, useMemo, useRef, useState } from "react"
 import CitySelection from "../../components/BookingSelection/CitySelection/CitySelection"
@@ -22,7 +22,7 @@ const Booking = () => {
     const location = useLocation()
 
     const navigate = useNavigate()
-
+    const [messageApi, contextHolder] = message.useMessage();
     const { popcorns, user } = useSelector((state) => state)
 
     const [selectedCity, setSelectedCity] = useState("")
@@ -91,7 +91,24 @@ const Booking = () => {
             seats: selectedSeats,
             popcorns: selectedPopcorns
         })
-        setPaymentInformation(response)
+        if (response?.status === 409) {
+            messageApi.error(response.message);
+            setStep(2)
+            setSelectedSeats([])
+        } else {
+            setPaymentInformation(response)
+        }
+    }
+
+    const handleSessionTimeout = () => {
+        setStep(1)
+        setSelectedCity("")
+        setSelectedMovie("")
+        setSelectedShowtime(null)
+        setSelectedDate("")
+        setSelectedSeats([])
+        setSelectedPopcorns([])
+        messageApi.error("Hết thời gian thanh toán, vui lòng thử lại");
     }
 
     useEffect(() => {
@@ -118,6 +135,10 @@ const Booking = () => {
             }
         }
     }, [selectedMovie])
+
+    useEffect(() => {
+        setSelectedSeats([])
+    }, [selectedShowtime])
 
     useEffect(() => {
         setPaymentInformation(null)
@@ -153,6 +174,7 @@ const Booking = () => {
 
     return (
         <div className="booking">
+            {contextHolder}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
@@ -185,7 +207,7 @@ const Booking = () => {
                             {
                                 step === 4 &&
                                 <>
-                                    <PaymentSelection handleCreatePayment={handleCreatePayment} paymentInformation={paymentInformation} />
+                                    <PaymentSelection handleCreatePayment={handleCreatePayment} paymentInformation={paymentInformation} handleSessionTimeout={handleSessionTimeout} />
                                 </>
                             }
                             {
@@ -319,6 +341,10 @@ const Booking = () => {
                                 <button onClick={() => {
                                     if (step > 1) {
                                         setStep(step => step - 1)
+                                        if (paymentInformation !== null) {
+                                            console.log(paymentInformation)
+                                            setPaymentInformation(null)
+                                        }
                                     }
                                 }} className={step === 1 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
                                     Quay lại
@@ -343,6 +369,12 @@ const Booking = () => {
                                 }} className={step === 4 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
                                     Tiếp tục
                                 </button>
+                            </div>
+                        }
+                        {
+                            paymentInformation !== null &&
+                            <div className="text-red">
+                                <span>Quay lại lúc này sẽ hủy mã QR cũng như việc giữ chỗ</span>
                             </div>
                         }
                     </Col>

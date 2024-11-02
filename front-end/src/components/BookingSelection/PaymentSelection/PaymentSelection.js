@@ -3,15 +3,46 @@ import "./PaymentSelection.scss"
 import { QRCode, Space } from "antd"
 import { NumericFormat } from "react-number-format"
 import logo from "../../../assets/icon/logo.png"
+import { useEffect, useState } from "react"
 
-const PaymentSelection = ({ handleCreatePayment, paymentInformation }) => {
+const PaymentSelection = ({ handleCreatePayment, paymentInformation, handleSessionTimeout }) => {
+
+    const [timeLeft, setTimeLeft] = useState(null);
+
+    useEffect(() => {
+        if (paymentInformation !== null) {
+            setTimeLeft(600)
+        }
+    }, [paymentInformation]);
+
+    useEffect(() => {
+        if (timeLeft !== null && timeLeft > 0) {
+            const timer = setInterval(() => {
+                setTimeLeft(prevTime => prevTime - 1);
+            }, 1000);
+
+            return () => clearInterval(timer);
+        } else if (timeLeft === 0) {
+            handleSessionTimeout()
+        }
+    }, [timeLeft]);
+
+
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    };
 
     return (
         <div className="payment-selection selection-section" >
-            <div className="d-flex justify-content-between align-items-center mb-3">
+            <div className="d-flex justify-content-between align-items-center mb-3 fs-5">
                 <span className="fs-5 fw-semibold">
                     Thanh toán
                 </span>
+                <div className={timeLeft < 60 ? "text-red" : ""}>
+                    <span>{timeLeft !== null && formatTime(timeLeft)}</span>
+                </div>
             </div>
             <div className="d-flex justify-content-between align-items-center gap-5">
                 {
@@ -19,7 +50,6 @@ const PaymentSelection = ({ handleCreatePayment, paymentInformation }) => {
                         <>
                             <div className="d-flex flex-column gap-3">
                                 <QRCode value={paymentInformation.checkoutUrl || '-'} size={240} icon={logo} />
-                                <a href={paymentInformation.checkoutlink} target="_blank" rel="noreferrer">{paymentInformation.checkoutlink}</a>
                             </div>
                             <div className="fs-6">
                                 <div className="d-flex justify-content-between">
