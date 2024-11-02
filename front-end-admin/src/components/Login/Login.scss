@@ -19,27 +19,31 @@ body{
   display: flex;
 }
 
-.login-left{
-  flex-grow: 1;
+.login-left {
+  flex: 6; /* Chiếm 60% chiều rộng */
   height: 100vh;
   background-color: #E9E9E9;
-
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.login-left img{
-  width: 400px;
+.login-left {
+  flex: 6; /* Chiếm 60% chiều rộng */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* Loại bỏ padding */
+  margin: 0; /* Loại bỏ margin */
 }
 
-.login-right{
-
+.login-right {
+  flex: 4; /* Chiếm 40% chiều rộng */
   height: 100vh;
-
-  flex-grow: 1;
-
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login-right-container{
@@ -224,4 +228,11 @@ form button[type='button'] {
         font-size: 1.5rem;
     }
 
+}
+
+.cinema-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo ảnh lấp đầy vùng chứa */
+  display: block; /* Loại bỏ khoảng trắng do inline-block */
 }
