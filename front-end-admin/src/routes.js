@@ -58,6 +58,8 @@ const ManageShowtime = React.lazy(() => import('./views/ManageShowtime/ManageSho
 const ManagePopCorn = React.lazy(() => import('./views/ManagePopCorn/ManagePopCorn'))
 const ManageRoom = React.lazy(() => import('./views/ManageRoom/ManageRoom'))
 const ViewBooking = React.lazy(() => import('./views/ViewBooking/ViewBooking'))
+const ManageAccount = React.lazy(() => import('./views/ManageAccount/ManageAccount'))
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -67,7 +69,13 @@ const routes = [
   { path: '/showtime/:id', name: 'Cinema > Showtime', element: ManageShowtime, exact: true },
   { path: '/popcorn', name: 'PopCorn', element: ManagePopCorn, exact: true },
   { path: '/ticket', name: 'Ticket', element: ViewBooking, exact: true },
-  { path: "/room/:cinemaId", name: "Cinema > Room", element: ManageRoom, exact: true }
+  { path: "/room/:cinemaId", name: "Cinema > Room", element: ManageRoom, exact: true },
+  {
+    path: '/manage-account',
+    exact: true,
+    name: 'Manage Account',
+    element: ManageAccount,
+}
 ]
 
 export default routes

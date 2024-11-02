@@ -24,8 +24,13 @@ const AccountSchema = new Schema({
     phone: {
         type: String
     },
-
+    status: {
+        type: String,
+        enum: ['active', 'disable'],
+        default: 'active'
+    }
 }, { timestamps: true });
+
 
 const Account = mongoose.model('Account', AccountSchema);
 

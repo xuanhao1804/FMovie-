@@ -13,4 +13,12 @@ accountRoute.post("/verify-otp", accountController.verifyOTP)
 
 accountRoute.post("/reset-password", accountController.resetPassword)
 
+accountRoute.get('/:id', accountController.getAccount);
+
+accountRoute.put('/:id', accountController.updateAccount);
+
+accountRoute.get('/', accountController.getAllAccounts);
+
+
+
 module.exports = accountRoute;
