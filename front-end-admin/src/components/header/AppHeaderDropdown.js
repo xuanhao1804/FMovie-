@@ -39,6 +39,7 @@ const AppHeaderDropdown = () => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Tài khoản</CDropdownHeader>
+
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
           Cập nhật
@@ -66,7 +67,9 @@ const AppHeaderDropdown = () => {
           <CBadge color="warning" className="ms-2">
             42
           </CBadge>
+
         </CDropdownItem> */}
+
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Cài đặt</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
