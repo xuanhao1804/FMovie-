@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./models");
 
-const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter, BookingRouter, PopcornRouter } = require('./routes');
+const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter, BookingRouter, PopcornRouter,CarouselRouter } = require('./routes');
 
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
@@ -31,7 +31,7 @@ app.use(bodyParser.json({ limit: "64mb" }));
 app.use(bodyParser.urlencoded({ limit: "64mb", extended: true }));
 
 // Above our `app.get("/users")` handler
-
+app.use("/carousel", CarouselRouter);
 app.use("/movie", MovieRouter);
 app.use("/cinema", CinemaRouter);
 app.use("/room", RoomRouter);

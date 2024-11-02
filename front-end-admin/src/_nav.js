@@ -3,12 +3,12 @@ import CIcon from '@coreui/icons-react';
 import { cilSpeedometer } from '@coreui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { faFilm, faTheaterMasks, faTicket, faCalendar, faClipboardList, faCookieBite, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faFilm, faTheaterMasks, faTicket, faCalendar, faClipboardList, faCookieBite, faUser, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
 import useCinemas from './components/useCinemas';
 
-const NavComponent = () => {
+const NavComponent = () => {  
   const cinemas = useCinemas();
 
   return [
@@ -75,6 +75,12 @@ const NavComponent = () => {
       name: 'Quản lý tài khoản',
       to: '/manage-account',
       icon: <FontAwesomeIcon icon={faUser} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
+    },
+    {
+      component: CNavItem,
+      name: 'Quản lý carousel',
+      to: '/manage-carousel',
+      icon: <FontAwesomeIcon icon={faPhotoVideo} style={{ marginRight: "5px" }} customClassName="nav-icon" />      ,
     },
   ];
 };

@@ -59,7 +59,7 @@ const ManagePopCorn = React.lazy(() => import('./views/ManagePopCorn/ManagePopCo
 const ManageRoom = React.lazy(() => import('./views/ManageRoom/ManageRoom'))
 const ViewBooking = React.lazy(() => import('./views/ViewBooking/ViewBooking'))
 const ManageAccount = React.lazy(() => import('./views/ManageAccount/ManageAccount'))
-
+const ManageCarousel = React.lazy(() => import('./views/ManageCarousel/ManageCarousel'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -75,6 +75,12 @@ const routes = [
     exact: true,
     name: 'Manage Account',
     element: ManageAccount,
+},
+{
+  path: '/manage-carousel',
+  exact: true,
+  name: 'Manage Carousel',
+  element: ManageCarousel,
 }
 ]
 

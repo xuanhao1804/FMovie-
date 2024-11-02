@@ -7,12 +7,14 @@ const Showtime = require("./showtime.model");
 const Booking = require("./booking.model")
 const Account = require("./account.model");
 const Popcorn = require("./popcorn.model");
+const Carousel = require("./carousel.model");
 const OTP = require("./otp.model");
 mongoose.Promise = global.Promise;
 
 const db = {};
 
 // db.user = User
+db.carousel = Carousel
 db.movie = Movie
 db.city = City
 db.cinema = Cinema
