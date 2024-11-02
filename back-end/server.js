@@ -40,6 +40,7 @@ app.use("/city", CityRouter);
 app.use("/user", AccountRouter);
 app.use("/booking", BookingRouter);
 app.use("/popcorn", PopcornRouter);
+app.use("/account", AccountRouter);
 io.on("connection", (socket) => {
     console.log("An user connect: ", socket.id);
 
