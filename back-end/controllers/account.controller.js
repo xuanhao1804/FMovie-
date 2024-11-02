@@ -1,51 +1,62 @@
 const Account = require("../models").account;
 const { validationResult } = require('express-validator');
 const { createJWT } = require('../middlewares/JsonWebToken')
+const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const OPT = require('../models').otp;
+
 const signUp = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password, fullname, dob, phone, roles } = req.body;
+
+    // Băm mật khẩu trước khi lưu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const account = new Account({
       email,
-      password,
+      password: hashedPassword, // Lưu mật khẩu đã băm
       fullname,
       dob,
       phone,
-      roles
+      roles,
     });
 
     await account.save();
     res.status(201).send(account);
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error during sign-up:', error);
+    res.status(500).send({ message: 'Failed to create account', error: error.message });
   }
 };
+
 
 const signIn = async (req, res) => {
   try {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    const { email, password } = req.body;
+    const account = await Account.findOne({ email });
+
+    if (!account) {
+      return res.status(404).json({ message: 'Account not found' });
     }
 
-    const { email, password } = req.body;
-    const account = await Account.findOne({ email, password });
-    if (!account) {
-      return res.status(500).send('Account not found');
+    // Kiểm tra mật khẩu theo cách đơn giản (không băm)
+    if (account.password !== password) {
+      return res.status(401).json({ message: 'Invalid password' });
     }
-    return res.status(200).send({ account, token: createJWT({ email: account.email }) });
+
+    return res.status(200).json({ account, token: createJWT({ email: account.email }) });
   } catch (error) {
-    return res.status(500).send(error);
+    console.error('Error during sign-in:', error);
+    return res.status(500).json({ message: 'An internal server error occurred', error: error.message });
   }
 };
+
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
