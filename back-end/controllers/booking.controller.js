@@ -10,50 +10,62 @@ const payOS = new PayOS(
 const CreatePayment = async (req, res) => {
     try {
         const { total_price, createdBy, room, showtime, seats, popcorns } = req.body;
-        const orderCode = Date.now();
+        const bookedSeats = await findBookedSeats(room, showtime);
+        const checkSeats = seats.filter(bookingSeat =>
+            bookedSeats.some(bookedSeat =>
+                bookingSeat.area === bookedSeat.area && bookingSeat.position === bookedSeat.position
+            )
+        );
+        console.log(checkSeats)
+        if (checkSeats.length > 0) {
+            return res.status(409).json({
+                status: 409,
+                messgae: "Ghế đã được đặt trước, vui lòng chọn ghế khác"
+            });
+        } else {
+            const orderCode = Date.now();
+            const newBooking = new db.booking({
+                total_price,
+                status: "pending",
+                createdBy,
+                room,
+                showtime,
+                seats,
+                popcorns,
+                orderCode: orderCode,
+            });
+            const savedBooking = await newBooking.save();
 
-        const newBooking = new db.booking({
-            total_price,
-            status: "pending",
-            createdBy,
-            room,
-            showtime,
-            seats,
-            popcorns,
-            orderCode: orderCode,
-        });
-        const savedBooking = await newBooking.save();
+            setTimeout(async () => {
+                const bookingToUpdate = await db.booking.findById(savedBooking._id);
+                if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
+                    await payOS.cancelPaymentLink(savedBooking.orderCode);
+                    bookingToUpdate.status = 'cancelled';
+                    await bookingToUpdate.save();
+                    console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
+                }
+            }, 600000);
 
+            // Create payment link
+            const paymentLinkBody = {
+                orderCode: orderCode,
+                amount: total_price,
+                description: orderCode.toString(),
+                cancelUrl: "http://localhost:3000",
+                returnUrl: "http://localhost:3000",
+            };
+            const paymentLinkRes = await payOS.createPaymentLink(paymentLinkBody);
 
-        setTimeout(async () => {
-            const bookingToUpdate = await db.booking.findById(savedBooking._id);
-            if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
-                await payOS.cancelPaymentLink(savedBooking.orderCode);
-                bookingToUpdate.status = 'cancelled';
-                await bookingToUpdate.save();
-                console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
-            }
-        }, 600000);
+            return res.status(200).json({
+                checkoutUrl: paymentLinkRes.qrCode,
+                checkoutlink: paymentLinkRes.checkoutUrl,
+                bankAccount: paymentLinkRes.accountNumber,
+                bankName: "Ngân hàng TMCP Quân đội",
+                amount: total_price,
+                accountHolder: paymentLinkRes.accountName
+            });
 
-        // Create payment link
-        const paymentLinkBody = {
-            orderCode: orderCode,
-            amount: total_price,
-            description: orderCode.toString(),
-            cancelUrl: "http://localhost:3000",
-            returnUrl: "http://localhost:3000",
-        };
-        const paymentLinkRes = await payOS.createPaymentLink(paymentLinkBody);
-
-        return res.status(200).json({
-            checkoutUrl: paymentLinkRes.qrCode,
-            checkoutlink: paymentLinkRes.checkoutUrl,
-            bankAccount: paymentLinkRes.accountNumber,
-            bankName: "Ngân hàng TMCP Quân đội",
-            amount: total_price,
-            accountHolder: paymentLinkRes.accountName
-        });
-
+        }
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -141,17 +153,7 @@ const receiveHook = async (req, res) => {
 const getBookedSeats = async (req, res) => {
     try {
         const { room, showtime } = req.body;
-        const bookings = await db.booking.find({
-            room: room,
-            showtime: showtime,
-            status: { $in: ["paid", "pending"] }
-        }).select("room showtime status seats")
-        const bookedSeats = bookings.flatMap(item =>
-            item.seats.map(seat => ({
-                area: seat.area,
-                position: seat.position
-            }))
-        );
+        const bookedSeats = await findBookedSeats(room, showtime)
         return res.status(200).json({
             status: 200,
             data: bookedSeats
@@ -249,6 +251,21 @@ const getUserTicket = async (req, res) => {
         });
     }
 };
+
+const findBookedSeats = async (room, showtime) => {
+    const bookings = await db.booking.find({
+        room: room,
+        showtime: showtime,
+        status: { $in: ["paid", "pending"] }
+    }).select("room showtime status seats")
+    const bookedSeats = bookings.flatMap(item =>
+        item.seats.map(seat => ({
+            area: seat.area,
+            position: seat.position
+        }))
+    );
+    return bookedSeats
+}
 
 const BookingController = {
     CreatePayment,

@@ -4,6 +4,8 @@ import { Divider } from "antd"
 import { useEffect, useState } from "react"
 import { RoomService } from "../../../services/RoomService"
 import { BookingService } from "../../../services/BookingService"
+import { socket } from "../../../App"
+
 const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) => {
 
     const [roomAreas, setRoomAreas] = useState([]);
@@ -22,7 +24,6 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
         const response = await BookingService.getBookedSeats({
             room: selectedShowtime.room._id,
             showtime: selectedShowtime.showtime,
-            time: selectedShowtime.time
         })
         if (response.status === 200) {
             setBookedSeats(response.data)
@@ -47,7 +48,22 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
             fetchSeatsByRoom();
             fetchBookedSeats();
         }
-    }, [selectedShowtime.room._id])
+    }, [selectedShowtime])
+
+    useEffect(() => {
+        if (selectedSeats.length === 0) {
+            fetchBookedSeats();
+        }
+    }, [selectedSeats])
+
+    useEffect(() => {
+        socket.on("updatedBookedSeats", (data) => {
+            console.log("socket", data)
+        })
+        return () => {
+            socket.off("updatedBookedSeats");
+        };
+    }, [socket])
 
     return (
         <div className="seat-selection selection-section" >
