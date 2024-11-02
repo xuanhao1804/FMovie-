@@ -16,7 +16,6 @@ const CreatePayment = async (req, res) => {
                 bookingSeat.area === bookedSeat.area && bookingSeat.position === bookedSeat.position
             )
         );
-        console.log(checkSeats)
         if (checkSeats.length > 0) {
             return res.status(409).json({
                 status: 409,
