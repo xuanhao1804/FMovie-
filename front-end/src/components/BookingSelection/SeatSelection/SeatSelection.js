@@ -67,16 +67,9 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
 
     return (
         <div className="seat-selection selection-section" >
-            <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex flex-column align-items-center gap-2">
-                    <i class="fs-4 fa-solid fa-door-open"></i>
-                    <span className="fw-semibold">Lối vào</span>
-                </div>
-                <img style={{ width: "10%" }} src={cinema_screen} alt="screen" />
-                <div className="d-flex flex-column align-items-center gap-2">
-                    <i class="fs-4 fa-solid fa-person-walking-dashed-line-arrow-right"></i>
-                    <span className="fw-semibold">Lối thoát</span>
-                </div>
+            {console.log(roomAreas)}
+            <div className="d-flex justify-content-center align-items-center">
+                <img style={{ width: "12%" }} src={cinema_screen} alt="screen" />
             </div>
             <Divider />
             <div className="seat-selection-area-list d-flex justify-content-center gap-5 mb-3 ">
@@ -104,7 +97,7 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
                                             )
                                         } else {
                                             return (
-                                                <div className="seat-selection-item"></div>
+                                                <div className="seat-selection-item" style={{ flex: `1 0 calc(${(100 / area.col)}%)`, border: "none" }}></div>
                                             )
                                         }
                                     })}

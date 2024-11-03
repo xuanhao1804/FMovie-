@@ -23,7 +23,7 @@ const Booking = () => {
 
     const navigate = useNavigate()
     const [messageApi, contextHolder] = message.useMessage();
-    const { popcorns, user } = useSelector((state) => state)
+    const { popcorns, user, movies } = useSelector((state) => state)
 
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedMovie, setSelectedMovie] = useState("")
@@ -44,8 +44,8 @@ const Booking = () => {
     const bookingPreviewRef = useRef(null)
 
     const seatsPrice = useMemo(() => {
-        const normalSeats = 50000 * selectedSeats.filter(seat => seat.isVip === false).length
-        const vipSeats = 60000 * selectedSeats.filter(seat => seat.isVip === true).length
+        const normalSeats = (+movies.playingMovies?.find(movie => movie._id === selectedMovie)?.price || 50000) * selectedSeats.filter(seat => seat.isVip === false).length
+        const vipSeats = ((+movies.playingMovies?.find(movie => movie._id === selectedMovie)?.price + 10000) || 60000) * selectedSeats.filter(seat => seat.isVip === true).length
         return { normalSeats, vipSeats };
     }, [selectedSeats])
 
