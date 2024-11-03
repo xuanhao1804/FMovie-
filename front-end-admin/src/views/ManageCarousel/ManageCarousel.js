@@ -84,12 +84,12 @@ const ManageCarousel = () => {
         ...values,
         imageUrl, // Sử dụng URL của ảnh đã upload
       };
-  
+
       if (linkType === 'movie') {
         const selectedMovie = movies.find(movie => movie._id === values.movieId);
         carouselData.linkUrl = `http://localhost:3000/film/detail/${selectedMovie._id}`; // Tự động điền URL chi tiết phim
       }
-  
+
       if (selectedCarousel) {
         dispatch(updateCarousel({ id: selectedCarousel._id, carousel: carouselData }))
           .then(() => {
@@ -115,7 +115,7 @@ const ManageCarousel = () => {
       }
     });
   };
-  
+
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -133,49 +133,49 @@ const ManageCarousel = () => {
 
   const columns = [
     {
-      title: 'Title',
+      title: 'Tiêu đề',
       dataIndex: 'title',
       key: 'title',
     },
     {
-      title: 'Image URL',
+      title: 'Ảnh',
       dataIndex: 'imageUrl',
       key: 'imageUrl',
       render: (text) => <img src={text} alt="carousel" style={{ width: '100px' }} />,
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
     },
     {
-      title: 'Display Order',
+      title: 'Thứ tự hiển thị',
       dataIndex: 'displayOrder',
       key: 'displayOrder',
     },
     {
-      title: 'Start Date',
+      title: 'Bắt đầu',
       dataIndex: 'startDate',
       key: 'startDate',
       render: (text) => new Date(text).toLocaleDateString(),
     },
     {
-      title: 'End Date',
+      title: 'Kết thúc',
       dataIndex: 'endDate',
       key: 'endDate',
       render: (text) => new Date(text).toLocaleDateString(),
     },
     {
-      title: 'Actions',
+      title: '',
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleEditCarousel(record)}>Edit</Button>
+          <Button type="primary" onClick={() => handleEditCarousel(record)}>Chỉnh sửa</Button>
           <Button type="danger" onClick={() => dispatch(deleteCarousel(record._id)).then(() => {
             message.success('Carousel deleted successfully');
           }).catch(() => {
             message.error('Failed to delete carousel');
-          })}>Delete</Button>
+          })}>Xóa</Button>
         </Space>
       ),
     },
@@ -183,35 +183,35 @@ const ManageCarousel = () => {
 
   return (
     <div>
-      <Button type="primary" onClick={handleAddCarousel}>Add Carousel</Button>
+      <Button type="primary" onClick={handleAddCarousel}>Tạo mới</Button>
       <Table columns={columns} dataSource={carousels} rowKey="_id" />
 
       <Modal
-        title={selectedCarousel ? 'Edit Carousel' : 'Create Carousel'}
+        title={selectedCarousel ? 'Chỉnh sửa' : 'Tạo mới'}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter the title' }]}>
+          <Form.Item name="title" label="Tiêu đề" rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Upload Image">
+          <Form.Item label="Upload Ảnh">
             <Upload customRequest={handleUpload} listType="picture" maxCount={1}>
-              <Button icon={<UploadOutlined />}>Click to Upload</Button>
+              <Button icon={<UploadOutlined />}>Upload</Button>
             </Upload>
           </Form.Item>
           {imageUrl && <img src={imageUrl} alt="Uploaded" style={{ width: '100%', marginTop: 10 }} />}
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select the status' }]}>
+          <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Please select the status' }]}>
             <Select>
-              <Option value="active">Active</Option>
-              <Option value="inactive">Inactive</Option>
+              <Option value="active">Kích hoạt</Option>
+              <Option value="inactive">Hủy kích hoạt</Option>
             </Select>
           </Form.Item>
           <Form.Item name="displayOrder" label="Display Order" rules={[{ required: true, message: 'Please enter the display order' }]}>
             <Input type="number" />
           </Form.Item>
-          
+
           <Form.Item label="Date Range">
             <Input.Group compact>
               <Form.Item
@@ -230,10 +230,10 @@ const ManageCarousel = () => {
               </Form.Item>
             </Input.Group>
           </Form.Item>
-          
+
           <Form.Item name="linkType" label="Link Type" rules={[{ required: true, message: 'Please select the link type' }]}>
             <Select onChange={handleLinkTypeChange}>
-              <Option value="movie">Movie</Option>
+              <Option value="movie">Phim</Option>
               <Option value="external">External</Option>
               <Option value="none">None</Option>
             </Select>
