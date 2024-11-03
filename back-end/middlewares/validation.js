@@ -1,6 +1,23 @@
 const { body } = require('express-validator');
 const Account = require("../models").account;
 
+
+const validateChangePassword = (req, res, next) => {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  if (!currentPassword || !newPassword || !confirmNewPassword) {
+    return res.status(400).json({ success: false, message: 'All fields are required' });
+  }
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({ success: false, message: 'New passwords do not match' });
+  }
+  next();
+};
+
+module.exports = {
+  validateChangePassword,
+  // other exports
+};
+
 // Validation middleware
 const validateSignUp = [
     body('email')
@@ -44,5 +61,6 @@ const validateSignIn = [
 
 module.exports = {
     validateSignUp,
-    validateSignIn
+    validateSignIn,
+    validateChangePassword
 };

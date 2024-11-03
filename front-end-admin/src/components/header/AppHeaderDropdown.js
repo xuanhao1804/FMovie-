@@ -1,4 +1,5 @@
-import React from 'react'
+// src/components/header/AppHeaderDropdown.js
+import React from 'react';
 import {
   CAvatar,
   CBadge,
@@ -8,7 +9,7 @@ import {
   CDropdownItem,
   CDropdownMenu,
   CDropdownToggle,
-} from '@coreui/react'
+} from '@coreui/react';
 import {
   cilBell,
   cilCreditCard,
@@ -19,95 +20,87 @@ import {
   cilSettings,
   cilTask,
   cilUser,
-} from '@coreui/icons'
-import CIcon from '@coreui/icons-react'
-
-import avatar8 from './../../assets/images/avatars/8.jpg'
-import { useDispatch } from 'react-redux'
-import { logout } from '../../reducers/UserReducer'
+} from '@coreui/icons';
+import CIcon from '@coreui/icons-react';
+import avatar8 from './../../assets/images/avatars/8.jpg';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../reducers/UserReducer';
+import { useNavigate } from 'react-router-dom';
 
 const AppHeaderDropdown = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
+
+  const handleChangePassword = () => {
+    navigate('/change-password');
+  };
 
   return (
     <CDropdown variant="nav-item">
       <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-        <CAvatar src={"https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"} size="md" />
+        <CAvatar src={avatar8} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Tài khoản</CDropdownHeader>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> 5a5bbb4c6e2e177df74aa4077f98347e9c2508a8
-=======
-
->>>>>>> 97a8b73f19a191473f244b71224a9f2e119ef10c
+        <CDropdownHeader className="bg-light fw-semibold py-2">Account</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
-          Cập nhật
+          Updates
           <CBadge color="info" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilEnvelopeOpen} className="me-2" />
-          Tin nhắn
+          Messages
           <CBadge color="success" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilTask} className="me-2" />
-          Nhiệm vụ
+          Tasks
           <CBadge color="danger" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilCommentSquare} className="me-2" />
-          Bình luận
+          Comments
           <CBadge color="warning" className="ms-2">
             42
           </CBadge>
-
-        </CDropdownItem> */}
-
-        <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Cài đặt</CDropdownHeader>
-        <CDropdownItem href="#">
-          <CIcon icon={cilUser} className="me-2" />
-          Hồ sơ
         </CDropdownItem>
-        <CDropdownItem href="#">
-          <CIcon icon={cilSettings} className="me-2" />
-          Cài đặt
-        </CDropdownItem>
+        <CDropdownDivider />
         <CDropdownItem href="#">
           <CIcon icon={cilCreditCard} className="me-2" />
-          Thanh toán
+          Payments
           <CBadge color="secondary" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownItem href="#">
           <CIcon icon={cilFile} className="me-2" />
-          Dự án
+          Projects
           <CBadge color="primary" className="ms-2">
             42
           </CBadge>
         </CDropdownItem>
         <CDropdownDivider />
-        <CDropdownItem onClick={handleLogout} href="#">
+        <CDropdownItem onClick={handleChangePassword}>
           <CIcon icon={cilLockLocked} className="me-2" />
-          Đăng xuất
+          Change Password
+        </CDropdownItem>
+        <CDropdownItem onClick={handleLogout}>
+          <CIcon icon={cilLockLocked} className="me-2" />
+          Logout
         </CDropdownItem>
       </CDropdownMenu>
     </CDropdown>
-  )
-}
+  );
+};
 
-export default AppHeaderDropdown
+export default AppHeaderDropdown;
