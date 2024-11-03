@@ -60,6 +60,8 @@ const ManageRoom = React.lazy(() => import('./views/ManageRoom/ManageRoom'))
 const ViewBooking = React.lazy(() => import('./views/ViewBooking/ViewBooking'))
 const ManageAccount = React.lazy(() => import('./views/ManageAccount/ManageAccount'))
 const ManageCarousel = React.lazy(() => import('./views/ManageCarousel/ManageCarousel'))
+import ChangePassword from './views/ChangePassword/ChangePassword';
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -81,6 +83,11 @@ const routes = [
   exact: true,
   name: 'Manage Carousel',
   element: ManageCarousel,
+},{
+  path: '/change-password',
+  exact: true,
+  name: 'Change Password',
+  element:ChangePassword ,
 }
 ]
 
