@@ -40,9 +40,13 @@ const AppHeaderDropdown = () => {
       <CDropdownMenu className="pt-0" placement="bottom-end">
         {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Tài khoản</CDropdownHeader>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> 5a5bbb4c6e2e177df74aa4077f98347e9c2508a8
+=======
+
+>>>>>>> 97a8b73f19a191473f244b71224a9f2e119ef10c
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
           Cập nhật
