@@ -89,7 +89,6 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* Thêm liên kết nhỏ "Forgot password?" dưới nút "Log In" */}
               <div className="forgot-password-link">
                 <a
                   href="/forgot-password"

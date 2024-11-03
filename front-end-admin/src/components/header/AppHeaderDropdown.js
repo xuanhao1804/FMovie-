@@ -38,7 +38,8 @@ const AppHeaderDropdown = () => {
         <CAvatar src={"https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"} size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Tài khoản</CDropdownHeader>
+        {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Tài khoản</CDropdownHeader>
+
         <CDropdownItem href="#">
           <CIcon icon={cilBell} className="me-2" />
           Cập nhật
@@ -66,7 +67,9 @@ const AppHeaderDropdown = () => {
           <CBadge color="warning" className="ms-2">
             42
           </CBadge>
-        </CDropdownItem>
+
+        </CDropdownItem> */}
+
         <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Cài đặt</CDropdownHeader>
         <CDropdownItem href="#">
           <CIcon icon={cilUser} className="me-2" />
