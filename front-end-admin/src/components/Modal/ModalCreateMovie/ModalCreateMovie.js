@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
 import { Modal, Form, Input, Select, Upload, Button, message, InputNumber } from 'antd';
-
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -30,7 +28,6 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
         fetchGenres();
     }, []);
 
-
     const handleCancel = () => {
         form.resetFields();
         setImageFile(null);
@@ -40,11 +37,33 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
         handleCreateCancel();
     };
 
+    // Hàm chuyển đổi link YouTube thành link nhúng
+    const convertToEmbedLink = (url) => {
+        const fullLinkRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/;
+        const shortLinkRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?&]+)/;
+
+        let match = url.match(fullLinkRegex);
+        if (match) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+
+        match = url.match(shortLinkRegex);
+        if (match) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+
+        // Trả về URL gốc nếu không khớp với bất kỳ định dạng nào
+        return url;
+    };
+
     const handleCreateOk = async () => {
         try {
             const values = await form.validateFields();
             values.actors = actors.filter(actor => actor);
-            values.genres = [...selectedGenres, newGenre].filter(genre => genre); // Combine selected and new genres
+            values.genres = [...selectedGenres, newGenre].filter(genre => genre);
+
+            // Chuyển đổi video URL thành dạng nhúng nếu cần
+            values.video = convertToEmbedLink(values.video);
 
             const formData = new FormData();
             Object.keys(values).forEach(key => {
@@ -162,7 +181,6 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     </Button>
                 </Form.Item>
 
-
                 <Form.Item
                     name="studio"
                     label="Nhà sản xuất"
@@ -189,6 +207,7 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     label="Giá"
                     rules={[{ required: true, message: 'Vui lòng nhập giá!' }]
                     }>
+
                     <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
                 </Form.Item>
                 <Form.Item
@@ -203,9 +222,7 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     label="Giới hạn độ tuổi"
                     rules={[{ required: true, message: 'Vui lòng nhập độ tuổi giới hạn!' }]}
                 >
-
                     <InputNumber style={{ width: '100%' }} placeholder="Enter limit" min={0} max={22} />
-
                 </Form.Item>
                 <Form.Item label="Ảnh">
                     <Upload
