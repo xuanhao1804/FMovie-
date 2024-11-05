@@ -1,13 +1,12 @@
-import React, { useRef, useEffect } from 'react';
-import { Carousel, Row, Col } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import React, { useRef, useEffect } from "react";
+import { Carousel, Row, Col } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMovies } from "../../reducers/MovieReducer";
 import { fetchCarousels } from "../../reducers/CarouselReducer";
-import { useNavigate } from 'react-router-dom';
-import FilmsCard from '../../components/FilmsCard/FilmsCard';
-import './Home.scss';
-
+import { useNavigate } from "react-router-dom";
+import FilmsCard from "../../components/FilmsCard/FilmsCard";
+import "./Home.scss";
 
 const CustomLeftArrow = ({ onClick }) => (
   <LeftOutlined className="custom-arrow arrow-left" onClick={onClick} />
@@ -30,6 +29,11 @@ const Home = () => {
 
   const carousels = useSelector((state) => state.carousels?.carousels || []);
   const moviesState = useSelector((state) => state.movies);
+
+  // Lọc chỉ các mục có status là 'active' và sắp xếp theo displayOrder
+  const activeCarousels = carousels
+    .filter((carousel) => carousel.status === "active")
+    .sort((a, b) => a.displayOrder - b.displayOrder);
 
   const goToNextMainSlide = () => {
     if (mainCarouselRef.current) {
@@ -56,32 +60,30 @@ const Home = () => {
   };
 
   const handleCarouselClick = (carousel) => {
-    console.log('Carousel clicked:', carousel);
-    if (carousel.linkType === 'movie' && carousel.linkUrl) {
-      // Thay thế `navigate` bằng `window.location.href`
-      navigate("/" + carousel.linkUrl)
-    } else if (carousel.linkType === 'external' && carousel.linkUrl) {
-      window.open(carousel.linkUrl, '_blank');
+    console.log("Carousel clicked:", carousel);
+    if (carousel.linkType === "movie" && carousel.linkUrl) {
+      navigate("/" + carousel.linkUrl);
+    } else if (carousel.linkType === "external" && carousel.linkUrl) {
+      window.open(carousel.linkUrl, "_blank");
     } else {
-      console.log('No valid link found for this carousel item');
+      console.log("No valid link found for this carousel item");
     }
   };
-
-
-
-
-
-
 
   return (
     <div className="home-container">
       <div className="main-carousel-wrapper">
-        <Carousel ref={mainCarouselRef} arrows={false} infinite={true} className="main-carousel">
-          {carousels.map((carousel, index) => (
+        <Carousel
+          ref={mainCarouselRef}
+          arrows={false}
+          infinite={true}
+          className="main-carousel"
+        >
+          {activeCarousels.map((carousel, index) => (
             <div
               key={index}
               onClick={() => handleCarouselClick(carousel)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               <img src={carousel.imageUrl} alt={`Slide ${index + 1}`} />
             </div>
@@ -121,8 +123,14 @@ const Home = () => {
               className="posters-carousel"
             >
               {moviesState?.playingMovies?.map((item, index) => (
-                <div className='px-4' key={index}>
-                  <FilmsCard _id={item._id} image={item.image} limit={item.limit} star={item.rating} video={item.video} />
+                <div className="px-4" key={index}>
+                  <FilmsCard
+                    _id={item._id}
+                    image={item.image}
+                    limit={item.limit}
+                    star={item.rating}
+                    video={item.video}
+                  />
                 </div>
               ))}
             </Carousel>
