@@ -131,6 +131,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         { max: 50, message: 'Tên phim phải có độ dài từ 3 đến 50 ký tự' },
                     ]}
                 >
+
                     <Input />
                 </Form.Item>
                 <Form.Item name="director" label="Đạo diễn" rules={[{ required: true, message: 'Vui lòng nhập tên đạo diễn!' }]}>

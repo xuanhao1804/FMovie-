@@ -29,7 +29,6 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
         fetchGenres();
     }, []);
 
-
     const handleCancel = () => {
         form.resetFields();
         setImageFile(null);
@@ -37,6 +36,25 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
         setNewGenre('');
         setSelectedGenres([]);
         handleCreateCancel();
+    };
+
+    // Hàm chuyển đổi link YouTube thành link nhúng
+    const convertToEmbedLink = (url) => {
+        const fullLinkRegex = /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/;
+        const shortLinkRegex = /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([^?&]+)/;
+
+        let match = url.match(fullLinkRegex);
+        if (match) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+
+        match = url.match(shortLinkRegex);
+        if (match) {
+            return `https://www.youtube.com/embed/${match[1]}`;
+        }
+
+        // Trả về URL gốc nếu không khớp với bất kỳ định dạng nào
+        return url;
     };
 
     const handleCreateOk = async () => {
@@ -212,7 +230,6 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     </Button>
                 </Form.Item>
 
-
                 <Form.Item
                     name="studio"
                     label="Nhà sản xuất"
@@ -232,7 +249,6 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                 </Form.Item>
                 <Form.Item
                     name="duration"
-                    label="Thời lượng (phút)"
                     rules={[{ required: true, message: 'Vui lòng nhập thời lượng phim!' }]
                     }
                 >
@@ -286,6 +302,7 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                     rules={[{ required: true, message: 'Vui lòng nhập độ tuổi giới hạn!' }]}
                 >
                     <InputNumber style={{ width: '100%' }} placeholder="Enter limit" min={6} max={18} />
+
                 </Form.Item>
                 <Form.Item label="Ảnh">
                     <Upload

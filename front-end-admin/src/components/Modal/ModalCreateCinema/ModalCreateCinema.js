@@ -108,6 +108,7 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
                         { min: 5, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
                         { max: 50, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
                     ]}
+
                 >
                     <Input />
                 </Form.Item>

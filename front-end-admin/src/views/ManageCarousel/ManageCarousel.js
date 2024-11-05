@@ -8,9 +8,8 @@ import axios from 'axios';
 
 const { Option } = Select;
 
-// Đặt các biến cấu hình Cloudinary lên đầu để dễ chỉnh sửa
-const CLOUDINARY_CLOUD_NAME = 'dcepcimwy'; // Thay bằng cloud_name của bạn
-const CLOUDINARY_UPLOAD_PRESET = 'haolx18'; // Thay bằng upload preset của bạn
+const CLOUDINARY_CLOUD_NAME = 'dcepcimwy';
+const CLOUDINARY_UPLOAD_PRESET = 'haolx18';
 
 const ManageCarousel = () => {
   const dispatch = useDispatch();
@@ -22,6 +21,7 @@ const ManageCarousel = () => {
   const [loading, setLoading] = useState(false);
   const [movies, setMovies] = useState([]);
   const [linkType, setLinkType] = useState('none');
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     dispatch(fetchCarousels());
@@ -41,7 +41,7 @@ const ManageCarousel = () => {
   const handleAddCarousel = () => {
     setSelectedCarousel(null);
     form.resetFields();
-    setImageUrl(''); // Reset image URL
+    setImageUrl('');
     setIsModalVisible(true);
     setLinkType('none');
   };
@@ -53,7 +53,7 @@ const ManageCarousel = () => {
       startDate: carousel.startDate ? dayjs(carousel.startDate) : null,
       endDate: carousel.endDate ? dayjs(carousel.endDate) : null,
     });
-    setImageUrl(carousel.imageUrl); // Set current image URL
+    setImageUrl(carousel.imageUrl);
     setLinkType(carousel.linkType);
     setIsModalVisible(true);
   };
@@ -82,12 +82,12 @@ const ManageCarousel = () => {
     form.validateFields().then(values => {
       const carouselData = {
         ...values,
-        imageUrl, // Sử dụng URL của ảnh đã upload
+        imageUrl,
       };
 
       if (linkType === 'movie') {
         const selectedMovie = movies.find(movie => movie._id === values.movieId);
-        carouselData.linkUrl = `http://localhost:3000/film/detail/${selectedMovie._id}`; // Tự động điền URL chi tiết phim
+        carouselData.linkUrl = `http://localhost:3000/film/detail/${selectedMovie._id}`;
       }
 
       if (selectedCarousel) {
@@ -116,12 +116,11 @@ const ManageCarousel = () => {
     });
   };
 
-
   const handleCancel = () => {
     setIsModalVisible(false);
     setSelectedCarousel(null);
     form.resetFields();
-    setImageUrl(''); // Reset image URL
+    setImageUrl('');
   };
 
   const handleLinkTypeChange = (value) => {
@@ -131,11 +130,20 @@ const ManageCarousel = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    setSearchText(e.target.value.toLowerCase());
+  };
+
+  const filteredCarousels = carousels.filter((carousel) =>
+    carousel.title.toLowerCase().includes(searchText)
+  );
+
   const columns = [
     {
       title: 'Tiêu đề',
       dataIndex: 'title',
       key: 'title',
+      sorter: (a, b) => a.title.localeCompare(b.title),
     },
     {
       title: 'Ảnh',
@@ -147,23 +155,27 @@ const ManageCarousel = () => {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
+      sorter: (a, b) => a.status.localeCompare(b.status),
     },
     {
       title: 'Thứ tự hiển thị',
       dataIndex: 'displayOrder',
       key: 'displayOrder',
+      sorter: (a, b) => a.displayOrder - b.displayOrder,
     },
     {
       title: 'Bắt đầu',
       dataIndex: 'startDate',
       key: 'startDate',
       render: (text) => new Date(text).toLocaleDateString(),
+      sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
     },
     {
       title: 'Kết thúc',
       dataIndex: 'endDate',
       key: 'endDate',
       render: (text) => new Date(text).toLocaleDateString(),
+      sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
     },
     {
       title: '',
