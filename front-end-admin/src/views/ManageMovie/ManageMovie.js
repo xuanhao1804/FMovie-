@@ -57,38 +57,38 @@ const ManageMovie = () => {
 
     const columns = [
         {
-            title: 'No.',
+            title: 'STT',
             dataIndex: 'index',
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Photo',
+            title: 'Ảnh',
             dataIndex: 'image',
             render: (image) => <img src={image} alt="movie poster" style={{ width: 75, height: 100 }} />,
         },
         {
-            title: 'Name',
+            title: 'Phim',
             dataIndex: 'name',
         },
         {
-            title: 'Director',
+            title: 'Đạo diễn',
             dataIndex: 'director',
         },
         {
-            title: 'Duration',
+            title: 'Thời lượng',
             dataIndex: 'duration',
         },
         {
-            title: 'Genres',
+            title: 'Thể loại',
             dataIndex: 'genres',
             render: (genres) => genres.join(', '),
         },
         {
-            title: 'Country',
+            title: 'Quốc gia',
             dataIndex: 'country',
         },
         {
-            title: 'Status',
+            title: 'Trạng thái',
             dataIndex: 'status',
             render: (status) => (
                 <span style={{ color: status === 'playing' ? 'green' : status === 'upcoming' ? 'orange' : 'red' }}>
@@ -97,7 +97,7 @@ const ManageMovie = () => {
             ),
         },
         {
-            title: 'Actions',
+            title: '',
             dataIndex: 'actions',
             render: (text, record) => (
                 <Space size="middle">
@@ -126,7 +126,7 @@ const ManageMovie = () => {
         <div className="row flex-lg-nowrap">
             <div className="col mb-3">
                 <Button type="primary" onClick={showCreateModal} style={{ marginBottom: 16 }}>
-                    Create
+                    Tạo mới
                 </Button>
                 <Table columns={columns} dataSource={data} pagination={false} />
                 <EditModal

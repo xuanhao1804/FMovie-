@@ -68,13 +68,13 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            message.success('Movie updated successfully!');
+            message.success('Cập nhật thành công');
             form.resetFields();
             setImageUrl(null);
             onOk();
             fetchData();
         } catch (error) {
-            message.error('Failed to update movie. Please try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
         }
     };
 
@@ -83,7 +83,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
             setActors([...actors, newActor]);
             setNewActor('');
         } else {
-            message.warning('Please enter an actor name!');
+            message.warning('Vui lòng nhập tên diễn viên!');
         }
     };
 
@@ -97,9 +97,9 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
             setSelectedGenres([...selectedGenres, newGenre]);
             setNewGenre('');
         } else if (selectedGenres.includes(newGenre)) {
-            message.warning('This genre is already added!');
+            message.warning('Thể loại này đã được chọn');
         } else {
-            message.warning('Please enter a genre!');
+            message.warning('Vui lòng nhập 1 thể loại');
         }
     };
 
@@ -120,39 +120,39 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 layout="vertical"
                 onFinish={handleFinish}
             >
-                <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input the movie name!' }]}>
+                <Form.Item name="name" label="Tên phim" rules={[{ required: true, message: 'Vui lòng nhập tên phim!' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item name="director" label="Director" rules={[{ required: true, message: 'Please input the director name!' }]}>
+                <Form.Item name="director" label="Đạo diễn" rules={[{ required: true, message: 'Vui lòng nhập tên đạo diễn!' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item name="duration" label="Duration" rules={[{ required: true, message: 'Please input the duration!' }]}>
+                <Form.Item name="duration" label="Thời lượng (phút)" rules={[{ required: true, message: 'Vui lòng nhập thời lượng!' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please input the price!' }]}>
+                <Form.Item name="price" label="Giá" rules={[{ required: true, message: 'Vui lòng nhập gái!' }]}>
                     <Input type="number" />
                 </Form.Item>
-                <Form.Item name="country" label="Country" rules={[{ required: true, message: 'Please input the country!' }]}>
+                <Form.Item name="country" label="Quốc gia" rules={[{ required: true, message: 'Vui lòng nhập quốc gia!' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item name="studio" label="Studio" rules={[{ required: true, message: 'Please input the studio!' }]}>
+                <Form.Item name="studio" label="Nhà sản xuất" rules={[{ required: true, message: 'Vui lòng nhập tên nhà sản xuất!' }]}>
                     <Input />
                 </Form.Item>
-                <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select the status!' }]}>
+                <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
                     <Select>
-                        <Option value="playing">Playing</Option>
-                        <Option value="upcoming">Upcoming</Option>
-                        <Option value="not playing">Not Playing</Option>
+                        <Option value="playing">Đang chiếu</Option>
+                        <Option value="upcoming">Sắp chiếu</Option>
+                        <Option value="disable">Không hiển thị</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item name="limit" label="Limit" rules={[{ required: true, message: 'Please input the limit!' }]}>
+                <Form.Item name="limit" label="Giới hạn tuổi" rules={[{ required: true, message: 'Vui lòng chọn tuổi giới hạn để xem phim!' }]}>
                     <Input placeholder="Enter limit (e.g., age restriction)" />
                 </Form.Item>
-                <Form.Item name="description" label="Description" rules={[{ required: true, message: 'Please input the description!' }]}>
+                <Form.Item name="description" label="Giới thiệu nội dung" rules={[{ required: true, message: 'Vui lòng nhập giới thiệu nội dung!' }]}>
                     <Input.TextArea rows={4} />
                 </Form.Item>
 
-                <Form.Item label="Upload Image"
+                <Form.Item label="Upload Ảnh"
                     getValueFromEvent={(e) => e && e.fileList}
                     valuePropName="fileList"
                     name="image">
@@ -161,7 +161,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         beforeUpload={() => false} // Prevent auto-upload
                         onChange={handleImageChange}
                     >
-                        <Button icon={<UploadOutlined />}>Upload New Image</Button>
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
                     {imageUrl && (
                         <div style={{ marginTop: 10 }}>
@@ -172,10 +172,10 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
 
 
                 {/* Genres Selection */}
-                <Form.Item label="Select Genres">
+                <Form.Item label="Chọn thể loại">
                     <Select
                         mode="multiple"
-                        placeholder="Select existing genres"
+                        placeholder="..."
                         value={selectedGenres}
                         onChange={setSelectedGenres}
                         style={{ width: '100%', marginBottom: 8 }}
@@ -187,7 +187,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 </Form.Item>
 
                 {/* Add New Genre Input Field */}
-                <Form.Item label="Add New Genre">
+                <Form.Item label="Thêm thể loại">
                     <Input
                         value={newGenre}
                         placeholder="Add a new genre"
@@ -195,14 +195,14 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         style={{ marginBottom: 8 }}
                     />
                     <Button type="dashed" onClick={addGenre} style={{ width: '100%', marginBottom: 8 }}>
-                        Add Genre
+                        Thêm thể loại
                     </Button>
                     <List
                         bordered
                         dataSource={selectedGenres}
                         renderItem={(genre, index) => (
                             <List.Item
-                                actions={[<Button type="link" onClick={() => removeGenre(index)}>Remove</Button>]}
+                                actions={[<Button type="link" onClick={() => removeGenre(index)}>Xóa</Button>]}
                             >
                                 {genre}
                             </List.Item>
@@ -211,22 +211,22 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 </Form.Item>
 
                 {/* Actors List and Input Field */}
-                <Form.Item label="Actors">
+                <Form.Item label="Diễn viên">
                     <Input
                         value={newActor}
-                        placeholder="Add a new actor"
+                        placeholder="Tên diễn viên..."
                         onChange={(e) => setNewActor(e.target.value)}
                         style={{ marginBottom: 8 }}
                     />
                     <Button type="dashed" onClick={addActor} style={{ width: '100%', marginBottom: 8 }}>
-                        Add Actor
+                        Thêm diễn viên
                     </Button>
                     <List
                         bordered
                         dataSource={actors}
                         renderItem={(actor, index) => (
                             <List.Item
-                                actions={[<Button type="link" onClick={() => removeActor(index)}>Remove</Button>]}
+                                actions={[<Button type="link" onClick={() => removeActor(index)}>Xóa</Button>]}
                             >
                                 {actor}
                             </List.Item>
@@ -236,7 +236,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                        Update Movie
+                        Cập nhật
                     </Button>
                 </Form.Item>
             </Form>

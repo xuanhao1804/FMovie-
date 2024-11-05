@@ -56,7 +56,7 @@ const ModalEditCinema = ({ isVisible, onCancel, onSuccess, cinema }) => {
             updateCinema(cinemaData);
         } catch (error) {
             console.error('Error adding new city:', error);
-            message.error('Failed to add new city. Please try again.');
+            message.error('Có lỗi xảy ra, vui lòng thử lại');
             setLoading(false);
         }
     };
@@ -65,13 +65,13 @@ const ModalEditCinema = ({ isVisible, onCancel, onSuccess, cinema }) => {
         setLoading(true);
         try {
             await axios.put(`http://localhost:9999/cinema/update/${cinema._id}`, cinemaData);
-            message.success('Cinema updated successfully!');
+            message.success('Cập nhật thành công!');
             form.resetFields();
             setLoading(false);
             onSuccess();
         } catch (error) {
             console.error('Error updating cinema:', error);
-            message.error('Failed to update cinema. Please try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
             setLoading(false);
         }
     };
@@ -86,57 +86,57 @@ const ModalEditCinema = ({ isVisible, onCancel, onSuccess, cinema }) => {
 
     return (
         <Modal
-            title="Edit Cinema"
+            title="Cập nhật rạp chiếu phim"
             visible={isVisible}
             onCancel={onCancel}
             footer={[
                 <Button key="back" onClick={onCancel}>
-                    Cancel
+                    Hủy
                 </Button>,
                 <Button key="submit" type="primary" onClick={handleOk} loading={loading}>
-                    Save Changes
+                    Lưu thay đổi
                 </Button>,
             ]}
         >
             <Form form={form} layout="vertical" name="edit_cinema_form">
                 <Form.Item
                     name="name"
-                    label="Cinema Name"
-                    rules={[{ required: true, message: 'Please input the name of the cinema!' }]}
+                    label="Tên rạp"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên rạp!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="address"
-                    label="Address"
-                    rules={[{ required: true, message: 'Please input the address!' }]}
+                    label="Địa chỉ"
+                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="city"
-                    label="City"
-                    rules={[{ required: true, message: 'Please select or add a city!' }]}
+                    label="Tỉnh/thành phố"
+                    rules={[{ required: true, message: 'Vui lòng chọn tỉnh/thành phố!' }]}
                 >
-                    <Select placeholder="Select a city" onChange={handleCityChange}>
+                    <Select placeholder="Chọn thành phố" onChange={handleCityChange}>
                         {cities?.map(city => (
                             <Option key={city._id} value={city._id}>
                                 {city?.name}
                             </Option>
                         ))}
-                        <Option value="new">+ Add New City</Option>
+                        <Option value="new">+ Tạo mới</Option>
                     </Select>
                 </Form.Item>
 
                 {isAddingNewCity && (
                     <Form.Item
-                        label="New City Name"
-                        rules={[{ required: true, message: 'Please input the name of the new city!' }]}
+                        label="Tên tỉnh/thành phố"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên tỉnh/thành!' }]}
                     >
                         <Input
                             value={newCity}
                             onChange={(e) => setNewCity(e.target.value)}
-                            placeholder="Enter the new city name"
+                            placeholder="Tên tỉnh/thành..."
                         />
                     </Form.Item>
                 )}

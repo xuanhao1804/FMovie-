@@ -81,20 +81,20 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
             }
 
             await axios.post('http://localhost:9999/movie/create', formData);
-            message.success('Movie created successfully!');
+            message.success('Tạo mới thành công!');
             fetchData();
             handleCancel();
 
         } catch (error) {
             console.error('Validation Failed:', error);
-            message.error('Failed to create movie. Please check your input and try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
         }
     };
 
     const handleImageUpload = (file) => {
         const isImage = file.type.startsWith('image/');
         if (!isImage) {
-            message.error('You can only upload image files!');
+            message.error('Bạn chỉ có thể thêm file ảnh!');
             return false;
         }
         setImageFile(file);
@@ -114,34 +114,34 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
             setSelectedGenres((prev) => [...prev, newGenre]);
             setNewGenre('');
         } else {
-            message.warning('Genre already exists or is empty!');
+            message.warning('Thể loại đã được sử dụng!');
         }
     };
 
     return (
-        <Modal title="Create Movie" open={isCreateModalOpen} onOk={handleCreateOk} onCancel={handleCancel}>
+        <Modal title="Tạo mới phim" open={isCreateModalOpen} onOk={handleCreateOk} onCancel={handleCancel}>
             <Form form={form} layout="vertical">
                 <Form.Item
                     name="name"
-                    label="Movie Name"
-                    rules={[{ required: true, message: 'Please input the movie name!' }]}
+                    label="Tên phim"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên phim!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="director"
-                    label="Director"
-                    rules={[{ required: true, message: 'Please input the director name!' }]}
+                    label="Đạo diễn"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên đạo diễn!' }]}
                 >
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Actors">
+                <Form.Item label="Diễn viên">
                     {actors.map((actor, index) => (
                         <Input.Group key={index} compact style={{ marginBottom: 8 }}>
                             <Input
                                 style={{ width: 'calc(100% - 120px)' }}
-                                placeholder="Enter actor name"
+                                placeholder="Tên diễn viên"
                                 value={actor}
                                 onChange={(e) => {
                                     const newActors = [...actors];
@@ -150,19 +150,19 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                                 }}
                             />
                             <Button type="dashed" onClick={() => removeActor(index)} style={{ width: '120px' }}>
-                                Remove
+                                Xóa
                             </Button>
                         </Input.Group>
                     ))}
                     <Button type="dashed" onClick={addActor} style={{ width: '100%' }}>
-                        Add Actor
+                        Thêm diễn viên
                     </Button>
                 </Form.Item>
 
-                <Form.Item label="Genres">
+                <Form.Item label="Thể loại">
                     <Select
                         mode="multiple"
-                        placeholder="Select genres"
+                        placeholder="Chọn thể loại"
                         value={selectedGenres}
                         onChange={setSelectedGenres}
                         options={existingGenres.map(genre => ({ value: genre, label: genre }))}
@@ -171,64 +171,65 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                         style={{ width: '100%' }}
                     />
                     <Input
-                        placeholder="Add new genre"
+                        placeholder="Thể loại mới"
                         value={newGenre}
                         onChange={(e) => setNewGenre(e.target.value)}
                         style={{ marginTop: 8 }}
                     />
                     <Button type="dashed" onClick={addNewGenre} style={{ width: '100%', marginTop: 8 }}>
-                        Add Genre
+                        Thêm thể loại mới
                     </Button>
                 </Form.Item>
 
                 <Form.Item
                     name="studio"
-                    label="Studio"
-                    rules={[{ required: true, message: 'Please input the studio!' }]}
+                    label="Nhà sản xuất"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên nhà sản xuất!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="duration"
-                    label="Duration (minutes)"
-                    rules={[{ required: true, message: 'Please input the duration!' }]}
+                    label="Thời lượng (phút)"
+                    rules={[{ required: true, message: 'Vui lòng nhập thời lượng!' }]}
                 >
                     <Input type="number" min={0} />
                 </Form.Item>
                 <Form.Item
                     name="country"
-                    label="Country"
-                    rules={[{ required: true, message: 'Please input the country!' }]}
+                    label="Quốc gia"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên quốc gia!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="price"
-                    label="Price"
-                    rules={[{ required: true, message: 'Please input the price!' }]}
-                >
+                    label="Giá"
+                    rules={[{ required: true, message: 'Vui lòng nhập giá!' }]
+                    }>
+
                     <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
                 </Form.Item>
                 <Form.Item
                     name="video"
-                    label="Video URL"
-                    rules={[{ required: true, message: 'Please input the video URL!' }]}
+                    label="Trailer"
+                    rules={[{ required: true, message: 'Vui lòng nhập trailer URL!' }]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="limit"
-                    label="Limit"
-                    rules={[{ required: true, message: 'Please input the limit!' }]}
+                    label="Giới hạn độ tuổi"
+                    rules={[{ required: true, message: 'Vui lòng nhập độ tuổi giới hạn!' }]}
                 >
                     <InputNumber style={{ width: '100%' }} placeholder="Enter limit" min={0} max={22} />
                 </Form.Item>
-                <Form.Item label="Image">
+                <Form.Item label="Ảnh">
                     <Upload
                         beforeUpload={handleImageUpload}
                         showUploadList={false}
                     >
-                        <Button icon={<UploadOutlined />}>Select Image</Button>
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                     </Upload>
                     {imageFile && (
                         <div style={{ marginTop: 16 }}>
@@ -239,16 +240,16 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                 </Form.Item>
                 <Form.Item
                     name="description"
-                    label="Description"
-                    rules={[{ required: true, message: 'Please input the description!' }]}
+                    label="Giơi thiệu nội dung"
+                    rules={[{ required: true, message: 'Vui lòng nhập giới thiệu nội dung!' }]}
                 >
                     <Input.TextArea rows={4} />
                 </Form.Item>
-                <Form.Item label="Status" name="status" rules={[{ required: true, message: 'Please select the status!' }]}>
+                <Form.Item label="Trạng thái" name="status" rules={[{ required: true, message: 'Vui lòng chọn trạng thái phim!' }]}>
                     <Select placeholder="Select movie status" style={{ width: '100%' }}>
-                        <Option value="playing">Playing</Option>
-                        <Option value="upcoming">Upcoming</Option>
-                        <Option value="not showing">Not Showing</Option>
+                        <Option value="playing">Đang chiếu</Option>
+                        <Option value="upcoming">Sắp chiếu</Option>
+                        <Option value="disable">Không hiển thị</Option>
                     </Select>
                 </Form.Item>
             </Form>
