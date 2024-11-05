@@ -66,10 +66,10 @@ const ManageAccount = () => {
 
   const columns = [
     { title: 'Email', dataIndex: 'email', key: 'email' },
-    { title: 'Full Name', dataIndex: 'fullname', key: 'fullname' },
-    { title: 'Phone', dataIndex: 'phone', key: 'phone' },
+    { title: 'Họ và tên', dataIndex: 'fullname', key: 'fullname' },
+    { title: 'Số điện thoại', dataIndex: 'phone', key: 'phone' },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
       render: (status) => (
@@ -79,7 +79,7 @@ const ManageAccount = () => {
       ),
     },
     {
-      title: 'Actions',
+      title: '',
       key: 'actions',
       render: (text, record) => (
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -96,7 +96,7 @@ const ManageAccount = () => {
 
       {/* View Modal */}
       <Modal
-        title="View Account"
+        title="Tài khoản"
         visible={isViewModalVisible}
         onCancel={() => setIsViewModalVisible(false)}
         footer={<Button onClick={() => setIsViewModalVisible(false)}>Close</Button>}
@@ -104,24 +104,24 @@ const ManageAccount = () => {
         {selectedAccount && (
           <div>
             <p><strong>Email:</strong> {selectedAccount.email}</p>
-            <p><strong>Full Name:</strong> {selectedAccount.fullname}</p>
-            <p><strong>Phone:</strong> {selectedAccount.phone}</p>
-            <p><strong>Status:</strong> {selectedAccount.status}</p>
-            <p><strong>Date of Birth:</strong> {new Date(selectedAccount.dob).toLocaleDateString()}</p>
+            <p><strong>Họ và tên:</strong> {selectedAccount.fullname}</p>
+            <p><strong>Số điện thoại:</strong> {selectedAccount.phone}</p>
+            <p><strong>Trạng thái:</strong> {selectedAccount.status}</p>
+            <p><strong>Ngày sinh:</strong> {new Date(selectedAccount.dob).toLocaleDateString()}</p>
           </div>
         )}
       </Modal>
 
       {/* Edit Modal */}
       <Modal
-        title="Edit Account"
+        title="Cập nhật"
         visible={isEditModalVisible}
         onOk={handleUpdateAccount}
         onCancel={() => setIsEditModalVisible(false)}
       >
         {formData && (
           <div>
-            <label><strong>Full Name:</strong></label>
+            <label><strong>Họ và tên:</strong></label>
             <Input
               name="fullname"
               value={formData.fullname}
@@ -129,7 +129,7 @@ const ManageAccount = () => {
               placeholder="Full Name"
               style={{ marginBottom: 8 }}
             />
-            <label><strong>Phone:</strong></label>
+            <label><strong>Số điện thoại:</strong></label>
             <Input
               name="phone"
               value={formData.phone}
@@ -143,10 +143,10 @@ const ManageAccount = () => {
               onChange={handleStatusChange}
               style={{ width: '100%', marginBottom: 8 }}
             >
-              <Option value="active">Active</Option>
-              <Option value="disable">Disable</Option>
+              <Option value="active">Kích hoạt</Option>
+              <Option value="disable">Khóa</Option>
             </Select>
-            <label><strong>Password:</strong></label>
+            <label><strong>Mật khẩu:</strong></label>
             <div style={{ position: 'relative', marginBottom: 8 }}>
               <Input.Password
                 name="password"

@@ -99,7 +99,7 @@ const ManagePopcorn = () => {
                     onClick={showCreateModal}
                     style={{ marginBottom: 16 }}
                 >
-                    Create
+                    Tạo mới
                 </Button>
                 <Table columns={columns} dataSource={data} pagination={false} />
 
