@@ -92,14 +92,23 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
                 <Form.Item
                     name="name"
                     label="Tên rạp"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên!' }]}
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập tên rạp chiếu phim!' },
+                        { min: 5, message: 'Tên rạp phải có độ dài từ 5 đến 50 ký tự' },
+                        { max: 50, message: 'Tên rạp phải có độ dài từ 5 đến 50 ký tự' },
+                    ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="address"
                     label="Địa chỉ"
-                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập địa chỉ!' },
+                        { min: 5, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
+                        { max: 50, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
+                    ]}
+
                 >
                     <Input />
                 </Form.Item>
@@ -120,8 +129,12 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
 
                 {isAddingNewCity && (
                     <Form.Item
-                        label="New City Name"
-                        rules={[{ required: true, message: 'Vui lòng nhập tên thành phố!' }]}
+                        label="Tên thành phố"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập tên thành phố!' },
+                            { min: 3, message: 'Tên thành phố có độ dài từ 3 đến 32 ký tự' },
+                            { max: 32, message: 'Tên thành phố có độ dài từ 3 đến 32 ký tự' },
+                        ]}
                     >
                         <Input
                             value={newCity}
