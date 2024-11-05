@@ -4,7 +4,7 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from "react-redux";
 import { fetchMovies } from "../../reducers/MovieReducer";
 import { fetchCarousels } from "../../reducers/CarouselReducer";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import FilmsCard from '../../components/FilmsCard/FilmsCard';
 import './Home.scss';
 
@@ -59,34 +59,34 @@ const Home = () => {
     console.log('Carousel clicked:', carousel);
     if (carousel.linkType === 'movie' && carousel.linkUrl) {
       // Thay thế `navigate` bằng `window.location.href`
-      window.location.href = carousel.linkUrl;
+      navigate("/" + carousel.linkUrl)
     } else if (carousel.linkType === 'external' && carousel.linkUrl) {
       window.open(carousel.linkUrl, '_blank');
     } else {
       console.log('No valid link found for this carousel item');
     }
   };
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
 
   return (
     <div className="home-container">
       <div className="main-carousel-wrapper">
-      <Carousel ref={mainCarouselRef} arrows={false} infinite={true} className="main-carousel">
-  {carousels.map((carousel, index) => (
-    <div
-      key={index}
-      onClick={() => handleCarouselClick(carousel)}
-      style={{ cursor: 'pointer' }}
-    >
-      <img src={carousel.imageUrl} alt={`Slide ${index + 1}`} />
-    </div>
-  ))}
-</Carousel>
+        <Carousel ref={mainCarouselRef} arrows={false} infinite={true} className="main-carousel">
+          {carousels.map((carousel, index) => (
+            <div
+              key={index}
+              onClick={() => handleCarouselClick(carousel)}
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={carousel.imageUrl} alt={`Slide ${index + 1}`} />
+            </div>
+          ))}
+        </Carousel>
 
         <div className="arrow-left">
           <CustomLeftArrow onClick={goToPrevMainSlide} />
