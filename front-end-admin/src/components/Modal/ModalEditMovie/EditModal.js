@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { Modal, Form, Input, Select, Button, message, List, Upload } from 'antd';
+import { Modal, Form, Input, Select, Button, message, List, Upload, InputNumber } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
 import axios from 'axios';
+import { isValidUrl } from '../../../utils/UrlValidation';
 
 const { Option } = Select;
 
@@ -23,6 +24,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 price: movie.price,
                 country: movie.country,
                 studio: movie.studio,
+                video: movie.video,
                 status: movie.status,
                 limit: movie.limit,
                 image: movie.image ? [{ url: movie.image }] : [],
@@ -68,13 +70,13 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            message.success('Movie updated successfully!');
+            message.success('Phim đã được cập nhật thành công!');
             form.resetFields();
             setImageUrl(null);
             onOk();
             fetchData();
         } catch (error) {
-            message.error('Failed to update movie. Please try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
         }
     };
 
@@ -83,7 +85,7 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
             setActors([...actors, newActor]);
             setNewActor('');
         } else {
-            message.warning('Please enter an actor name!');
+            message.warning('Vui lòng nhập tên diễn viên!');
         }
     };
 
@@ -97,9 +99,9 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
             setSelectedGenres([...selectedGenres, newGenre]);
             setNewGenre('');
         } else if (selectedGenres.includes(newGenre)) {
-            message.warning('This genre is already added!');
+            message.warning('Thể loại này đã được chọn');
         } else {
-            message.warning('Please enter a genre!');
+            message.warning('Vui lòng nhập 1 thể loại');
         }
     };
 
@@ -120,62 +122,49 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 layout="vertical"
                 onFinish={handleFinish}
             >
-                <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input the movie name!' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="director" label="Director" rules={[{ required: true, message: 'Please input the director name!' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="duration" label="Duration" rules={[{ required: true, message: 'Please input the duration!' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please input the price!' }]}>
-                    <Input type="number" />
-                </Form.Item>
-                <Form.Item name="country" label="Country" rules={[{ required: true, message: 'Please input the country!' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="studio" label="Studio" rules={[{ required: true, message: 'Please input the studio!' }]}>
-                    <Input />
-                </Form.Item>
-                <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Please select the status!' }]}>
-                    <Select>
-                        <Option value="playing">Playing</Option>
-                        <Option value="upcoming">Upcoming</Option>
-                        <Option value="not playing">Not Playing</Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item name="limit" label="Limit" rules={[{ required: true, message: 'Please input the limit!' }]}>
-                    <Input placeholder="Enter limit (e.g., age restriction)" />
-                </Form.Item>
-                <Form.Item name="description" label="Description" rules={[{ required: true, message: 'Please input the description!' }]}>
-                    <Input.TextArea rows={4} />
-                </Form.Item>
+                <Form.Item
+                    name="name"
+                    label="Tên phim"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập tên phim!' },
+                        { min: 3, message: 'Tên phim phải có độ dài từ 3 đến 50 ký tự' },
+                        { max: 50, message: 'Tên phim phải có độ dài từ 3 đến 50 ký tự' },
+                    ]}
+                >
 
-                <Form.Item label="Upload Image"
-                    getValueFromEvent={(e) => e && e.fileList}
-                    valuePropName="fileList"
-                    name="image">
-                    <Upload
-                        listType="picture"
-                        beforeUpload={() => false} // Prevent auto-upload
-                        onChange={handleImageChange}
-                    >
-                        <Button icon={<UploadOutlined />}>Upload New Image</Button>
-                    </Upload>
-                    {imageUrl && (
-                        <div style={{ marginTop: 10 }}>
-                            <img src={imageUrl} alt="uploaded" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
-                        </div>
-                    )}
+                    <Input />
                 </Form.Item>
-
-
+                <Form.Item name="director" label="Đạo diễn" rules={[{ required: true, message: 'Vui lòng nhập tên đạo diễn!' }]}>
+                    <Input />
+                </Form.Item>
+                {/* Actors List and Input Field */console.log(movie)}
+                <Form.Item label="Diễn viên">
+                    <Input
+                        value={newActor}
+                        placeholder="Tên diễn viên..."
+                        onChange={(e) => setNewActor(e.target.value)}
+                        style={{ marginBottom: 8 }}
+                    />
+                    <Button type="dashed" onClick={addActor} style={{ width: '100%', marginBottom: 8 }}>
+                        Thêm diễn viên
+                    </Button>
+                    <List
+                        bordered
+                        dataSource={actors}
+                        renderItem={(actor, index) => (
+                            <List.Item
+                                actions={[<Button type="link" onClick={() => removeActor(index)}>Xóa</Button>]}
+                            >
+                                {actor}
+                            </List.Item>
+                        )}
+                    />
+                </Form.Item>
                 {/* Genres Selection */}
-                <Form.Item label="Select Genres">
+                <Form.Item label="Chọn thể loại">
                     <Select
                         mode="multiple"
-                        placeholder="Select existing genres"
+                        placeholder="..."
                         value={selectedGenres}
                         onChange={setSelectedGenres}
                         style={{ width: '100%', marginBottom: 8 }}
@@ -185,9 +174,8 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         ))}
                     </Select>
                 </Form.Item>
-
                 {/* Add New Genre Input Field */}
-                <Form.Item label="Add New Genre">
+                <Form.Item label="Thêm thể loại">
                     <Input
                         value={newGenre}
                         placeholder="Add a new genre"
@@ -195,48 +183,141 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                         style={{ marginBottom: 8 }}
                     />
                     <Button type="dashed" onClick={addGenre} style={{ width: '100%', marginBottom: 8 }}>
-                        Add Genre
+                        Thêm thể loại
                     </Button>
                     <List
                         bordered
                         dataSource={selectedGenres}
                         renderItem={(genre, index) => (
                             <List.Item
-                                actions={[<Button type="link" onClick={() => removeGenre(index)}>Remove</Button>]}
+                                actions={[<Button type="link" onClick={() => removeGenre(index)}>Xóa</Button>]}
                             >
                                 {genre}
                             </List.Item>
                         )}
                     />
                 </Form.Item>
+                <Form.Item
+                    name="studio"
+                    label="Nhà sản xuất"
+                    rules={[
+                        { max: 32, message: 'Tên nhà sản xuất có độ dài tối đa là 32 ký tự' },
+                        () => ({
+                            validator(_, value) {
+                                if (!value) {
+                                    return Promise.resolve("Đang cập nhật");
+                                }
+                                return Promise.resolve();
+                            },
+                        }),
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="duration"
+                    label="Thời lượng (phút)"
+                    rules={[{ required: true, message: 'Vui lòng nhập thời lượng phim!' }]
+                    }
+                >
+                    <Input type="number" min={60} max={180} />
+                </Form.Item>
+                <Form.Item
+                    name="country"
+                    label="Quốc gia"
+                    rules={[
+                        { max: 32, message: 'Tên quốc gia có độ dài tối đa là 32 ký tự' },
+                        () => ({
+                            validator(_, value) {
+                                if (!value) {
+                                    return Promise.resolve("Đang cập nhật");
+                                }
+                                return Promise.resolve();
+                            },
+                        }),
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="price"
+                    label="Giá"
+                    rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}
+                >
+                    <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
+                </Form.Item>
+                <Form.Item
+                    name="video"
+                    label="Trailer"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập trailer URL!' },
+                        () => ({
+                            validator(_, value) {
+                                if (isValidUrl(value)) {
+                                    return Promise.resolve();
+                                } else {
+                                    return Promise.reject(new Error('Vui lòng nhập URL hợp lệ'));
+                                }
+                            },
+                        }),
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="limit"
+                    label="Giới hạn độ tuổi"
+                    rules={[{ required: true, message: 'Vui lòng nhập độ tuổi giới hạn!' }]}
+                >
+                    <InputNumber style={{ width: '100%' }} placeholder="Enter limit" min={6} max={18} />
+                </Form.Item>
 
-                {/* Actors List and Input Field */}
-                <Form.Item label="Actors">
-                    <Input
-                        value={newActor}
-                        placeholder="Add a new actor"
-                        onChange={(e) => setNewActor(e.target.value)}
-                        style={{ marginBottom: 8 }}
-                    />
-                    <Button type="dashed" onClick={addActor} style={{ width: '100%', marginBottom: 8 }}>
-                        Add Actor
-                    </Button>
-                    <List
-                        bordered
-                        dataSource={actors}
-                        renderItem={(actor, index) => (
-                            <List.Item
-                                actions={[<Button type="link" onClick={() => removeActor(index)}>Remove</Button>]}
-                            >
-                                {actor}
-                            </List.Item>
-                        )}
-                    />
+                <Form.Item label="Upload Ảnh"
+                    getValueFromEvent={(e) => e && e.fileList}
+                    valuePropName="fileList"
+                    name="image">
+                    <Upload
+                        listType="picture"
+                        beforeUpload={() => false} // Prevent auto-upload
+                        onChange={handleImageChange}
+                    >
+                        <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                    </Upload>
+                    {imageUrl && (
+                        <div style={{ marginTop: 10 }}>
+                            <img src={imageUrl} alt="uploaded" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
+                        </div>
+                    )}
+                </Form.Item>
+
+                <Form.Item
+                    name="description"
+                    label="Giơi thiệu nội dung"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập giới thiệu nội dung!' },
+                        () => ({
+                            validator(_, value) {
+                                if (value.length > 750 || value.length < 30) {
+                                    return Promise.reject(new Error('Nội dung phim cần có độ dài từ 30 đến 750 ký tự. Hiện tại: ' + value.length));
+                                }
+                                return Promise.resolve();
+                            },
+                        }),
+                    ]}
+                >
+                    <Input.TextArea rows={4} />
+                </Form.Item>
+                <Form.Item name="status" label="Trạng thái" rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}>
+                    <Select>
+                        <Option value="playing">Đang chiếu</Option>
+                        <Option value="upcoming">Sắp chiếu</Option>
+                        <Option value="disable">Không hiển thị</Option>
+                    </Select>
                 </Form.Item>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
-                        Update Movie
+                        Cập nhật
                     </Button>
                 </Form.Item>
             </Form>

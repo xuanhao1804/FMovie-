@@ -46,7 +46,7 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
             createCinema(cinemaData);
         } catch (error) {
             console.error('Error adding new city:', error);
-            message.error('Failed to add new city. Please try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
             setLoading(false);
         }
     };
@@ -55,13 +55,13 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
         setLoading(true);
         try {
             const response = await axios.post('http://localhost:9999/cinema/create', cinemaData);
-            message.success('Cinema created successfully!');
+            message.success('Tạo mới thành công!');
             form.resetFields();
             setLoading(false);
             onSuccess();
         } catch (error) {
             console.error('Error creating cinema:', error);
-            message.error('Failed to create cinema. Please try again.');
+            message.error('Có lỗi xảy ra, vui lòng thử lại.');
             setLoading(false);
         }
     };
@@ -76,57 +76,70 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
 
     return (
         <Modal
-            title="Create Cinema"
+            title="Tạo mới rạp chiếu phim"
             visible={isVisible}
             onCancel={onCancel}
             footer={[
                 <Button key="back" onClick={onCancel}>
-                    Cancel
+                    Hủy
                 </Button>,
                 <Button key="submit" type="primary" onClick={handleOk} loading={loading}>
-                    Create
+                    Xác nhận
                 </Button>,
             ]}
         >
             <Form form={form} layout="vertical" name="create_cinema_form">
                 <Form.Item
                     name="name"
-                    label="Cinema Name"
-                    rules={[{ required: true, message: 'Please input the name of the cinema!' }]}
+                    label="Tên rạp"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập tên rạp chiếu phim!' },
+                        { min: 5, message: 'Tên rạp phải có độ dài từ 5 đến 50 ký tự' },
+                        { max: 50, message: 'Tên rạp phải có độ dài từ 5 đến 50 ký tự' },
+                    ]}
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="address"
-                    label="Address"
-                    rules={[{ required: true, message: 'Please input the address!' }]}
+                    label="Địa chỉ"
+                    rules={[
+                        { required: true, message: 'Vui lòng nhập địa chỉ!' },
+                        { min: 5, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
+                        { max: 50, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
+                    ]}
+
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     name="city"
-                    label="City"
-                    rules={[{ required: true, message: 'Please select or add a city!' }]}
+                    label="Thuộc thành phố"
+                    rules={[{ required: true, message: 'Vui lòng chọn tỉnh/thành phố!' }]}
                 >
-                    <Select placeholder="Select a city" onChange={handleCityChange}>
+                    <Select placeholder="Chọn tỉnh/thành phố" onChange={handleCityChange}>
                         {cities?.map(city => (
                             <Option key={city._id} value={city._id}>
                                 {city?.name}
                             </Option>
                         ))}
-                        <Option value="new">+ Add New City</Option>
+                        <Option value="new">+ Thêm tỉnh/thành phố</Option>
                     </Select>
                 </Form.Item>
 
                 {isAddingNewCity && (
                     <Form.Item
-                        label="New City Name"
-                        rules={[{ required: true, message: 'Please input the name of the new city!' }]}
+                        label="Tên thành phố"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập tên thành phố!' },
+                            { min: 3, message: 'Tên thành phố có độ dài từ 3 đến 32 ký tự' },
+                            { max: 32, message: 'Tên thành phố có độ dài từ 3 đến 32 ký tự' },
+                        ]}
                     >
                         <Input
                             value={newCity}
                             onChange={(e) => setNewCity(e.target.value)}
-                            placeholder="Enter the new city name"
+                            placeholder="Tên tỉnh/thành phố ..."
                         />
                     </Form.Item>
                 )}

@@ -4,6 +4,39 @@ const { createJWT } = require('../middlewares/JsonWebToken')
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const OPT = require('../models').otp;
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword, userId } = req.body;
+
+    // Thêm log để kiểm tra userId
+    console.log('User ID received:', userId);
+
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is missing' });
+    }
+
+    const account = await Account.findById(userId);
+    if (!account) {
+      console.log('Account not found');
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+
+    if (account.password !== currentPassword) {
+      console.log('Current password is incorrect');
+      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+    }
+
+    account.password = newPassword;
+    await account.save();
+
+    console.log('Password changed successfully');
+    return res.status(200).json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
+  }
+};
+
 
 const signUp = async (req, res) => {
   try {
@@ -14,12 +47,10 @@ const signUp = async (req, res) => {
 
     const { email, password, fullname, dob, phone, roles } = req.body;
 
-    // Băm mật khẩu trước khi lưu
-    const hashedPassword = await bcrypt.hash(password, 10);
-
+    // Không băm mật khẩu, lưu trực tiếp vào database
     const account = new Account({
       email,
-      password: hashedPassword, // Lưu mật khẩu đã băm
+      password, 
       fullname,
       dob,
       phone,
@@ -33,6 +64,7 @@ const signUp = async (req, res) => {
     res.status(500).send({ message: 'Failed to create account', error: error.message });
   }
 };
+
 
 
 const signIn = async (req, res) => {
@@ -272,5 +304,6 @@ module.exports = {
   resetPassword,
   getAccount,
   updateAccount,
-  getAllAccounts
+  getAllAccounts,
+  changePassword
 };

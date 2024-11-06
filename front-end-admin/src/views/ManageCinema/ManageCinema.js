@@ -13,45 +13,45 @@ const ManageCinema = () => {
 
     const columns = [
         {
-            title: 'No.',
+            title: 'STT',
             dataIndex: 'index',
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Name',
+            title: 'Tên rạp',
             dataIndex: 'name',
         },
         {
-            title: 'Address',
+            title: 'Địa chỉ',
             dataIndex: 'address',
         },
         {
-            title: 'City',
+            title: 'Thành Phố',
             dataIndex: 'city',
             render: (text, record) => record?.city?.name,
         },
         {
-            title: 'Number of Rooms',
+            title: 'Số phòng',
             dataIndex: 'rooms',
             render: (rooms) => rooms.length,
         },
         {
-            title: 'Actions',
+            title: '',
             dataIndex: 'actions',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button type="link" onClick={() => showEditModal(record)}>Edit</Button>
-                    <Button type="link" onClick={() => confirmDelete(record._id)}>Delete</Button>
+                    <Button type="link" onClick={() => showEditModal(record)}>Chỉnh sửa</Button>
+                    <Button type="link" onClick={() => confirmDelete(record._id)}>Xóa</Button>
                 </Space>
             ),
         },
     ];
     const confirmDelete = (cinemaId) => {
         Modal.confirm({
-            title: 'Are you sure you want to delete this cinema?',
-            okText: 'Yes',
+            title: 'Đảm bảo rạp này không còn được sử dụng nữa. Bạn có chắc muốn xóa Rạp này không?',
+            okText: 'Tôi hiểu và tiếp tục',
             okType: 'danger',
-            cancelText: 'No',
+            cancelText: 'Suy nghĩ thêm',
             onOk: () => deleteCinema(cinemaId),
         });
     };
@@ -59,11 +59,11 @@ const ManageCinema = () => {
     const deleteCinema = async (cinemaId) => {
         try {
             await axios.delete(`http://localhost:9999/cinema/delete/${cinemaId}`);
-            message.success('Cinema deleted successfully!');
+            message.success('Đã xóa rạp phim!');
             fetchData();
         } catch (error) {
             console.error('Error deleting cinema:', error);
-            message.error('Failed to delete cinema. Please try again.');
+            message.error('Có lỗi xảy ra. Vui lòng thử lại');
         }
     };
 
@@ -103,7 +103,7 @@ const ManageCinema = () => {
         <div className="row flex-lg-nowrap">
             <div className="col mb-3">
                 <Button type="primary" onClick={showCreateModal} style={{ marginBottom: 16 }}>
-                    Create
+                    Tạo mới
                 </Button>
                 <Table columns={columns} dataSource={data} pagination={false} />
 
