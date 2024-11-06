@@ -41,11 +41,13 @@ export default function Authentication() {
         message.error(res.payload.errors[0].msg);
       }
       else
-        message.success('User registered successfully!');
+      {
+        message.success('Đăng ký thành công!');
+        register_form.resetFields();
+      }
       //reset form fields
-      form.resetFields();
     } catch (error) {
-      message.error('Registration failed. Please try again.');
+      message.error('Đăng ký thất bại, Xin thử lại.');
     } finally {
       setLoading(false);
     }
@@ -59,15 +61,15 @@ export default function Authentication() {
     try {
       const rs = await dispatch(loginUser(data));
       if (rs.payload.token) {
-        message.success('Login successful!');
+        message.success('Đăng nhập thành công!');
         const { password, ...userData } = rs.payload.account;
         dispatch(saveUserData({ account: userData, token: rs.payload.token }));
-        navigate(-1)
+        // navigate('/')
       }
       else
-        message.error('Email or password is incorrect');
+        message.error('Email hoặc mật khẩu không chính xác!');
     } catch (error) {
-      message.error('Login failed. Please try again.');
+      message.error('Đăng nhập thất bại, Xin thử lại.');
     }
   };
 
@@ -75,7 +77,6 @@ export default function Authentication() {
     setLoading(true);
     try {
       const res = await dispatch(sendEmail({ email: values.recovery_email }));
-      console.log(res)
       if (!res.payload.success) {
         message.error(res.payload.message);
       }
@@ -84,7 +85,7 @@ export default function Authentication() {
         window.location.href = '/auth/forgot-password';
       }
     } catch (error) {
-      message.error('Password recovery failed. Please try again.');
+      message.error('Mật khẩu không thể khôi phục, Xin thử lại.');
     } finally {
       setLoading(false);
     }
@@ -94,10 +95,10 @@ export default function Authentication() {
   const validatePassword = (_, value) => {
     const strongPassword = /^.{8,}$/;
     if (!value) {
-      return Promise.reject('Please input your password!');
+      return Promise.reject('Xin nhập mật khẩu!');
     }
     if (!strongPassword.test(value)) {
-      return Promise.reject('Password must be at least 8 characters long');
+      return Promise.reject('Mật khẩu phải chứa ít nhất 8 ký tự!');
     }
     return Promise.resolve();
   };
@@ -107,8 +108,8 @@ export default function Authentication() {
       <Form.Item
         name="email_login"
         rules={[
-          { required: true, message: 'Please input your Email!' },
-          { type: 'email', message: 'Please enter a valid email!' }
+          { required: true, message: 'Xin nhập email!' },
+          { type: 'email', message: 'Xin nhập email đúng dạng!' }
         ]}
       >
         <Input prefix={<MailOutlined />} placeholder="Email" />
@@ -117,13 +118,13 @@ export default function Authentication() {
         name="password_login"
         rules={[{ validator: validatePassword }]}
       >
-        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+        <Input.Password prefix={<LockOutlined />} placeholder="Mật Khẩu" />
       </Form.Item>
       <Form.Item>
         <Button onClick={handleLogin} type="primary" htmlType="submit" className="login-form-button" loading={loading}>
-          Log in
+          Đăng nhập
         </Button>
-        Or <a href="#" onClick={() => setActiveTab('recover')}>Forgot password</a>
+        Hoặc <a href="#" onClick={() => setActiveTab('recover')}>Quên Mật Khẩu</a>
       </Form.Item>
     </Form>
   );
@@ -132,15 +133,15 @@ export default function Authentication() {
     <Form form={register_form} name="register" onFinish={handleSignUp} className="register-form">
       <Form.Item
         name="name"
-        rules={[{ required: true, message: 'Please input your Name!' }]}
+        rules={[{ required: true, message: 'Xin hãy nhập tên của bạn!' }]}
       >
         <Input prefix={<UserOutlined />} placeholder="Name" />
       </Form.Item>
       <Form.Item
         name="phone"
         rules={[
-          { required: true, message: 'Please input your Phone Number!' },
-          { pattern: /^\d{10}$/, message: 'Please enter a valid 10-digit phone number!' }
+          { required: true, message: 'Xin hãy nhập số điện thoại!' },
+          { pattern: /^\d{10}$/, message: 'Số điện thoại phải đủ 10 chữ số!' }
         ]}
       >
         <Input prefix={<PhoneOutlined />} placeholder="Phone Number" />
@@ -148,53 +149,53 @@ export default function Authentication() {
       <Form.Item
         name="email"
         rules={[
-          { required: true, message: 'Please input your Email!' },
-          { type: 'email', message: 'Please enter a valid email!' }
+          { required: true, message: 'Xin hãy nhập email!' },
+          { type: 'email', message: 'Xin nhập đúng định dạng email!' }
         ]}
       >
         <Input prefix={<MailOutlined />} placeholder="Email" />
       </Form.Item>
       <Form.Item
         name="dateOfBirth"
-        rules={[{ required: true, message: 'Please select your Date of Birth!' }]}
+        rules={[{ required: true, message: 'Xin nhập ngày sinh!' }]}
       >
-        <DatePicker style={{ width: '100%' }} placeholder="Date of Birth" />
+        <DatePicker style={{ width: '100%' }} placeholder="Ngày Sinh" />
       </Form.Item>
       <Form.Item
         name="password"
         rules={[{ validator: validatePassword }]}
       >
-        <Input.Password prefix={<LockOutlined />} placeholder="Password" />
+        <Input.Password prefix={<LockOutlined />} placeholder="Mật Khẩu" />
       </Form.Item>
       <Form.Item
         name="confirmPassword"
         dependencies={['password']}
         rules={[
-          { required: true, message: 'Please confirm your password!' },
+          { required: true, message: 'Xin xác nhận mật khẩu!' },
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue('password') === value) {
                 return Promise.resolve();
               }
-              return Promise.reject('The two passwords do not match!');
+              return Promise.reject('Mật khẩu và Xác nhận mật khẩu không chính xác!');
             },
           }),
         ]}
       >
-        <Input.Password prefix={<LockOutlined />} placeholder="Confirm Password" />
+        <Input.Password prefix={<LockOutlined />} placeholder="Xác Nhận Mật Khẩu" />
       </Form.Item>
       <Form.Item
         name="agreement"
         valuePropName="checked"
         rules={[
-          { validator: (_, value) => value ? Promise.resolve() : Promise.reject('Please accept the terms of use') },
+          { validator: (_, value) => value ? Promise.resolve() : Promise.reject('Xin hãy chấp nhận điều khoản sử dụng') },
         ]}
       >
-        <Checkbox>I agree to the <a href="#">Terms of Use</a></Checkbox>
+        <Checkbox>Tôi đồng ý với <a href="#">điều khoản sử dụng</a></Checkbox>
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" className="register-form-button" loading={loading}>
-          Register
+          Đăng ký
         </Button>
       </Form.Item>
     </Form>
@@ -213,7 +214,7 @@ export default function Authentication() {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" className="recover-form-button" loading={loading}>
-          Reset Password
+          Gửi Email Khôi Phục Mật Khẩu
         </Button>
       </Form.Item>
     </Form>
@@ -223,16 +224,16 @@ export default function Authentication() {
     <div className='authentication-section'>
       <div className="authentication">
         <Tabs activeKey={activeTab} onChange={setActiveTab}>
-          <TabPane tab="Login" key="login">
+          <TabPane tab="Đăng Nhập" key="login">
             {renderLoginForm()}
           </TabPane>
-          <TabPane tab="Register" key="register">
+          <TabPane tab="Đăng Ký" key="register">
             {renderRegisterForm()}
           </TabPane>
         </Tabs>
         {activeTab === 'recover' && (
           <div className="recover-container">
-            <h2>Recover Password</h2>
+            <h2>Khôi phục mật khẩu</h2>
             {renderRecoverForm()}
           </div>
         )}
