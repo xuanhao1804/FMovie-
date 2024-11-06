@@ -68,22 +68,24 @@ const CinemaMovies = () => {
         console.log("Filtered showtimes:", filtered);
     };
 
-    // Hàm nhóm suất chiếu theo phim
-    const groupShowtimesByMovie = (showtimes) => {
-        const movieMap = {};
-        showtimes.forEach((showtime) => {
-            const movieId = showtime.movie._id;
-            if (!movieMap[movieId]) {
-                movieMap[movieId] = {
-                    movie: showtime.movie,
-                    times: [],
-                };
-            }
-            movieMap[movieId].times.push(showtime.startAt.times);
-        });
+// Hàm nhóm suất chiếu theo phim
+const groupShowtimesByMovie = (showtimes) => {
+    const movieMap = {};
+    showtimes.forEach((showtime) => {
+        const movieId = showtime.movie._id;
+        if (!movieMap[movieId]) {
+            movieMap[movieId] = {
+                movie: showtime.movie,
+                times: [],
+            };
+        }
+        // Thêm giờ chiếu vào mảng `times`
+        movieMap[movieId].times.push(showtime.startAt.time);
+    });
 
-        return Object.values(movieMap);
-    };
+    return Object.values(movieMap);
+};
+
 
     // Xử lý chọn ngày
     const handleDateSelect = (date) => {

@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const db = require("./models");
 
-const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter, BookingRouter, PopcornRouter } = require('./routes');
+const { MovieRouter, CinemaRouter, RoomRouter, ShowtimeRouter, CityRouter, AccountRouter, BookingRouter, PopcornRouter,CarouselRouter } = require('./routes');
 
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
@@ -16,7 +16,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: [process.env.FRONT_END_URL, process.env.ADMIN_PORT_URL],
+        origin: process.env.FRONT_END_URL,
     },
 });
 
@@ -31,7 +31,7 @@ app.use(bodyParser.json({ limit: "64mb" }));
 app.use(bodyParser.urlencoded({ limit: "64mb", extended: true }));
 
 // Above our `app.get("/users")` handler
-
+app.use("/carousel", CarouselRouter);
 app.use("/movie", MovieRouter);
 app.use("/cinema", CinemaRouter);
 app.use("/room", RoomRouter);
@@ -40,6 +40,7 @@ app.use("/city", CityRouter);
 app.use("/user", AccountRouter);
 app.use("/booking", BookingRouter);
 app.use("/popcorn", PopcornRouter);
+app.use("/account", AccountRouter);
 io.on("connection", (socket) => {
     console.log("An user connect: ", socket.id);
 

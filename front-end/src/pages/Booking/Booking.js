@@ -1,5 +1,5 @@
 import "./Booking.scss"
-import { Row, Col, Divider } from "antd"
+import { Row, Col, Divider, message } from "antd"
 import film_blank from "../../assets/icon/film-blank.svg"
 import { useEffect, useMemo, useRef, useState } from "react"
 import CitySelection from "../../components/BookingSelection/CitySelection/CitySelection"
@@ -15,13 +15,15 @@ import PaymentSelection from "../../components/BookingSelection/PaymentSelection
 import { BookingService } from "../../services/BookingService"
 
 import { socket } from "../../App"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 const Booking = () => {
 
     const location = useLocation()
 
-    const { popcorns, user } = useSelector((state) => state)
+    const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
+    const { popcorns, user, movies } = useSelector((state) => state)
 
     const [selectedCity, setSelectedCity] = useState("")
     const [selectedMovie, setSelectedMovie] = useState("")
@@ -42,8 +44,8 @@ const Booking = () => {
     const bookingPreviewRef = useRef(null)
 
     const seatsPrice = useMemo(() => {
-        const normalSeats = 50000 * selectedSeats.filter(seat => seat.isVip === false).length
-        const vipSeats = 60000 * selectedSeats.filter(seat => seat.isVip === true).length
+        const normalSeats = (+movies.playingMovies?.find(movie => movie._id === selectedMovie)?.price || 50000) * selectedSeats.filter(seat => seat.isVip === false).length
+        const vipSeats = ((+movies.playingMovies?.find(movie => movie._id === selectedMovie)?.price + 10000) || 60000) * selectedSeats.filter(seat => seat.isVip === true).length
         return { normalSeats, vipSeats };
     }, [selectedSeats])
 
@@ -52,6 +54,12 @@ const Booking = () => {
             return total + (popcorn.quantity * popcorns.list.find(p => p._id === popcorn._id).price)
         }, 0)
     }, [selectedPopcorns])
+
+    useEffect(() => {
+        if (!user.user || !user.user.account) {
+            navigate("/auth/sign-in")
+        }
+    }, [])
 
     const getMoviesShowtime = async () => {
         const response = await ShowtimeService.fetchShowtimeByMovieService({
@@ -83,7 +91,24 @@ const Booking = () => {
             seats: selectedSeats,
             popcorns: selectedPopcorns
         })
-        setPaymentInformation(response)
+        if (response?.status === 409) {
+            messageApi.error(response.message);
+            setStep(2)
+            setSelectedSeats([])
+        } else {
+            setPaymentInformation(response)
+        }
+    }
+
+    const handleSessionTimeout = () => {
+        setStep(1)
+        setSelectedCity("")
+        setSelectedMovie("")
+        setSelectedShowtime(null)
+        setSelectedDate("")
+        setSelectedSeats([])
+        setSelectedPopcorns([])
+        messageApi.error("Hết thời gian thanh toán, vui lòng thử lại");
     }
 
     useEffect(() => {
@@ -110,6 +135,10 @@ const Booking = () => {
             }
         }
     }, [selectedMovie])
+
+    useEffect(() => {
+        setSelectedSeats([])
+    }, [selectedShowtime])
 
     useEffect(() => {
         setPaymentInformation(null)
@@ -145,6 +174,7 @@ const Booking = () => {
 
     return (
         <div className="booking">
+            {contextHolder}
             <div className="booking-step">
                 <span className={step === 1 ? "booking-step-selecting" : step > 1 ? "booking-step-selected" : "booking-step-title"}>Chọn Phim / Rạp / Suất</span>
                 <span className={step === 2 ? "booking-step-selecting" : step > 2 ? "booking-step-selected" : "booking-step-title"}>Chọn Ghế</span>
@@ -177,7 +207,7 @@ const Booking = () => {
                             {
                                 step === 4 &&
                                 <>
-                                    <PaymentSelection handleCreatePayment={handleCreatePayment} paymentInformation={paymentInformation} />
+                                    <PaymentSelection handleCreatePayment={handleCreatePayment} paymentInformation={paymentInformation} handleSessionTimeout={handleSessionTimeout} />
                                 </>
                             }
                             {
@@ -311,6 +341,10 @@ const Booking = () => {
                                 <button onClick={() => {
                                     if (step > 1) {
                                         setStep(step => step - 1)
+                                        if (paymentInformation !== null) {
+                                            console.log(paymentInformation)
+                                            setPaymentInformation(null)
+                                        }
                                     }
                                 }} className={step === 1 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
                                     Quay lại
@@ -335,6 +369,12 @@ const Booking = () => {
                                 }} className={step === 4 ? "booking-step-action-btn booking-step-action-btn-disable" : "booking-step-action-btn"}>
                                     Tiếp tục
                                 </button>
+                            </div>
+                        }
+                        {
+                            paymentInformation !== null &&
+                            <div className="text-red">
+                                <span>Quay lại lúc này sẽ hủy mã QR cũng như việc giữ chỗ</span>
                             </div>
                         }
                     </Col>

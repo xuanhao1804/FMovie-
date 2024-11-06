@@ -42,7 +42,6 @@ const ManageMovie = () => {
         setIsCreateModalOpen(false);
     };
     const handleDeleteMovie = async (id) => {
-        console.log("Deleting movie with ID:", id);
         try {
             const response = await axios.delete(`http://localhost:9999/movie/delete/${id}`);
             console.log("Delete response:", response.data);
@@ -129,9 +128,7 @@ const ManageMovie = () => {
                 <Button type="primary" onClick={showCreateModal} style={{ marginBottom: 16 }}>
                     Create
                 </Button>
-
                 <Table columns={columns} dataSource={data} pagination={false} />
-
                 <EditModal
                     visible={isEditModalOpen}
                     onCancel={handleEditCancel}
@@ -140,14 +137,12 @@ const ManageMovie = () => {
                     fetchData={fetchData}
                     existingGenres={existingGenres}
                 />
-
                 <ModalCreateMovie
                     isCreateModalOpen={isCreateModalOpen}
                     handleCreateCancel={handleCreateCancel}
                     fetchData={fetchData}
                     existingGenre={existingGenres}
                 />
-
             </div>
         </div>
     );

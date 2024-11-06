@@ -11,7 +11,9 @@ const AccountSchema = new Schema({
         type: String,
         required: true,
     },
-    roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }],
+    roles: [{
+        type: String
+    }],
     fullname: {
         type: String,
         required: true,
@@ -22,8 +24,13 @@ const AccountSchema = new Schema({
     phone: {
         type: String
     },
-
+    status: {
+        type: String,
+        enum: ['active', 'disable'],
+        default: 'active'
+    }
 }, { timestamps: true });
+
 
 const Account = mongoose.model('Account', AccountSchema);
 

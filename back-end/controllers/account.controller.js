@@ -1,50 +1,62 @@
 const Account = require("../models").account;
 const { validationResult } = require('express-validator');
 const { createJWT } = require('../middlewares/JsonWebToken')
+const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const OPT = require('../models').otp;
+
 const signUp = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, fullname, dob, phone } = req.body;
+    const { email, password, fullname, dob, phone, roles } = req.body;
+
+    // Băm mật khẩu trước khi lưu
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const account = new Account({
       email,
-      password,
+      password: hashedPassword, // Lưu mật khẩu đã băm
       fullname,
       dob,
-      phone
+      phone,
+      roles,
     });
 
     await account.save();
     res.status(201).send(account);
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error during sign-up:', error);
+    res.status(500).send({ message: 'Failed to create account', error: error.message });
   }
 };
+
 
 const signIn = async (req, res) => {
   try {
-    // Check for validation errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    const { email, password } = req.body;
+    const account = await Account.findOne({ email });
+
+    if (!account) {
+      return res.status(404).json({ message: 'Account not found' });
     }
 
-    const { email, password } = req.body;
-    const account = await Account.findOne({ email, password });
-    if (!account) {
-      return res.status(500).send('Account not found');
+    // Kiểm tra mật khẩu theo cách đơn giản (không băm)
+    if (account.password !== password) {
+      return res.status(401).json({ message: 'Invalid password' });
     }
-    return res.status(200).send({ account, token: createJWT({ email: account.email }) });
+
+    return res.status(200).json({ account, token: createJWT({ email: account.email }) });
   } catch (error) {
-    return res.status(500).send(error);
+    console.error('Error during sign-in:', error);
+    return res.status(500).json({ message: 'An internal server error occurred', error: error.message });
   }
 };
+
+
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -207,10 +219,58 @@ const resetPassword = async (req, res) => {
   }
 }
 
+
+const getAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const account = await Account.findById(id);
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    return res.status(200).json({ success: true, data: account });
+  } catch (error) {
+    console.error('Error fetching account:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch account', error: error.message });
+  }
+};
+
+const updateAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body; // Nhận tất cả dữ liệu cần cập nhật từ req.body
+
+    const account = await Account.findByIdAndUpdate(id, updatedData, { new: true });
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    return res.status(200).json({ success: true, data: account, message: 'Account updated successfully' });
+  } catch (error) {
+    console.error('Error updating account:', error);
+    res.status(500).json({ success: false, message: 'Failed to update account', error: error.message });
+  }
+};
+
+
+
+const getAllAccounts = async (req, res) => {
+  try {
+    const accounts = await Account.find(); // Lấy tất cả các tài khoản
+    return res.status(200).json({ success: true, data: accounts });
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch accounts', error: error.message });
+  }
+};
+
+
+
 module.exports = {
   signUp,
   signIn,
   sendMail,
   verifyOTP,
-  resetPassword
+  resetPassword,
+  getAccount,
+  updateAccount,
+  getAllAccounts
 };
