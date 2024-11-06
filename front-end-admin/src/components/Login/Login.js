@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from '../../assets/image.png'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 import { message } from 'antd'
 import './Login.scss'
