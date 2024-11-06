@@ -50,7 +50,7 @@ const signUp = async (req, res) => {
     // Không băm mật khẩu, lưu trực tiếp vào database
     const account = new Account({
       email,
-      password, 
+      password,
       fullname,
       dob,
       phone,
@@ -94,7 +94,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'tattupro2705@gmail.com',
-    pass: 'gshh oymp mbbf ywxc'  
+    pass: 'gshh oymp mbbf ywxc'
   }
 });
 
@@ -154,14 +154,14 @@ const sendMail = async (req, res) => {
 
     // Gửi email
     const info = await transporter.sendMail(mailOptions);
-  
+
     // Kiểm tra và lưu OTP vào database
     await OPT.findOneAndUpdate(
       { email: email }, // Điều kiện tìm kiếm
       { otp: OTPCode, timeCreated: new Date() }, // Giá trị cập nhật
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
-    
+
     console.log('Email sent: ', info);
     res.status(200).json({
       success: true,
@@ -192,7 +192,7 @@ transporter.verify((error, success) => {
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    
+
     const otpData = await OPT.findOne({ email, otp });
     console.log(otpData, email, otp);
     if (!otpData) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Row, Col, Button } from "antd";
 import axios from "axios";
 import "./CinemaMovies.scss";
@@ -68,23 +68,23 @@ const CinemaMovies = () => {
         console.log("Filtered showtimes:", filtered);
     };
 
-// Hàm nhóm suất chiếu theo phim
-const groupShowtimesByMovie = (showtimes) => {
-    const movieMap = {};
-    showtimes.forEach((showtime) => {
-        const movieId = showtime.movie._id;
-        if (!movieMap[movieId]) {
-            movieMap[movieId] = {
-                movie: showtime.movie,
-                times: [],
-            };
-        }
-        // Thêm giờ chiếu vào mảng `times`
-        movieMap[movieId].times.push(showtime.startAt.time);
-    });
+    // Hàm nhóm suất chiếu theo phim
+    const groupShowtimesByMovie = (showtimes) => {
+        const movieMap = {};
+        showtimes.forEach((showtime) => {
+            const movieId = showtime.movie._id;
+            if (!movieMap[movieId]) {
+                movieMap[movieId] = {
+                    movie: showtime.movie,
+                    times: [],
+                };
+            }
+            // Thêm giờ chiếu vào mảng `times`
+            movieMap[movieId].times.push(showtime.startAt.time);
+        });
 
-    return Object.values(movieMap);
-};
+        return Object.values(movieMap);
+    };
 
 
     // Xử lý chọn ngày
@@ -199,9 +199,9 @@ const groupShowtimesByMovie = (showtimes) => {
                                             ))}
                                         </div>
                                         {/* Nút "Đặt Vé" */}
-                                        <Button type="primary" style={{ marginTop: "15px" }}>
+                                        <Link to={"/booking"} type="primary" style={{ marginTop: "15px" }}>
                                             Đặt Vé
-                                        </Button>
+                                        </Link>
                                     </div>
                                 </Col>
                             </Row>

@@ -54,12 +54,12 @@ const ShowtimeManagement = () => {
     };
     const columns = [
         {
-            title: 'Room',
+            title: 'Phòng',
             dataIndex: 'name',
             key: 'room',
         },
         {
-            title: 'Showtimes',
+            title: 'Suất chiếu',
             key: 'showtimes',
             dataIndex: 'showtimes',
             render: (showtimes) => (
@@ -69,14 +69,14 @@ const ShowtimeManagement = () => {
                             <strong>{showtime?.time}</strong> - Movie: {movies.find(movie => movie._id == showtime.movie)?.name}
                         </div>
                     ))
-                    : 'No Showtimes'
+                    : 'Không có suất chiếu'
             ),
         },
         {
-            title: 'Actions',
+            title: '',
             key: 'actions',
             render: (_, record) => (
-                <Button type="primary" onClick={() => handleOpenModal(record)}>Create Showtime</Button>
+                <Button type="primary" onClick={() => handleOpenModal(record)}>Tạo mới 1 suất chiếu</Button>
             ),
         }
     ];
@@ -167,7 +167,7 @@ const ShowtimeManagement = () => {
                 >
                     <Form.Item
                         name="roomName"
-                        label="Room Name"
+                        label="Tên phòng"
                         rules={[{ required: true }]}
                     >
                         <Input disabled />
@@ -182,8 +182,8 @@ const ShowtimeManagement = () => {
                     </Form.Item>
                     <Form.Item
                         name="movieId"
-                        label="Movie"
-                        rules={[{ required: true, message: 'Please select a movie!' }]}
+                        label="Tên phim"
+                        rules={[{ required: true, message: 'Chọn 1 bộ phim chiếu!' }]}
                     >
                         <Select placeholder="Select a movie">
                             {movies.map(movie => (
@@ -201,12 +201,12 @@ const ShowtimeManagement = () => {
                     <Form.Item
                         name="time"
                         label="Time"
-                        rules={[{ required: true, message: 'Please select a time!' }]}
+                        rules={[{ required: true, message: 'Chọn giờ chiếu!' }]}
                     >
                         <TimePicker format="HH:mm" />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">Create</Button>
+                        <Button type="primary" htmlType="submit">Tạo</Button>
                     </Form.Item>
                 </Form>
             </Modal>

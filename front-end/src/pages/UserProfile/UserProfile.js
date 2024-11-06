@@ -72,9 +72,11 @@ const UserProfile = () => {
                             <th scope="col">Phòng</th>
                             <th scope="col">Thời gian</th>
                             <th scope="col">Chỗ ngồi</th>
+
                             <th scope="col">Popcorns</th>
                             <th scope="col">Ngày đặt</th>
                             <th scope="col">Tổng tiền</th>
+                            <th scope="col">Mã xác nhận</th>
                             <th scope="col">Trạng thái</th>
                         </tr>
                     </thead>
@@ -109,6 +111,7 @@ const UserProfile = () => {
                                             }</td>
                                             <td>{getVietnameseDate(item.createdAt, true)}</td>
                                             <td><NumericFormat className="text-success" value={item.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td>{item.orderCode}</td>
                                             <td><span style={{ color: bookingStatus[item.status].textColor }}>{bookingStatus[item.status].text}</span></td>
                                         </tr>
                                     )

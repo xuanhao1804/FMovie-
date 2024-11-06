@@ -38,7 +38,7 @@ const CreatePayment = async (req, res) => {
             setTimeout(async () => {
                 const bookingToUpdate = await db.booking.findById(savedBooking._id);
                 if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
-                    await payOS.cancelPaymentLink(savedBooking.orderCode);
+                    //await payOS.cancelPaymentLink(savedBooking.orderCode);
                     bookingToUpdate.status = 'cancelled';
                     await bookingToUpdate.save();
                     console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);

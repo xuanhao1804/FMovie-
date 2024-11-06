@@ -16,11 +16,11 @@ const ManagePopcorn = () => {
             render: (text, record, index) => index + 1,
         },
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
         },
         {
-            title: 'Image',
+            title: 'Ảnh',
             dataIndex: 'image',
             render: (text) => (
                 <img
@@ -31,11 +31,11 @@ const ManagePopcorn = () => {
             ),
         },
         {
-            title: 'Description',
+            title: 'Mô tả',
             dataIndex: 'description',
         },
         {
-            title: 'Price (VND)',
+            title: 'Giá (VND)',
             dataIndex: 'price',
         },
         {
@@ -43,8 +43,8 @@ const ManagePopcorn = () => {
             dataIndex: 'actions',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button type="link" onClick={() => showEditModal(record)}>Edit</Button>
-                    <Button type="link" onClick={() => handleDeletePopCorn(record._id)}>Delete</Button>
+                    <Button type="link" onClick={() => showEditModal(record)}>Chỉnh sửa</Button>
+                    <Button type="link" onClick={() => handleDeletePopCorn(record._id)}>Xóa</Button>
                 </Space>
             ),
         },
