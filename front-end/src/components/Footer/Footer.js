@@ -39,7 +39,7 @@ const CustomFooter = () => {
             <YoutubeOutlined className="social-icon" />
             <InstagramOutlined className="social-icon" />
           </Space>
-          <img src="http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoSaleNoti.png" alt="Bộ Công Thương" className="footer-cert" />
+          <img style={{marginTop:"20px"}} src="http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoSaleNoti.png" alt="Bộ Công Thương" className="footer-cert" />
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Title level={4}>Chăm sóc khách hàng</Title>
@@ -52,8 +52,8 @@ const CustomFooter = () => {
       </Row>
       <Row className="mt-32">
         <Col span={24} className='footer-intro'>
-          <img src={logo} alt="CJ FMOVIE Logo" className="company-logo" />
-          <Text className="company-info">
+          <img src={logo} alt="CJ FMOVIE Logo" className="company-logo " />
+          <Text style={{marginLeft:"20px"}} className="company-info">
             CÔNG TY TNHH CJ FMOVIE VIỆT NAM
             <br />
             Giấy Chứng nhận đăng ký doanh nghiệp: 0303675393 đăng ký lần đầu ngày 31/7/2008, được cấp bởi Sở Kế hoạch và Đầu tư Thành phố Hồ Chí Minh

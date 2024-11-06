@@ -57,10 +57,10 @@ export default function OTPInput() {
         <div className="content-wrapper">
           <div className="header">
             <div className="title">
-              <p>Email Verification</p>
+              <p>Xác Nhận Email</p>
             </div>
             <div className="subtitle">
-              <p>We have sent a code to your email {user?.recoverEmail}</p>
+              <p>Chúng Tôi Đã Gửi Code Đến Email {user?.recoverEmail}</p>
             </div>
           </div>
 
@@ -86,17 +86,17 @@ export default function OTPInput() {
                 <div className="button-group">
                   <div>
                     <a onClick={() => verfiyOTP()} className="verify-button">
-                      Verify Account
+                      Xác Nhận Tài Khoản
                     </a>
                   </div>
 
                   <div className="resend-section">
-                    <div>Didn't recieve code?</div>
+                    <div>Không Nhận Được Mã Code?</div>
                     <a
                       className={`resend-button ${disable ? 'disabled' : 'enabled'}`}
                     //   onClick={() => resendOTP()}
                     >
-                      {disable ? `Resend OTP in ${timerCount}s` : "Resend OTP"}
+                      {disable ? `Gửi lại trong ${timerCount}s` : "Gửi Lại OTP"}
                     </a>
                   </div>
                 </div>
