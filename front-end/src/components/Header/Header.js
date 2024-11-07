@@ -105,19 +105,20 @@ const Header = () => {
                                 <UserOutlined className="user-icon" />
                                 <span className="user-name">Xin chào {user.user.account.fullname}!</span>
                             </div>
-                            <Button onClick={handleLogout} type="primary">Đăng xuất</Button>
+                            <Button onClick={handleLogout} type="primary" className="logout-button">Đăng xuất</Button>
                         </div>
                     ) : (
                         <div className="header-item header-item-sm">
-                            <Button type="primary" value="large" className="font-size-16">
+                            <Button type="primary" value="large" className="login-button font-size-16">
                                 <Link to={"/auth/sign-in"}>Đăng nhập</Link>
                             </Button>
-                            <Button type="success" value="large" className="bg-green text-white font-size-16">
+                            <Button type="success" value="large" className="register-button bg-green text-white font-size-16">
                                 <Link to={"/auth/sign-in"}>Đăng ký</Link>
                             </Button>
                         </div>
                     )
                 }
+
             </div>
             <div className="header-divider content-width-padding">
                 FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam

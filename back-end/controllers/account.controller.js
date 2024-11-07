@@ -156,7 +156,6 @@ const sendMail = async (req, res) => {
       { otp: OTPCode, timeCreated: new Date() }, // Giá trị cập nhật
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
-
     res.status(200).json({
       success: true,
       message: 'Email sent successfully',
@@ -287,7 +286,16 @@ const getAllAccounts = async (req, res) => {
   }
 };
 
-
+const getTotalUser = async (req, res) => {
+  try {
+    const accounts = await Account.find();
+    return res.status(200).json({ success: true, data: accounts.length });
+  }
+  catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch accounts', error: error.message });
+  }
+}
 
 module.exports = {
   signUp,
@@ -298,5 +306,6 @@ module.exports = {
   getAccount,
   updateAccount,
   getAllAccounts,
-  changePassword
+  changePassword,
+  getTotalUser
 };
