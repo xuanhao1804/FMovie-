@@ -297,6 +297,26 @@ const getTotalUser = async (req, res) => {
   }
 }
 
+const updateAccountInfo = async (req, res) => {
+  try {
+    const { _id, email, fullname, dob, phone } = req.body;
+    const account = await Account.findById(_id);
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    account.email = email;
+    account.fullname = fullname;
+    account.dob = dob;
+    account.phone = phone;
+    await account.save();
+    return res.status(200).json({ success: true, data: account });
+  }
+  catch (error) {
+    console.error('Error updating account:', error);
+    res.status(500).json({ success: false, message: 'Failed to update account', error: error.message });
+  }
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -307,5 +327,6 @@ module.exports = {
   updateAccount,
   getAllAccounts,
   changePassword,
-  getTotalUser
+  getTotalUser,
+  updateAccountInfo
 };
