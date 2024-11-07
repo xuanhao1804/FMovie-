@@ -213,7 +213,7 @@ const UserProfile = () => {
                                             <td>{item?.popcorns?.length > 0 ?
                                                 item.popcorns.map((item, index) => {
                                                     return (
-                                                        <div>{item?.quantity + "x " + item?.popcorn?.name}</div>
+                                                        <div>{item?.quantity + "x " + item?._id?.name}</div>
                                                     )
                                                 })
                                                 :

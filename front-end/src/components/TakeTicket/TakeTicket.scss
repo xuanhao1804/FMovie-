@@ -1,0 +1,36 @@
+.take-ticket {
+
+    &-pdf {
+        font-family     : "DejaVu Sans", "Arial", sans-serif;
+        width           : fit-content;
+        background-color: #ff914d;
+        display         : flex;
+        justify-content : space-between;
+        align-items     : center;
+        gap             : 2rem;
+
+        &-logo {
+            height: 10rem;
+        }
+
+        &-film-title {
+            text-transform: uppercase;
+            font-weight   : 600;
+            font-size     : 1rem;
+        }
+
+        &-datetime {
+            font-size: 0.75rem;
+        }
+
+        &-seat,
+        &-room {
+            font-size: 0.75rem;
+        }
+
+        &-divider {
+            border: 0.05rem dashed white;
+            height: 10rem;
+        }
+    }
+}
