@@ -102,7 +102,6 @@ const sendMail = async (req, res) => {
   try {
     const { email } = req.body;
     const account = await Account.findOne({ email });
-    console.log(email);
     if (!account) {
       return res.status(404).json({
         success: false,
@@ -162,7 +161,6 @@ const sendMail = async (req, res) => {
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
     
-    console.log('Email sent: ', info);
     res.status(200).json({
       success: true,
       message: 'Email sent successfully',
@@ -194,7 +192,6 @@ const verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
     
     const otpData = await OPT.findOne({ email, otp });
-    console.log(otpData, email, otp);
     if (!otpData) {
       return res.status(404).json({
         success: false,
@@ -294,7 +291,16 @@ const getAllAccounts = async (req, res) => {
   }
 };
 
-
+const getTotalUser = async (req, res) => {
+  try {
+    const accounts = await Account.find();
+    return res.status(200).json({ success: true, data: accounts.length });
+  }
+  catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch accounts', error: error.message });
+  }
+}
 
 module.exports = {
   signUp,
@@ -305,5 +311,6 @@ module.exports = {
   getAccount,
   updateAccount,
   getAllAccounts,
-  changePassword
+  changePassword,
+  getTotalUser
 };
