@@ -49,7 +49,7 @@ const Header = () => {
                 children: cinemas.filter(cinema => cinema.city === item._id).map(cinema => (
                     {
                         key: cinema._id,
-                        label: (<Link to={`/cinemas-movies/${cinema._id}`}>
+                        label: (<Link className="text-decoration-none" to={`/cinemas-movies/${cinema._id}`}>
                             {cinema.name}
                         </Link>)
                     }
@@ -65,8 +65,8 @@ const Header = () => {
 
     // Danh sách các loại phim
     const filmsType = [
-        { key: 1, label: (<Link to={"/films/playing"}>Phim đang chiếu</Link>) },
-        { key: 2, label: (<Link to={"/films/upcoming"}>Phim sắp chiếu</Link>) }
+        { key: 1, label: (<Link className="text-decoration-none" to={"/films/playing"}>Phim đang chiếu</Link>) },
+        { key: 2, label: (<Link className="text-decoration-none" to={"/films/upcoming"}>Phim sắp chiếu</Link>) }
     ];
 
     return (
@@ -83,7 +83,7 @@ const Header = () => {
                     </Link>
                     {/* Dropdown các loại phim */}
                     <Dropdown menu={{ items: filmsType }}>
-                        <Link to={"/films"}>
+                        <Link className="text-decoration-none text-dark" to={"/films"}>
                             Phim <i className="fa-solid fa-chevron-down"></i>
                         </Link>
                     </Dropdown>

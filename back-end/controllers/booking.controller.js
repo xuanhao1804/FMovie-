@@ -19,7 +19,7 @@ const CreatePayment = async (req, res) => {
         if (checkSeats.length > 0) {
             return res.status(409).json({
                 status: 409,
-                messgae: "Ghế đã được đặt trước, vui lòng chọn ghế khác"
+                message: "Ghế đã được đặt trước, vui lòng chọn ghế khác"
             });
         } else {
             const orderCode = Date.now();
@@ -193,7 +193,7 @@ const getUserBookedHistory = async (req, res) => {
                 select: "name"
             }
         }).populate({
-            path: "popcorns.popcorn",
+            path: "popcorns._id",
             select: "name"
         }).sort({ createdAt: -1 }).limit(10)
         return res.status(200).json({
@@ -213,7 +213,20 @@ const getUserTicket = async (req, res) => {
         const { orderCode } = req.body;
         let booking = await db.booking.findOne({
             orderCode: orderCode,
-        }).select("status updatedAt")
+        }).select("-transaction").populate({
+            path: "room",
+            select: "-showtimes -areas"
+        }).populate({
+            path: "showtime",
+            populate: {
+                path: "movie",
+                select: "name"
+            }
+        }).populate({
+            path: "popcorns._id",
+            select: "name"
+        })
+        console.log(booking)
         if (booking) {
             if (booking.status === "cancelled") {
                 return res.status(400).json({
@@ -229,12 +242,20 @@ const getUserTicket = async (req, res) => {
                         d.getDate(), d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':')
                     });
                 } else {
-                    booking.status = "end"
-                    await booking.save()
-                    return res.status(404).json({
-                        status: 201,
-                        message: "Xác nhận thành công. Đang xuất vé ..."
-                    });
+                    if (booking.status === "paid") {
+                        booking.status = "end"
+                        await booking.save()
+                        return res.status(201).json({
+                            status: 201,
+                            data: booking,
+                            message: "Xác nhận thành công."
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Người đặt chưa thanh toán"
+                        });
+                    }
                 }
             }
         } else {
