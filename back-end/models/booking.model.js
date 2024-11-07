@@ -35,7 +35,7 @@ const BookingSchema = new Schema({
     ],
     popcorns: [
         {
-            popcorn: {
+            _id: {
                 type: Schema.Types.ObjectId,
                 ref: "Popcorn"
             },
