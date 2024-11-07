@@ -9,7 +9,7 @@ const removeDiacritics = (str) => {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
 
-const ManageAccount = () => {
+const ManageAccount = ({ darkMode }) => {
   const [accounts, setAccounts] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [isViewModalVisible, setIsViewModalVisible] = useState(false);
@@ -32,6 +32,7 @@ const ManageAccount = () => {
     };
     fetchAccounts();
   }, []);
+
   const handleSearch = (e) => {
     const searchValue = removeDiacritics(e.target.value.toLowerCase());
     setSearchText(searchValue);
@@ -46,7 +47,6 @@ const ManageAccount = () => {
     const fullname = removeDiacritics(account.fullname.toLowerCase());
     return email.includes(searchText) || fullname.includes(searchText);
   });
-  
 
   const showViewModal = (account) => {
     setSelectedAccount(account);
@@ -62,9 +62,6 @@ const ManageAccount = () => {
     setFormData(account);
     setIsEditModalVisible(true);
   };
-
-
-  
 
   const handleEditChange = (e) => {
     const { name, value } = e.target;
@@ -111,7 +108,7 @@ const ManageAccount = () => {
             : 'N/A'}
         </span>
       ),
-    },    
+    },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
@@ -154,42 +151,49 @@ const ManageAccount = () => {
         dataSource={filteredAccounts}
         columns={columns}
         rowKey="_id"
-        pagination={{
-          pageSize: pageSize,
-          showSizeChanger: true,
-          pageSizeOptions: ['5', '10', '20', '50'],
-          onShowSizeChange: handlePageSizeChange,
-          showTotal: (total) => <span style={{ color: '#000' }}>Tổng số {total} tài khoản</span>,
-        }}
+        pagination={
+          filteredAccounts.length > 10
+            ? {
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ['5', '10', '20', '50'],
+                onShowSizeChange: handlePageSizeChange,
+                showTotal: (total) => (
+                  <span style={{ color: darkMode ? '#FFF' : '#000' }}>
+                    Tổng số {total} tài khoản
+                  </span>
+                ),
+              }
+            : false
+        }
       />
 
       {/* View Modal */}
       <Modal
-  title="Thông tin tài khoản"
-  open={isViewModalVisible}
-  onCancel={() => setIsViewModalVisible(false)}
-  footer={<Button onClick={() => setIsViewModalVisible(false)}>Đóng</Button>}
->
-  {selectedAccount && (
-    <div>
-      <p><strong>Email:</strong> {selectedAccount.email}</p>
-      <p><strong>Họ và tên:</strong> {selectedAccount.fullname}</p>
-      <p><strong>Số điện thoại:</strong> {selectedAccount.phone}</p>
-      <p>
-        <strong>Vai trò:</strong> {selectedAccount.roles && selectedAccount.roles.length > 0 ? (
-          selectedAccount.roles.map((role, index) => (
-            <Tag color={role === 'admin' ? 'volcano' : 'blue'} key={index}>
-              {role.toUpperCase()}
-            </Tag>
-          ))
-        ) : 'N/A'}
-      </p>
-      <p><strong>Trạng thái:</strong> {selectedAccount.status}</p>
-      <p><strong>Ngày sinh:</strong> {selectedAccount.dob ? new Date(selectedAccount.dob).toLocaleDateString() : 'N/A'}</p>
-    </div>
-  )}
-</Modal>
-
+        title="Thông tin tài khoản"
+        open={isViewModalVisible}
+        onCancel={() => setIsViewModalVisible(false)}
+        footer={<Button onClick={() => setIsViewModalVisible(false)}>Đóng</Button>}
+      >
+        {selectedAccount && (
+          <div>
+            <p><strong>Email:</strong> {selectedAccount.email}</p>
+            <p><strong>Họ và tên:</strong> {selectedAccount.fullname}</p>
+            <p><strong>Số điện thoại:</strong> {selectedAccount.phone}</p>
+            <p>
+              <strong>Vai trò:</strong> {selectedAccount.roles && selectedAccount.roles.length > 0 ? (
+                selectedAccount.roles.map((role, index) => (
+                  <Tag color={role === 'admin' ? 'volcano' : 'blue'} key={index}>
+                    {role.toUpperCase()}
+                  </Tag>
+                ))
+              ) : 'N/A'}
+            </p>
+            <p><strong>Trạng thái:</strong> {selectedAccount.status}</p>
+            <p><strong>Ngày sinh:</strong> {selectedAccount.dob ? new Date(selectedAccount.dob).toLocaleDateString() : 'N/A'}</p>
+          </div>
+        )}
+      </Modal>
 
       {/* Edit Modal */}
       <Modal
