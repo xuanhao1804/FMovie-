@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 
+
 const { Option } = Select;
 
 const ShowtimeManagement = () => {
@@ -76,7 +77,7 @@ const ShowtimeManagement = () => {
             title: '',
             key: 'actions',
             render: (_, record) => (
-                <Button type="primary" onClick={() => handleOpenModal(record)}>Tạo mới 1 suất chiếu</Button>
+                <Button disabled={dayjs(selectedDate).isBefore(dayjs(), 'day')} type="primary" onClick={() => handleOpenModal(record)}>Tạo mới 1 suất chiếu</Button>
             ),
         }
     ];
@@ -137,9 +138,9 @@ const ShowtimeManagement = () => {
 
     return (
         <div className="showtime-management">
-            <h2>Showtime Management by Date and Room</h2>
+            <h2>Quản lí suất chiếu</h2>
             <div style={{ marginBottom: '20px' }}>
-                <label>Select Date: </label>
+                <label>Chọn ngày: </label>
                 <DatePicker
                     format="YYYY-MM-DD"
                     value={selectedDate ? dayjs(selectedDate) : null}
@@ -185,22 +186,22 @@ const ShowtimeManagement = () => {
                         label="Tên phim"
                         rules={[{ required: true, message: 'Chọn 1 bộ phim chiếu!' }]}
                     >
-                        <Select placeholder="Select a movie">
-                            {movies.map(movie => (
+                        <Select placeholder="Chọn 1 bộ phim">
+                            {movies.filter(movie => movie.status === 'playing').map(movie => (
                                 <Option key={movie._id} value={movie._id}>{movie.name}</Option>
                             ))}
                         </Select>
                     </Form.Item>
                     <Form.Item
                         name="date"
-                        label="Date"
+                        label="Ngày"
                         rules={[{ required: true, message: 'Please select a date!' }]}
                     >
                         <DatePicker format="YYYY-MM-DD" disabled />
                     </Form.Item>
                     <Form.Item
                         name="time"
-                        label="Time"
+                        label="Giờ"
                         rules={[{ required: true, message: 'Chọn giờ chiếu!' }]}
                     >
                         <TimePicker format="HH:mm" />

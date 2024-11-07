@@ -39,12 +39,21 @@ const ManagePopcorn = () => {
             dataIndex: 'price',
         },
         {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            render: (status) => (
+                <span style={{ color: status === 'active' ? 'green' : 'red' }}>
+                    {status === 'active' ? 'Hoạt động' :
+                        'Không hoạt động'}
+                </span>
+            ),
+        },
+        {
             title: 'Actions',
             dataIndex: 'actions',
             render: (text, record) => (
                 <Space size="middle">
                     <Button type="link" onClick={() => showEditModal(record)}>Chỉnh sửa</Button>
-                    <Button type="link" onClick={() => handleDeletePopCorn(record._id)}>Xóa</Button>
                 </Space>
             ),
         },
