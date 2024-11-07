@@ -1,5 +1,4 @@
 const db = require("../models");
-const { findById } = require("../models/movie.model");
 
 const getShowtimebyDateandMoviesandCinema = async (req, res) => {
     try {
@@ -26,7 +25,7 @@ const getShowtimebyDateandMoviesandCinema = async (req, res) => {
             cinemas = await db.cinema.find()
                 .populate({
                     path: 'rooms',
-                    select: '-seats',
+                    select: '-areas',
                     populate: {
                         path: 'showtimes',
                         match: {
@@ -64,6 +63,38 @@ const getAllShowtime = async (req, res) => {
         });
     }
 };
+
+const getShowtimeByCinema = async (req, res) => {
+    try {
+        let { cinemaId } = req.params;
+        const currentDate = new Date()
+        const dateLimit = new Date(currentDate.getTime() + 1 * 60 * 60 * 1000);
+        let cinemas = await db.cinema.findOne({ _id: cinemaId })
+            .populate({
+                path: 'rooms',
+                select: '-areas',
+                populate: {
+                    path: 'showtimes',
+                    match: {
+                        "startAt.date": { $gt: dateLimit }
+                    }
+                }
+            })
+            .select('-movies')
+            .exec();
+        cinemas.rooms = cinemas.rooms.filter(room => room.showtimes.length > 0)
+        return res.status(200).json({
+            status: 200,
+            data: cinemas
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Lỗi hệ thống Back-end"
+        });
+    }
+};
+
 const getShowtimebyCinemaAdmin = async (req, res) => {
     try {
         const { id } = req.params;
@@ -140,7 +171,12 @@ const CreateNewShowtime = async (req, res) => {
     }
 };
 
-const ShowtimeController = { getShowtimebyDateandMoviesandCinema, getAllShowtime, getShowtimebyCinemaAdmin, CreateNewShowtime };
-
+const ShowtimeController = {
+    getShowtimebyDateandMoviesandCinema,
+    getAllShowtime,
+    getShowtimebyCinemaAdmin,
+    CreateNewShowtime,
+    getShowtimeByCinema
+};
 
 module.exports = ShowtimeController;

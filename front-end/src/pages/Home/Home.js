@@ -60,13 +60,11 @@ const Home = () => {
   };
 
   const handleCarouselClick = (carousel) => {
-    console.log("Carousel clicked:", carousel);
     if (carousel.linkType === "movie" && carousel.linkUrl) {
       navigate("/" + carousel.linkUrl);
     } else if (carousel.linkType === "external" && carousel.linkUrl) {
       window.open(carousel.linkUrl, "_blank");
     } else {
-      console.log("No valid link found for this carousel item");
     }
   };
 

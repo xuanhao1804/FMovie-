@@ -9,7 +9,6 @@ const changePassword = async (req, res) => {
     const { currentPassword, newPassword, userId } = req.body;
 
     // Thêm log để kiểm tra userId
-    console.log('User ID received:', userId);
 
     if (!userId) {
       return res.status(400).json({ success: false, message: 'User ID is missing' });
@@ -17,19 +16,16 @@ const changePassword = async (req, res) => {
 
     const account = await Account.findById(userId);
     if (!account) {
-      console.log('Account not found');
       return res.status(404).json({ success: false, message: 'Account not found' });
     }
 
     if (account.password !== currentPassword) {
-      console.log('Current password is incorrect');
       return res.status(400).json({ success: false, message: 'Current password is incorrect' });
     }
 
     account.password = newPassword;
     await account.save();
 
-    console.log('Password changed successfully');
     return res.status(200).json({ success: true, message: 'Password changed successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
@@ -160,7 +156,6 @@ const sendMail = async (req, res) => {
       { otp: OTPCode, timeCreated: new Date() }, // Giá trị cập nhật
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
-
     res.status(200).json({
       success: true,
       message: 'Email sent successfully',

@@ -28,7 +28,6 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
         if (response.status === 200) {
             setBookedSeats(response.data)
         } else {
-            console.log(response)
         }
     }
 
@@ -67,7 +66,6 @@ const SeatSelection = ({ selectedShowtime, selectedSeats, setSelectedSeats }) =>
 
     return (
         <div className="seat-selection selection-section" >
-            {console.log(roomAreas)}
             <div className="d-flex justify-content-center align-items-center">
                 <img style={{ width: "12%" }} src={cinema_screen} alt="screen" />
             </div>

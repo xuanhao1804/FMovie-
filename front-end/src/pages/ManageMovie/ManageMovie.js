@@ -42,10 +42,8 @@ const ManageMovie = () => {
         setIsCreateModalOpen(false);
     };
     const handleDeleteMovie = async (id) => {
-        console.log("Deleting movie with ID:", id);
         try {
             const response = await axios.delete(`http://localhost:9999/movie/delete/${id}`);
-            console.log("Delete response:", response.data);
             message.success(response.data.message);
             fetchData();
         } catch (error) {

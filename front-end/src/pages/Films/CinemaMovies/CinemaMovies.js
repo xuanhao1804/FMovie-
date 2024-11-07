@@ -216,3 +216,4 @@ const CinemaMovies = () => {
 };
 
 export default CinemaMovies;
+

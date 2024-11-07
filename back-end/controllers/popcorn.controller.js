@@ -40,7 +40,6 @@ const CreateNewPopCorn = async (req, res) => {
 };
 const EditPopCorn = async (req, res) => {
     const file = req.file;
-    console.log(req.file);
     const { id } = req.body;
     const { name, description, price } = req.body;
     try {
