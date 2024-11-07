@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
+import { Link } from 'react-router-dom'
 import {
   CCloseButton,
   CSidebar,
@@ -24,7 +24,7 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
-  const navItems = NavComponent();
+  const navItems = NavComponent()
 
   return (
     <CSidebar
@@ -38,10 +38,10 @@ const AppSidebar = () => {
       }}
     >
       <CSidebarHeader className="border-bottom">
-        <CSidebarBrand to="/">
-          <img className="sidebar-brand-full" src={logoImage} height={81} alt="Logo" />
-          {/* <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} /> */}
-          {/* <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} /> */}
+        <CSidebarBrand className="d-flex align-items-center">
+          <Link to="/">
+            <img className="sidebar-brand-full" src={logoImage} height={81} alt="Logo" />
+          </Link>
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"

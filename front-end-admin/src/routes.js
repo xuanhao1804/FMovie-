@@ -75,18 +75,18 @@ const routes = [
   {
     path: '/manage-account',
     exact: true,
-    name: 'Manage Account',
+    name: ' Account',
     element: ManageAccount,
 },
 {
   path: '/manage-carousel',
   exact: true,
-  name: 'Manage Carousel',
+  name: 'Carousel',
   element: ManageCarousel,
 },{
   path: '/change-password',
   exact: true,
-  name: 'Change Password',
+  name: 'Password',
   element:ChangePassword ,
 }
 ]
