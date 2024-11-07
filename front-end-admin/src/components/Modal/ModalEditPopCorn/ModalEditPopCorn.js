@@ -38,7 +38,6 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 formData.append('image', values.image[0].originFileObj); // Append file to formData
             } else {
                 // Handle case where no image is uploaded
-                console.log("No image file uploaded");
             }
 
 

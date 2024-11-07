@@ -15,8 +15,9 @@ const Header = () => {
     const navigate = useNavigate()
 
     const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim
-    const [selectedCinema, setSelectedCinema] = useState("Rạp chiếu phim"); // Dùng để lưu tên rạp đã chọn
+    const [cinemaDropDown, setCinemaDropDown] = useState(null)
     const user = useSelector((state) => state.user);
+    const { city } = useSelector((state) => state)
     const dispatch = useDispatch();
 
     const handleLogout = () => {
@@ -30,19 +31,7 @@ const Header = () => {
             try {
                 const response = await axios.get('http://localhost:9999/cinema/get-all');  // Gọi API để lấy danh sách các rạp chiếu phim
                 if (response.data.status === 200) {
-                    const cinemaData = response.data.data.map((cinema) => ({
-                        key: cinema._id, // Dùng _id của cinema làm key
-                        label: (
-                            <div
-                                onClick={() => setSelectedCinema(cinema.name)} // Cập nhật tên rạp khi chọn
-                            >
-                                <Link to={`/cinemas-movies/${cinema._id}`}>
-                                    {cinema.name}
-                                </Link>
-                            </div>
-                        )
-                    }));
-                    setCinemas(cinemaData);
+                    setCinemas(response.data.data);
                 }
             } catch (error) {
                 console.error("Failed to fetch cinemas:", error);
@@ -51,6 +40,28 @@ const Header = () => {
 
         fetchCinemas();  // Gọi hàm lấy danh sách rạp chiếu phim
     }, []);
+
+    const buildCinemaDropdown = () => {
+        const cinemaByCity = city.list.map(item => (
+            {
+                key: item._id,
+                label: (<span>{item.name}</span>),
+                children: cinemas.filter(cinema => cinema.city === item._id).map(cinema => (
+                    {
+                        key: cinema._id,
+                        label: (<Link to={`/cinemas-movies/${cinema._id}`}>
+                            {cinema.name}
+                        </Link>)
+                    }
+                ))
+            }
+        ))
+        setCinemaDropDown(cinemaByCity)
+    }
+
+    useEffect(() => {
+        buildCinemaDropdown()
+    }, [cinemas, city])
 
     // Danh sách các loại phim
     const filmsType = [
@@ -77,9 +88,9 @@ const Header = () => {
                         </Link>
                     </Dropdown>
                     {/* Dropdown các rạp chiếu phim */}
-                    <Dropdown className="dropdown-cinemas" menu={{ items: cinemas }} trigger={['hover']}>
+                    <Dropdown className="dropdown-cinemas" menu={{ items: cinemaDropDown }} trigger={['hover']}>
                         <span>
-                            {selectedCinema} <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
+                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
                         </span>
                     </Dropdown>
                 </div>

@@ -75,7 +75,6 @@ export default function Authentication() {
     setLoading(true);
     try {
       const res = await dispatch(sendEmail({ email: values.recovery_email }));
-      console.log(res)
       if (!res.payload.success) {
         message.error(res.payload.message);
       }

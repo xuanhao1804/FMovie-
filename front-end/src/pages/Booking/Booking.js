@@ -342,7 +342,6 @@ const Booking = () => {
                                     if (step > 1) {
                                         setStep(step => step - 1)
                                         if (paymentInformation !== null) {
-                                            console.log(paymentInformation)
                                             setPaymentInformation(null)
                                         }
                                     }
