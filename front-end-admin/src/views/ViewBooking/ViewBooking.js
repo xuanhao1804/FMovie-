@@ -57,7 +57,6 @@ const ViewBooking = () => {
         try {
             const response = await axios.get('http://localhost:9999/booking/get-all');
             setData(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error('Error fetching booking data:', error);
         }

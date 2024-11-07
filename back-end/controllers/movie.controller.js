@@ -84,7 +84,6 @@ const Editmovie = async (req, res) => {
     try {
         const { id } = req.params;
         const file = req.file;
-        console.log(id)
         const { name, director, actors, studio, price, duration, country, genres, limit, video, description, status } = req.body;
         if (file) {
             const updatedMovie = await db.movie.findByIdAndUpdate(id, {

@@ -195,7 +195,7 @@ const getUserBookedHistory = async (req, res) => {
         }).populate({
             path: "popcorns.popcorn",
             select: "name"
-        })
+        }).sort({ createdAt: -1 }).limit(10)
         return res.status(200).json({
             status: 200,
             data: bookings

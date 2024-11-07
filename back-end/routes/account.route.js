@@ -9,9 +9,10 @@ accountRoute.post("/send-mail", accountController.sendMail);
 accountRoute.post("/verify-otp", accountController.verifyOTP);
 accountRoute.post("/reset-password", accountController.resetPassword);
 accountRoute.get('/total-user', accountController.getTotalUser);
+accountRoute.post('/update-account', accountController.updateAccountInfo);
+accountRoute.post('/change-password', accountController.changePassword);
 accountRoute.get('/:id', accountController.getAccount);
 accountRoute.put('/:id', accountController.updateAccount);
 accountRoute.get('/', accountController.getAllAccounts);
-accountRoute.post('/change-password', accountController.changePassword);
 
 module.exports = accountRoute;

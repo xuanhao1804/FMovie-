@@ -29,13 +29,6 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
                     <>
                         <div className="films-card-button">
                             <Link to={"/film/detail/" + _id} className="films-card-button-detail">XEM CHI TIẾT</Link>
-                            <button onClick={() => {
-                                if (user.account) {
-                                    navigate("/booking")
-                                } else {
-                                    navigate("/auth/sign-in")
-                                }
-                            }} className="films-card-button-booking">ĐẶT VÉ</button>
                         </div>
                     </>
                 }

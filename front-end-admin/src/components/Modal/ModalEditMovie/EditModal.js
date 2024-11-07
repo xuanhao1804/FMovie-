@@ -137,7 +137,6 @@ const EditModal = ({ visible, onCancel, onOk, movie, fetchData, existingGenres }
                 <Form.Item name="director" label="Đạo diễn" rules={[{ required: true, message: 'Vui lòng nhập tên đạo diễn!' }]}>
                     <Input />
                 </Form.Item>
-                {/* Actors List and Input Field */console.log(movie)}
                 <Form.Item label="Diễn viên">
                     <Input
                         value={newActor}

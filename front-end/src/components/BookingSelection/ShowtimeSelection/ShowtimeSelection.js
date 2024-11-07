@@ -40,6 +40,7 @@ const ShowtimeSelection = ({ movieShowtime, selectedDate, setSelectedDate, selec
                                         cinema.rooms.flatMap(room =>
                                             room.showtimes
                                                 .filter(showtime => showtime.startAt.date === selectedDate)
+                                                .sort((a, b) => a.startAt.time.localeCompare(b.startAt.time))
                                                 .map(showtime => ({ ...showtime, room: { name: room.name, _id: room._id } }))
                                         ).map((showtime, index) => {
                                             return (

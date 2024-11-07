@@ -9,7 +9,6 @@ const changePassword = async (req, res) => {
     const { currentPassword, newPassword, userId } = req.body;
 
     // Thêm log để kiểm tra userId
-    console.log('User ID received:', userId);
 
     if (!userId) {
       return res.status(400).json({ success: false, message: 'User ID is missing' });
@@ -17,19 +16,16 @@ const changePassword = async (req, res) => {
 
     const account = await Account.findById(userId);
     if (!account) {
-      console.log('Account not found');
       return res.status(404).json({ success: false, message: 'Account not found' });
     }
 
     if (account.password !== currentPassword) {
-      console.log('Current password is incorrect');
       return res.status(400).json({ success: false, message: 'Current password is incorrect' });
     }
 
     account.password = newPassword;
     await account.save();
 
-    console.log('Password changed successfully');
     return res.status(200).json({ success: true, message: 'Password changed successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
@@ -50,7 +46,7 @@ const signUp = async (req, res) => {
     // Không băm mật khẩu, lưu trực tiếp vào database
     const account = new Account({
       email,
-      password, 
+      password,
       fullname,
       dob,
       phone,
@@ -94,7 +90,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'tattupro2705@gmail.com',
-    pass: 'gshh oymp mbbf ywxc'  
+    pass: 'gshh oymp mbbf ywxc'
   }
 });
 
@@ -153,14 +149,13 @@ const sendMail = async (req, res) => {
 
     // Gửi email
     const info = await transporter.sendMail(mailOptions);
-  
+
     // Kiểm tra và lưu OTP vào database
     await OPT.findOneAndUpdate(
       { email: email }, // Điều kiện tìm kiếm
       { otp: OTPCode, timeCreated: new Date() }, // Giá trị cập nhật
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
-    
     res.status(200).json({
       success: true,
       message: 'Email sent successfully',
@@ -190,7 +185,7 @@ transporter.verify((error, success) => {
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    
+
     const otpData = await OPT.findOne({ email, otp });
     if (!otpData) {
       return res.status(404).json({
@@ -302,6 +297,26 @@ const getTotalUser = async (req, res) => {
   }
 }
 
+const updateAccountInfo = async (req, res) => {
+  try {
+    const { _id, email, fullname, dob, phone } = req.body;
+    const account = await Account.findById(_id);
+    if (!account) {
+      return res.status(404).json({ success: false, message: 'Account not found' });
+    }
+    account.email = email;
+    account.fullname = fullname;
+    account.dob = dob;
+    account.phone = phone;
+    await account.save();
+    return res.status(200).json({ success: true, data: account });
+  }
+  catch (error) {
+    console.error('Error updating account:', error);
+    res.status(500).json({ success: false, message: 'Failed to update account', error: error.message });
+  }
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -312,5 +327,6 @@ module.exports = {
   updateAccount,
   getAllAccounts,
   changePassword,
-  getTotalUser
+  getTotalUser,
+  updateAccountInfo
 };
