@@ -7,13 +7,11 @@ const ChangePassword = () => {
   const [form] = Form.useForm();
 
   const handleFinish = async (values) => {
-    console.log('Sending data:', values);
     try {
       const response = await axios.post('http://localhost:9999/account/change-password', {
         ...values,
         userId: '60d0fe4f5311236168a109ca', // Thay thế bằng userId thực tế
       });
-      console.log('Response:', response.data);
       if (response.data.success) {
         message.success('Password changed successfully');
         form.resetFields();

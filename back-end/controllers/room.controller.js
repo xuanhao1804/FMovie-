@@ -32,7 +32,6 @@ const creatNewRoom = async (req, res) => {
                 areas: req.body.areas
             })
             if (newRoom) {
-                console.log(newRoom)
                 const cinema = await db.cinema.findOne({
                     _id: req.body.cinemaId
                 })

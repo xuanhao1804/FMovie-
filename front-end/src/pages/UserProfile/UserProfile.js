@@ -33,7 +33,6 @@ const UserProfile = () => {
 
     return (
         <div className="user-profile content-width-padding content-height-padding d-flex gap-4">
-            {console.log(userHistory)}
             <div className="user-profile-info w-25 p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3">
                     Thông tin người dùng
@@ -86,30 +85,30 @@ const UserProfile = () => {
                                         <tr>
                                             <th scope="row">{index + 1}</th>
                                             <td >
-                                                <Link className="user-profile-history-table-item-name" target="_black" to={`/film/detail/${item.showtime.movie._id}`}>{item.showtime.movie.name}</Link>
+                                                <Link className="user-profile-history-table-item-name" target="_black" to={`/film/detail/${item?.showtime?.movie?._id}`}>{item?.showtime?.movie?.name}</Link>
                                             </td>
-                                            <td>{item.room.name}</td>
+                                            <td>{item?.room?.name}</td>
                                             <td>
-                                                <div>Giờ: <span className="text-primary">{item.showtime.startAt.time}</span></div>
+                                                <div>Giờ: <span className="text-primary">{item?.showtime?.startAt?.time}</span></div>
                                                 <div>{getVietnameseDate(item.showtime.startAt.date, true)}</div>
                                             </td>
                                             <td>{item.seats.map((item, index) => {
                                                 return (
-                                                    <div>{item.area + item.position} {item.isVip ? " - (VIP)" : ""}</div>
+                                                    <div>{item?.area + item?.position} {item?.isVip ? " - (VIP)" : ""}</div>
                                                 )
                                             })}</td>
-                                            <td>{item.popcorns.length > 0 ?
+                                            <td>{item?.popcorns?.length > 0 ?
                                                 item.popcorns.map((item, index) => {
                                                     return (
-                                                        <div>{item.quantity + "x " + item.popcorn.name}</div>
+                                                        <div>{item?.quantity + "x " + item?.popcorn?.name}</div>
                                                     )
                                                 })
                                                 :
                                                 <span>Không</span>
                                             }</td>
-                                            <td>{getVietnameseDate(item.createdAt, true)}</td>
-                                            <td><NumericFormat className="text-success" value={item.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
-                                            <td><span style={{ color: bookingStatus[item.status].textColor }}>{bookingStatus[item.status].text}</span></td>
+                                            <td>{getVietnameseDate(item?.createdAt, true)}</td>
+                                            <td><NumericFormat className="text-success" value={item?.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td><span style={{ color: bookingStatus[item.status]?.textColor }}>{bookingStatus[item.status]?.text}</span></td>
                                         </tr>
                                     )
                                 })

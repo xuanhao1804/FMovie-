@@ -164,7 +164,6 @@ const getMoviesAndShowtimesByCinema = async (req, res) => {
     try {
         // Tìm rạp chiếu phim theo ID và populate các phòng chiếu
         const cinema = await Cinema.findById(cinemaId).populate('rooms');
-        console.log('Rooms:', cinema.rooms); // Log ra danh sách phòng chiếu
 
         if (!cinema) {
             return res.status(404).json({ message: "Không tìm thấy rạp" });
@@ -175,14 +174,11 @@ const getMoviesAndShowtimesByCinema = async (req, res) => {
 
         // Duyệt qua từng phòng chiếu của rạp
         for (const room of cinema.rooms) {
-            console.log(`Room ID: ${room._id}, Room name: ${room.name}`);  // Log thông tin phòng chiếu
-
             // Lấy tất cả suất chiếu của từng phòng (populate showtimes)
             const populatedRoom = await Room.findById(room._id).populate({
                 path: 'showtimes',   // Populate suất chiếu
                 populate: { path: 'movie' }  // Populate movie trong showtimes
             });
-            console.log('populatedRoom:', populatedRoom); // Log ra thông tin phòng chiếu đã populate
             if (populatedRoom.showtimes.length > 0) {
                 allShowtimes.push(...populatedRoom.showtimes); // Lưu tất cả suất chiếu vào mảng
             }
@@ -195,7 +191,6 @@ const getMoviesAndShowtimesByCinema = async (req, res) => {
                 }
             }
         }
-        console.log('respond data:', allMovies, allShowtimes); // Log ra dữ liệu trả về
         // Trả về dữ liệu gồm danh sách các phim và các suất chiếu
         return res.status(200).json({
             status: 200,

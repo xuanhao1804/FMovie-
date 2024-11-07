@@ -15,14 +15,13 @@ import { useDispatch } from "react-redux"
 import { useEffect } from "react";
 import { fetchCities } from "./reducers/CityReducer";
 import { fetchMovies } from "./reducers/MovieReducer";
-import CinemaMovies from "./pages/Films/CinemaMovies/CinemaMovies";
 import ManageMovie from "./pages/ManageMovie/ManageMovie";
-
 import { fetchPopcorns } from "./reducers/PopcornReducer";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import AutoScrollToTop from "./components/AutoScrollToTop/AutoScrollToTop";
 import ForgotPassword from "./pages/ResetPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import CinemaMovies from "./pages/CinemaMovies/CinemaMovies";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
 
