@@ -47,10 +47,13 @@ export const userSlice = createSlice({
         },
         setCanResetPassword: (state, action) => {
             state.canResetPassword = action.payload
+        },
+        resetInfo: (state, action) => {
+            state.user.account = action.payload
         }
     }
 })
 
-export const { saveUserData, logout, setRecoverEmail, setCanResetPassword } = userSlice.actions
+export const { saveUserData, logout, setRecoverEmail, setCanResetPassword, resetInfo } = userSlice.actions
 
 export default userSlice.reducer
