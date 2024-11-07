@@ -266,6 +266,30 @@ const findBookedSeats = async (room, showtime) => {
     return bookedSeats
 }
 
+const getTotalBookingPrice = async (req, res) => {
+    try {
+        total_price = 0;
+        const bookings = await db.booking.find({}).populate({
+            path: 'popcorns._id',
+        })
+        bookings.forEach(booking => {
+            total_price += booking.total_price
+            if (booking.popcorns && booking.popcorns.length > 0) {
+                booking.popcorns.forEach(popcorn => {
+                    if (popcorn._id && popcorn._id.price) {
+                        total_price += popcorn._id.price * popcorn.quantity;
+                    }
+                });
+            }
+        });
+
+        res.status(200).json({ total_price });
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error calculating total booking price", error });
+    }
+}
+
 const BookingController = {
     CreatePayment,
     DeletePayment,
@@ -274,7 +298,8 @@ const BookingController = {
     GetAllBookingAdmin,
     getBookedSeats,
     getUserBookedHistory,
-    getUserTicket
+    getUserTicket,
+    getTotalBookingPrice
 };
 
 module.exports = BookingController;
