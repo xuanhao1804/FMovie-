@@ -170,13 +170,139 @@ const CreateNewShowtime = async (req, res) => {
         return res.status(500).json({ message: "Lỗi hệ thống Back-end" });
     }
 };
+const CreateMultipleShowtimes = async (req, res) => {
+    const { roomId, items } = req.body;
+
+    try {
+        const newShowtimes = [];
+
+        // Lặp qua tất cả các phần tử trong items
+        for (const item of items) {
+            const { date, subitems } = item;
+
+            // Kiểm tra xem date có hợp lệ không
+            const startDate = new Date(date);
+            if (isNaN(startDate.getTime())) {
+                return res.status(400).json({ message: `Ngày không hợp lệ: ${date}` });
+            }
+
+            // Lấy phòng chiếu và các suất chiếu hiện tại trong ngày của phòng đó
+            const startOfDay = new Date(startDate.setHours(0, 0, 0, 0)); // Chuyển thời gian về đầu ngày
+            const endOfDay = new Date(startDate.setHours(23, 59, 59, 999)); // Chuyển thời gian về cuối ngày
+
+            const existingRoom = await db.room.findById(roomId)
+                .populate({
+                    path: 'showtimes',
+                    match: {
+                        'startAt.date': {
+                            $gte: startOfDay,
+                            $lte: endOfDay,
+                        }
+                    }
+                })
+                .exec();
+
+            if (!existingRoom) {
+                return res.status(400).json({ message: 'Phòng chiếu không tồn tại' });
+            }
+
+            const existingShowtimes = existingRoom.showtimes || [];
+
+            // Kiểm tra sự trùng lặp giữa các suất chiếu trong cùng một "item"
+            for (let i = 0; i < subitems.length; i++) {
+                const { movieId, time } = subitems[i];
+                const durationMovies = await db.movie.findById(movieId).select('duration').exec();
+
+                // Chuyển thời gian chiếu mới thành dạng timestamp
+                const newShowtimeTime = new Date(`${date.split('T')[0]}T${time}:00Z`).getTime();
+                const newShowtimeEnd = newShowtimeTime + (+durationMovies.duration) * 60000;
+
+                // Kiểm tra trùng lặp giữa các suất chiếu trong cùng ngày
+                for (let j = i + 1; j < subitems.length; j++) {
+                    const { time: timeToCompare } = subitems[j];
+                    const compareTime = new Date(`${date.split('T')[0]}T${timeToCompare}:00Z`).getTime();
+                    const compareEndTime = compareTime + (+durationMovies.duration) * 60000;
+
+                    // Nếu thời gian của 2 suất chiếu có sự trùng lặp
+                    if (
+                        (newShowtimeTime < compareEndTime && newShowtimeTime >= compareTime) ||
+                        (newShowtimeEnd > compareTime && newShowtimeEnd <= compareEndTime) ||
+                        (newShowtimeTime <= compareTime && newShowtimeEnd >= compareEndTime)
+                    ) {
+                        return res.status(400).json({
+                            message: `Trùng lặp thời gian chiếu phim tại ${time} và ${timeToCompare}.`,
+                        });
+                    }
+                }
+
+                // Kiểm tra sự trùng lặp với các suất chiếu hiện tại trong database
+                let isOverlapping = false;
+                for (const showtime of existingShowtimes) {
+                    const existingShowtimeStart = new Date(`${date.split('T')[0]}T${showtime.startAt.time}:00Z`).getTime();
+                    const existingShowtimeEnd = existingShowtimeStart + durationMovies.duration * 60000;
+
+                    // Kiểm tra các điều kiện trùng lặp
+                    if (
+                        (newShowtimeTime < existingShowtimeEnd && newShowtimeTime >= existingShowtimeStart) ||
+                        (newShowtimeEnd > existingShowtimeStart && newShowtimeEnd <= existingShowtimeEnd) ||
+                        (newShowtimeTime <= existingShowtimeStart && newShowtimeEnd >= existingShowtimeEnd)
+                    ) {
+                        isOverlapping = true;
+                        break;
+                    }
+                }
+
+                if (isOverlapping) {
+                    const movie = await db.movie.findById(movieId).select('name');
+                    return res.status(400).json({
+                        message: `Bị trùng lặp thời gian chiếu phim ${movie.name} vào lúc ${time}.`,
+                    });
+                }
+
+                // 5. Nếu không có trùng lặp, tạo mới Showtime
+                const newShowtime = new db.showtime({
+                    movie: movieId,
+                    startAt: {
+                        date: startDate,  // Chuyển `date` thành đối tượng Date hợp lệ
+                        time,
+                    },
+                    room: roomId,
+                });
+
+                // Lưu Showtime vào DB
+                const savedShowtime = await newShowtime.save();
+                newShowtimes.push(savedShowtime);
+
+                // Cập nhật thông tin showtimes của phòng
+                await db.room.findByIdAndUpdate(roomId, { $push: { showtimes: savedShowtime._id } }, { new: true });
+            }
+        }
+
+        // 6. Trả về thông báo thành công và thông tin các suất chiếu đã tạo
+        return res.status(201).json({
+            message: 'Các suất chiếu mới đã được tạo thành công.',
+            showtimes: newShowtimes,
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Lỗi hệ thống Back-end" });
+    }
+};
+
+
+
+
+
+
 
 const ShowtimeController = {
     getShowtimebyDateandMoviesandCinema,
     getAllShowtime,
     getShowtimebyCinemaAdmin,
     CreateNewShowtime,
-    getShowtimeByCinema
+    getShowtimeByCinema,
+    CreateMultipleShowtimes
 };
 
 module.exports = ShowtimeController;

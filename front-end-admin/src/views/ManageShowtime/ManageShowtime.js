@@ -3,7 +3,7 @@ import { Table, DatePicker, Button, Modal, Form, Input, TimePicker, Select, mess
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-
+import CreateMultipleShowtimesModal from '../../components/Modal/CreateMultipleShowtimesModal/CreateMultipleShowtimesModal';
 
 const { Option } = Select;
 
@@ -12,6 +12,7 @@ const ShowtimeManagement = () => {
     const [movies, setMovies] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
     const { id } = useParams();
+    const [isMultipleShowtimesModalVisible, setIsMultipleShowtimesModalVisible] = useState(false); // New state for multiple showtimes modal
 
     // State for the modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -108,6 +109,14 @@ const ShowtimeManagement = () => {
     const handleCloseModal = () => {
         setIsModalVisible(false);
     };
+    // Open modal for creating multiple showtimes
+    const handleOpenMultipleShowtimesModal = () => {
+        setIsMultipleShowtimesModalVisible(true);
+    };
+
+    const handleCloseMultipleShowtimesModal = () => {
+        setIsMultipleShowtimesModalVisible(false);
+    };
 
     const handleCreateShowtime = async (values) => {
         try {
@@ -146,6 +155,9 @@ const ShowtimeManagement = () => {
                     value={selectedDate ? dayjs(selectedDate) : null}
                     onChange={handleDateChange}
                 />
+                <Button style={{ marginLeft: '10px' }} type="primary" onClick={handleOpenMultipleShowtimesModal}>
+                    Tạo nhiều suất chiếu
+                </Button>
             </div>
 
             <Table
@@ -211,6 +223,14 @@ const ShowtimeManagement = () => {
                     </Form.Item>
                 </Form>
             </Modal>
+            <CreateMultipleShowtimesModal
+                visible={isMultipleShowtimesModalVisible}
+                onCancel={handleCloseMultipleShowtimesModal}
+                selectedDate={selectedDate}
+                rooms={rooms}
+                movies={movies}
+                fetchShowtimes={fetchShowtimes}
+            />
         </div>
     );
 };

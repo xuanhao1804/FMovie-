@@ -126,7 +126,7 @@ const receiveHook = async (req, res) => {
                 const transporter = nodemailer.createTransport({
                     host: "smtp.gmail.com",
                     port: 587,
-                    secure: false, // Use `true` for port 465, `false` for all other ports
+                    secure: false,
                     auth: {
                         user: "minhvhhe170320@fpt.edu.vn",
                         pass: "rbwj eril yswz hxzw",
@@ -134,9 +134,9 @@ const receiveHook = async (req, res) => {
                 });
 
                 const info = await transporter.sendMail({
-                    from: `"MovieBooking 🎬" <minhvhhe170320@fpt.edu.vn>`, // sender address
-                    to: booking?.createdBy.email, // Email người nhận
-                    subject: `Xác nhận đặt vé thành công - ${booking?.showtime.movie.name}`, // Subject line
+                    from: `"MovieBooking 🎬" <minhvhhe170320@fpt.edu.vn>`,
+                    to: booking?.createdBy.email,
+                    subject: `Xác nhận đặt vé thành công - ${booking?.showtime.movie.name}`,
                     text: `Xin chào ${booking?.createdBy.fullname},
 
         Chúng tôi xin thông báo rằng bạn đã đặt vé xem phim thành công tại MovieBooking!
