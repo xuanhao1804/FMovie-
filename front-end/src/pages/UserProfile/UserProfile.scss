@@ -27,3 +27,31 @@
         }
     }
 }
+
+.update-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(45deg, #ff7f50, #ff4500); // Gradient từ cam (#ff7f50) đến đỏ (#ff4500)
+    border: none;
+    border-radius: 8px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        background: linear-gradient(45deg, #ff6347, #e63946)!important; // Gradient khi hover, tối hơn chút
+        box-shadow: 0px 4px 12px rgba(255, 69, 0, 0.4);
+    }
+
+    &:active {
+        background: linear-gradient(45deg, #e63946, #b22222); // Màu gradient đậm hơn khi nhấn
+        box-shadow: 0px 2px 8px rgba(255, 69, 0, 0.3);
+        transform: translateY(2px);
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0px 0px 0px 3px rgba(255, 69, 0, 0.5); // Viền nổi bật khi focus
+    }
+}
