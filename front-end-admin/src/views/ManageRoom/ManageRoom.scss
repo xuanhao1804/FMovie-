@@ -13,4 +13,22 @@
         justify-content: space-between;
         margin-bottom  : 1rem;
     }
+
+    .ant-pagination {
+        &-item {
+            &-active {
+                background-color: antiquewhite !important;
+            }
+
+            &:hover {
+                background-color: antiquewhite !important;
+                color           : black;
+            }
+
+        }
+
+        .anticon {
+            color: antiquewhite !important;
+        }
+    }
 }
