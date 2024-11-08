@@ -7,7 +7,9 @@ import {
   RightOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
+  EditOutlined,
 } from '@ant-design/icons'
+
 import axios from 'axios'
 import ModalCreateMovie from '../../components/Modal/ModalCreateMovie/ModalCreateMovie.js'
 import EditModal from '../../components/Modal/ModalEditMovie/EditModal'
@@ -81,6 +83,7 @@ const ManageMovie = () => {
     {
       title: 'STT',
       dataIndex: 'index',
+      width: 60,
       render: (text, record, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
@@ -91,24 +94,27 @@ const ManageMovie = () => {
     {
       title: 'Phim',
       dataIndex: 'name',
-      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: 'Đạo diễn',
       dataIndex: 'director',
+      sorter: (a, b) => a.director.localeCompare(b.director),
     },
     {
       title: 'Thời lượng',
       dataIndex: 'duration',
+      sorter: (a, b) => a.duration - b.duration,
     },
     {
       title: 'Thể loại',
       dataIndex: 'genres',
       render: (genres) => genres.join(', '),
+      sorter: (a, b) => a.genres.join(', ').localeCompare(b.genres.join(', ')),
     },
     {
       title: 'Quốc gia',
       dataIndex: 'country',
+      sorter: (a, b) => a.country.localeCompare(b.country),
     },
     {
       title: 'Trạng thái',
@@ -126,19 +132,30 @@ const ManageMovie = () => {
               : 'Không hiển thị'}
         </span>
       ),
+      sorter: (a, b) => a.status.localeCompare(b.status),
     },
     {
-      title: '',
+      title: 'Hành động',
       dataIndex: 'actions',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="link" onClick={() => showEditModal(record)}>
+          <Button
+            type="default"
+            ghost
+            icon={<EditOutlined style={{ color: '#595959' }} />}
+            onClick={() => showEditModal(record)}
+            style={{
+              borderColor: '#d9d9d9',
+              color: '#595959',
+            }}
+          >
             Chỉnh sửa
           </Button>
         </Space>
       ),
     },
-  ]
+  ];
+
 
   const fetchData = async () => {
     try {
@@ -183,7 +200,7 @@ const ManageMovie = () => {
           columns={columns}
           dataSource={filteredData.slice(startIndex, endIndex)}
           pagination={false}
-          scroll={{ y: 500 }} 
+          scroll={{ y: 500 }}
         />
 
         <div
@@ -210,6 +227,7 @@ const ManageMovie = () => {
               if (type === 'jump-next') return <DoubleRightOutlined />
               return originalElement
             }}
+            scrollToFirstRowOnChange={false}
           />
         </div>
         <EditModal

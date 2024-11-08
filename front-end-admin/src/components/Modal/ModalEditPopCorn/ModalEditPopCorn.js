@@ -3,12 +3,13 @@ import { Modal, Form, Input, InputNumber, Button, message, Upload, Select } from
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+const { Option } = Select;
+
 const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const [imageUrl, setImageUrl] = useState(null);
 
-    // Cập nhật form khi popcorn được thay đổi
     useEffect(() => {
         if (popcorn) {
             form.setFieldsValue({
@@ -18,7 +19,7 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 image: popcorn.image ? [{ url: popcorn.image }] : [],
                 status: popcorn.status
             });
-            setImageUrl(popcorn.image); // Cập nhật hình ảnh hiện có
+            setImageUrl(popcorn.image);
         }
     }, [popcorn, form]);
 
@@ -30,19 +31,15 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
         setLoading(true);
         try {
             const formData = new FormData();
-            formData.append('id', popcorn._id); // Thêm ID vào formData
+            formData.append('id', popcorn._id);
             formData.append('name', values.name);
             formData.append('description', values.description);
             formData.append('price', values.price);
             formData.append('status', values.status);
 
             if (values.image && values.image.length > 0 && values.image[0].originFileObj) {
-                formData.append('image', values.image[0].originFileObj); // Append file to formData
-            } else {
-                // Handle case where no image is uploaded
+                formData.append('image', values.image[0].originFileObj);
             }
-
-
 
             await axios.post(`http://localhost:9999/popcorn/update`, formData, {
                 headers: {
@@ -63,7 +60,7 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
     };
 
     const handleImageChange = ({ fileList }) => {
-        form.setFieldsValue({ image: fileList }); // Cập nhật form với fileList
+        form.setFieldsValue({ image: fileList });
         if (fileList.length > 0 && fileList[0].originFileObj) {
             const url = URL.createObjectURL(fileList[0].originFileObj);
             setImageUrl(url);
@@ -88,11 +85,7 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 </Button>,
             ]}
         >
-            <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleSubmit}
-            >
+            <Form form={form} layout="vertical" onFinish={handleSubmit}>
                 <Form.Item
                     label="Tên"
                     name="name"
@@ -137,7 +130,12 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 >
                     <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
                 </Form.Item>
-                <Form.Item label="Trạng thái" name="status" rules={[{ required: true, message: 'Vui lòng chọn trạng thái bỏng nước!' }]}>
+                
+                <Form.Item
+                    label="Trạng thái"
+                    name="status"
+                    rules={[{ required: true, message: 'Vui lòng chọn trạng thái bỏng nước!' }]}
+                >
                     <Select placeholder="Chọn trạng thái bỏng nước" style={{ width: '100%' }}>
                         <Option value="active"> Hoạt động</Option>
                         <Option value="inactive">Không hoạt động</Option>

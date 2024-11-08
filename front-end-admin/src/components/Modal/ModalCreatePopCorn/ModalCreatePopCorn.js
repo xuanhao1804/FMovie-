@@ -3,6 +3,8 @@ import { Modal, Form, Input, InputNumber, Button, message, Upload, Select } from
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
+const { Option } = Select;
+
 const ModalCreatePopcorn = ({ isVisible, onCancel, onSuccess }) => {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
@@ -104,7 +106,7 @@ const ModalCreatePopcorn = ({ isVisible, onCancel, onSuccess }) => {
                     name="description"
                     rules={[{ required: true, message: 'Hãy điền mô tả!' }]}
                 >
-                    <Input placeholder="điền mô tả" />
+                    <Input placeholder="Điền mô tả" />
                 </Form.Item>
 
                 <Form.Item
@@ -114,9 +116,10 @@ const ModalCreatePopcorn = ({ isVisible, onCancel, onSuccess }) => {
                 >
                     <InputNumber style={{ width: '100%' }} placeholder="Điền giá tiền" min={0} />
                 </Form.Item>
+
                 <Form.Item label="Trạng thái" name="status" rules={[{ required: true, message: 'Vui lòng chọn trạng thái bỏng nước!' }]}>
                     <Select placeholder="Chọn trạng thái bỏng nước" style={{ width: '100%' }}>
-                        <Option value="active"> Hoạt động</Option>
+                        <Option value="active">Hoạt động</Option>
                         <Option value="inactive">Không hoạt động</Option>
                     </Select>
                 </Form.Item>
