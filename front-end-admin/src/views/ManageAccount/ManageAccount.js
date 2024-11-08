@@ -1,96 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Modal, Button, Tag, Input, Select, message } from 'antd';
-import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
+import { Table, Modal, Button, Tag, Input, Select, message } from 'antd'
+import { EyeOutlined, EyeInvisibleOutlined, EditOutlined } from '@ant-design/icons'
+import axios from 'axios'
 
-const { Option } = Select;
+const { Option } = Select
 
 const removeDiacritics = (str) => {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-};
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
 
-const ManageAccount = () => {
-  const [accounts, setAccounts] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState(null);
-  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
-  const [searchText, setSearchText] = useState('');
-  const [pageSize, setPageSize] = useState(10);
+const ManageAccount = ({ darkMode }) => {
+  const [accounts, setAccounts] = useState([])
+  const [selectedAccount, setSelectedAccount] = useState(null)
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false)
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false)
+  const [formData, setFormData] = useState({})
+  const [showPassword, setShowPassword] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [pageSize, setPageSize] = useState(10)
 
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
-        const response = await axios.get('http://localhost:9999/account');
+        const response = await axios.get('http://localhost:9999/account')
         if (response.data.success) {
-          setAccounts(response.data.data);
+          setAccounts(response.data.data)
         }
       } catch (error) {
-        console.error('Error fetching accounts:', error);
+        console.error('Lỗi khi lấy danh sách tài khoản:', error)
       }
-    };
-    fetchAccounts();
-  }, []);
+    }
+    fetchAccounts()
+  }, [])
+
   const handleSearch = (e) => {
-    const searchValue = removeDiacritics(e.target.value.toLowerCase());
-    setSearchText(searchValue);
-  };
-  
+    const searchValue = removeDiacritics(e.target.value.toLowerCase())
+    setSearchText(searchValue)
+  }
+
   const handlePageSizeChange = (current, size) => {
-    setPageSize(size);
-  };
-  
-  const filteredAccounts = accounts.filter(account => {
-    const email = removeDiacritics(account.email.toLowerCase());
-    const fullname = removeDiacritics(account.fullname.toLowerCase());
-    return email.includes(searchText) || fullname.includes(searchText);
-  });
-  
+    setPageSize(size)
+  }
+
+  const filteredAccounts = accounts.filter((account) => {
+    const email = removeDiacritics(account.email.toLowerCase())
+    const fullname = removeDiacritics(account.fullname.toLowerCase())
+    return email.includes(searchText) || fullname.includes(searchText)
+  })
 
   const showViewModal = (account) => {
-    setSelectedAccount(account);
-    setIsViewModalVisible(true);
-  };
+    setSelectedAccount(account)
+    setIsViewModalVisible(true)
+  }
 
   const showEditModal = (account) => {
     if (account.role === 'admin') {
-      message.warning('Không thể chỉnh sửa tài khoản admin.');
-      return;
+      message.warning('Không thể chỉnh sửa tài khoản admin.')
+      return
     }
-    setSelectedAccount(account);
-    setFormData(account);
-    setIsEditModalVisible(true);
-  };
-
-
-  
+    setSelectedAccount(account)
+    setFormData(account)
+    setIsEditModalVisible(true)
+  }
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
 
   const handleStatusChange = (value) => {
-    setFormData({ ...formData, status: value });
-  };
+    setFormData({ ...formData, status: value })
+  }
+
+  const handleRoleChange = (value) => {
+    setFormData({ ...formData, roles: [value] })
+  }
 
   const handleUpdateAccount = async () => {
     try {
       const updatedData = {
         ...formData,
         password: formData.password,
-      };
+      }
 
-      const response = await axios.put(`http://localhost:9999/account/${selectedAccount._id}`, updatedData);
-      setAccounts(accounts.map(acc => acc._id === selectedAccount._id ? response.data.data : acc));
-      setIsEditModalVisible(false);
-      message.success('Cập nhật tài khoản thành công!');
+      const response = await axios.put(
+        `http://localhost:9999/account/${selectedAccount._id}`,
+        updatedData,
+      )
+      setAccounts(
+        accounts.map((acc) => (acc._id === selectedAccount._id ? response.data.data : acc)),
+      )
+      setIsEditModalVisible(false)
+      message.success('Cập nhật tài khoản thành công!')
     } catch (error) {
-      console.error('Error updating account:', error);
-      message.error('Cập nhật tài khoản thất bại');
+      console.error('Lỗi khi cập nhật tài khoản:', error)
+      message.error('Cập nhật tài khoản thất bại')
     }
-  };
+  }
 
   const columns = [
     { title: 'Email', dataIndex: 'email', key: 'email' },
@@ -102,7 +108,7 @@ const ManageAccount = () => {
       key: 'roles',
       render: (roles) => (
         <span>
-          {roles && roles.length > 0 
+          {roles && roles.length > 0
             ? roles.map((role, index) => (
                 <Tag color={role === 'admin' ? 'volcano' : 'blue'} key={index}>
                   {role.toUpperCase()}
@@ -111,7 +117,7 @@ const ManageAccount = () => {
             : 'N/A'}
         </span>
       ),
-    },    
+    },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
@@ -138,7 +144,7 @@ const ManageAccount = () => {
         </div>
       ),
     },
-  ];
+  ]
 
   return (
     <div>
@@ -154,42 +160,61 @@ const ManageAccount = () => {
         dataSource={filteredAccounts}
         columns={columns}
         rowKey="_id"
-        pagination={{
-          pageSize: pageSize,
-          showSizeChanger: true,
-          pageSizeOptions: ['5', '10', '20', '50'],
-          onShowSizeChange: handlePageSizeChange,
-          showTotal: (total) => <span style={{ color: '#000' }}>Tổng số {total} tài khoản</span>,
-        }}
+        pagination={
+          filteredAccounts.length > 10
+            ? {
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ['5', '10', '20', '50'],
+                onShowSizeChange: handlePageSizeChange,
+                showTotal: (total) => (
+                  <span style={{ color: darkMode ? '#FFF' : '#000' }}>
+                    Tổng số {total} tài khoản
+                  </span>
+                ),
+              }
+            : false
+        }
       />
 
       {/* View Modal */}
       <Modal
-  title="Thông tin tài khoản"
-  open={isViewModalVisible}
-  onCancel={() => setIsViewModalVisible(false)}
-  footer={<Button onClick={() => setIsViewModalVisible(false)}>Đóng</Button>}
->
-  {selectedAccount && (
-    <div>
-      <p><strong>Email:</strong> {selectedAccount.email}</p>
-      <p><strong>Họ và tên:</strong> {selectedAccount.fullname}</p>
-      <p><strong>Số điện thoại:</strong> {selectedAccount.phone}</p>
-      <p>
-        <strong>Vai trò:</strong> {selectedAccount.roles && selectedAccount.roles.length > 0 ? (
-          selectedAccount.roles.map((role, index) => (
-            <Tag color={role === 'admin' ? 'volcano' : 'blue'} key={index}>
-              {role.toUpperCase()}
-            </Tag>
-          ))
-        ) : 'N/A'}
-      </p>
-      <p><strong>Trạng thái:</strong> {selectedAccount.status}</p>
-      <p><strong>Ngày sinh:</strong> {selectedAccount.dob ? new Date(selectedAccount.dob).toLocaleDateString() : 'N/A'}</p>
-    </div>
-  )}
-</Modal>
-
+        title="Thông tin tài khoản"
+        open={isViewModalVisible}
+        onCancel={() => setIsViewModalVisible(false)}
+        footer={<Button onClick={() => setIsViewModalVisible(false)}>Đóng</Button>}
+      >
+        {selectedAccount && (
+          <div>
+            <p>
+              <strong>Email:</strong> {selectedAccount.email}
+            </p>
+            <p>
+              <strong>Họ và tên:</strong> {selectedAccount.fullname}
+            </p>
+            <p>
+              <strong>Số điện thoại:</strong> {selectedAccount.phone}
+            </p>
+            <p>
+              <strong>Vai trò:</strong>{' '}
+              {selectedAccount.roles && selectedAccount.roles.length > 0
+                ? selectedAccount.roles.map((role, index) => (
+                    <Tag color={role === 'admin' ? 'volcano' : 'blue'} key={index}>
+                      {role.toUpperCase()}
+                    </Tag>
+                  ))
+                : 'N/A'}
+            </p>
+            <p>
+              <strong>Trạng thái:</strong> {selectedAccount.status}
+            </p>
+            <p>
+              <strong>Ngày sinh:</strong>{' '}
+              {selectedAccount.dob ? new Date(selectedAccount.dob).toLocaleDateString() : 'N/A'}
+            </p>
+          </div>
+        )}
+      </Modal>
 
       {/* Edit Modal */}
       <Modal
@@ -200,7 +225,9 @@ const ManageAccount = () => {
       >
         {formData && (
           <div>
-            <label><strong>Họ và tên:</strong></label>
+            <label>
+              <strong>Họ và tên:</strong>
+            </label>
             <Input
               name="fullname"
               value={formData.fullname}
@@ -208,7 +235,9 @@ const ManageAccount = () => {
               placeholder="Họ và tên"
               style={{ marginBottom: 8 }}
             />
-            <label><strong>Số điện thoại:</strong></label>
+            <label>
+              <strong>Số điện thoại:</strong>
+            </label>
             <Input
               name="phone"
               value={formData.phone}
@@ -216,7 +245,21 @@ const ManageAccount = () => {
               placeholder="Số điện thoại"
               style={{ marginBottom: 8 }}
             />
-            <label><strong>Trạng thái:</strong></label>
+            <label>
+              <strong>Vai trò:</strong>
+            </label>
+            <Select
+              value={formData.roles && formData.roles.length > 0 ? formData.roles[0] : 'user'}
+              onChange={handleRoleChange}
+              style={{ width: '100%', marginBottom: 8 }}
+            >
+              <Option value="user">USER</Option>
+              <Option value="seller">SELLER</Option>
+            </Select>
+
+            <label>
+              <strong>Trạng thái:</strong>
+            </label>
             <Select
               value={formData.status}
               onChange={handleStatusChange}
@@ -225,7 +268,9 @@ const ManageAccount = () => {
               <Option value="active">Kích hoạt</Option>
               <Option value="disable">Khóa</Option>
             </Select>
-            <label><strong>Mật khẩu:</strong></label>
+            <label>
+              <strong>Mật khẩu:</strong>
+            </label>
             <div style={{ position: 'relative', marginBottom: 8 }}>
               <Input.Password
                 name="password"
@@ -245,7 +290,7 @@ const ManageAccount = () => {
         )}
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default ManageAccount;
+export default ManageAccount

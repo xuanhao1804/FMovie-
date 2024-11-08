@@ -12,13 +12,11 @@ const getCarousels = async (req, res) => {
 };
 
 const addCarousel = async (req, res) => {
-  console.log('Received data:', req.body); // Log để kiểm tra dữ liệu nhận được
   const { title, imageUrl, movie, status, displayOrder, startDate, endDate, linkType, linkUrl, description } = req.body;
   const newCarousel = new Carousel({ title, imageUrl, movie, status, displayOrder, startDate, endDate, linkType, linkUrl, description });
 
   try {
     const savedCarousel = await newCarousel.save();
-    console.log('Saved carousel:', savedCarousel); // Log để kiểm tra dữ liệu được lưu
     res.status(201).json(savedCarousel);
   } catch (error) {
     console.error('Error saving carousel:', error); // Log lỗi chi tiết

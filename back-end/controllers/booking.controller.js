@@ -6,7 +6,7 @@ const payOS = new PayOS(
     "b91ff654-c857-4367-a7ae-d5dfe083e163",
     "16dbfd121db61219934e9460d5c94e16def9d16c18b9f49b8ef76ce116fb6cec"
 );
-
+const nodemailer = require("nodemailer");
 const CreatePayment = async (req, res) => {
     try {
         const { total_price, createdBy, room, showtime, seats, popcorns } = req.body;
@@ -19,7 +19,7 @@ const CreatePayment = async (req, res) => {
         if (checkSeats.length > 0) {
             return res.status(409).json({
                 status: 409,
-                messgae: "Ghế đã được đặt trước, vui lòng chọn ghế khác"
+                message: "Ghế đã được đặt trước, vui lòng chọn ghế khác"
             });
         } else {
             const orderCode = Date.now();
@@ -38,7 +38,7 @@ const CreatePayment = async (req, res) => {
             setTimeout(async () => {
                 const bookingToUpdate = await db.booking.findById(savedBooking._id);
                 if (bookingToUpdate && bookingToUpdate.status !== 'paid') {
-                    await payOS.cancelPaymentLink(savedBooking.orderCode);
+                    //await payOS.cancelPaymentLink(savedBooking.orderCode);
                     bookingToUpdate.status = 'cancelled';
                     await bookingToUpdate.save();
                     console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
@@ -111,6 +111,88 @@ const receiveHook = async (req, res) => {
                     { orderCode },
                     { status: 'paid' }
                 );
+                const booking = await db.booking.findOne({ orderCode: orderCode })
+                    .populate({
+                        path: 'showtime',
+                        populate: {
+                            path: 'movie',
+                        }
+                    })
+                    .populate({ path: 'createdBy', select: 'fullname email' })
+                    .populate({ path: 'room', select: '-showtimes -areas' })
+                    .populate({ path: 'popcorns.popcorn' })
+                    .exec();
+                const cinema = await db.cinema.findOne({ rooms: booking.room._id })
+                const transporter = nodemailer.createTransport({
+                    host: "smtp.gmail.com",
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: "minhvhhe170320@fpt.edu.vn",
+                        pass: "rbwj eril yswz hxzw",
+                    },
+                });
+
+                const info = await transporter.sendMail({
+                    from: `"MovieBooking 🎬" <minhvhhe170320@fpt.edu.vn>`,
+                    to: booking?.createdBy.email,
+                    subject: `Xác nhận đặt vé thành công - ${booking?.showtime.movie.name}`,
+                    text: `Xin chào ${booking?.createdBy.fullname},
+
+        Chúng tôi xin thông báo rằng bạn đã đặt vé xem phim thành công tại MovieBooking!
+        Dưới đây là thông tin chi tiết về vé của bạn:
+
+        Phim: ${booking?.showtime.movie.name}
+        Đạo diễn: ${booking?.showtime?.movie.director}
+        Diễn viên: ${booking?.showtime.movie.actors.join(", ")}
+        Thể loại: ${booking?.showtime.movie.genres.join(", ")}
+        Thời lượng: ${booking?.showtime.movie.duration} phút
+        Hạng tuổi: ${booking?.showtime.movie.limit}
+        Suất chiếu: ${booking?.showtime.startAt.date.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    })} lúc ${booking?.showtime?.startAt?.time}
+        Rạp: ${cinema?.name}
+        Phòng: ${booking?.room.name}
+        Ghế: ${booking?.seats.map(seat => `Khu vực ${seat.area} - Vị trí ${seat.position} ${seat.isVip ? "(VIP)" : ""}`).join(", ")}
+        Mã đặt vé: ${booking?.orderCode}
+        Chúc bạn xem phim vui vẻ!
+        Trân trọng,
+        Đội ngũ MovieBooking
+
+        P.S. Nếu bạn không yêu cầu đặt vé này, vui lòng bỏ qua email này.
+
+        © 2024 MovieBooking. Bảo lưu mọi quyền.`,
+                    html: `<p>Xin chào <strong>${booking?.createdBy.fullname}</strong>,</p>
+                   <p>Chúng tôi xin thông báo rằng bạn đã đặt vé xem phim thành công tại <strong>MovieBooking</strong>!</p>
+                   <p><strong>Thông tin chi tiết vé:</strong></p>
+                   <ul>
+                       <li><strong>Phim:</strong> ${booking?.showtime.movie.name}</li>
+                       <li><strong>Đạo diễn:</strong> ${booking?.showtime.movie.director}</li>
+                       <li><strong>Diễn viên:</strong> ${booking?.showtime.movie.actors.join(", ")}</li>
+                       <li><strong>Thể loại:</strong> ${booking?.showtime.movie.genres.join(", ")}</li>
+                       <li><strong>Thời lượng:</strong> ${booking?.showtime.movie.duration} phút</li>
+                       <li><strong>Hạng tuổi:</strong> ${booking?.showtime.movie.limit}</li>
+                   </ul>
+                   <p><strong>Thông tin suất chiếu:</strong></p>
+                   <ul>
+                       <li><strong>Suất chiếu:</strong> ${booking?.showtime.startAt.date.toLocaleDateString('vi-VN', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    })} lúc ${booking?.showtime.startAt.time}</li>
+                       <li><strong>Rạp:</strong> ${booking?.room.name}</li>
+                       <li><strong>Ghế:</strong> ${booking?.seats.map(seat => `Khu vực ${seat.area} - Vị trí ${seat.position} ${seat.isVip ? "(VIP)" : ""}`).join(", ")}</li>
+                   </ul>
+
+                   <p><strong>Mã đặt vé:</strong> ${booking?.orderCode}</p>
+                   <p>Chúc bạn xem phim vui vẻ!</p>
+                   <p>Trân trọng,<br>Đội ngũ MovieBooking</p>
+                   <p>P.S. Nếu bạn không yêu cầu đặt vé này, vui lòng bỏ qua email này.</p>
+                   <p>© 2024 MovieBooking. Bảo lưu mọi quyền.</p>`,
+                });
+
             }
         }
 
@@ -193,9 +275,9 @@ const getUserBookedHistory = async (req, res) => {
                 select: "name"
             }
         }).populate({
-            path: "popcorns.popcorn",
+            path: "popcorns._id",
             select: "name"
-        })
+        }).sort({ createdAt: -1 }).limit(10)
         return res.status(200).json({
             status: 200,
             data: bookings
@@ -213,7 +295,20 @@ const getUserTicket = async (req, res) => {
         const { orderCode } = req.body;
         let booking = await db.booking.findOne({
             orderCode: orderCode,
-        }).select("status updatedAt")
+        }).select("-transaction").populate({
+            path: "room",
+            select: "-showtimes -areas"
+        }).populate({
+            path: "showtime",
+            populate: {
+                path: "movie",
+                select: "name"
+            }
+        }).populate({
+            path: "popcorns._id",
+            select: "name"
+        })
+        console.log(booking)
         if (booking) {
             if (booking.status === "cancelled") {
                 return res.status(400).json({
@@ -229,12 +324,20 @@ const getUserTicket = async (req, res) => {
                         d.getDate(), d.getFullYear()].join('/') + ' ' + [d.getHours(), d.getMinutes(), d.getSeconds()].join(':')
                     });
                 } else {
-                    booking.status = "end"
-                    await booking.save()
-                    return res.status(404).json({
-                        status: 201,
-                        message: "Xác nhận thành công. Đang xuất vé ..."
-                    });
+                    if (booking.status === "paid") {
+                        booking.status = "end"
+                        await booking.save()
+                        return res.status(201).json({
+                            status: 201,
+                            data: booking,
+                            message: "Xác nhận thành công."
+                        });
+                    } else {
+                        return res.status(400).json({
+                            status: 400,
+                            message: "Người đặt chưa thanh toán"
+                        });
+                    }
                 }
             }
         } else {
@@ -289,7 +392,6 @@ const getTotalBookingPrice = async (req, res) => {
         res.status(500).json({ message: "Error calculating total booking price", error });
     }
 }
-
 const BookingController = {
     CreatePayment,
     DeletePayment,
@@ -299,7 +401,7 @@ const BookingController = {
     getBookedSeats,
     getUserBookedHistory,
     getUserTicket,
-    getTotalBookingPrice
+    getTotalBookingPrice,
 };
 
 module.exports = BookingController;

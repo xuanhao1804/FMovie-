@@ -120,8 +120,8 @@ const UserProfile = () => {
     }, [])
 
     return (
-        <div className="user-profile content-width-padding content-height-padding d-flex gap-4">
-            <div className="user-profile-info w-25 p-3">
+        <div className="user-profile content-width-padding content-height-padding d-flex flex-column flex-lg-row gap-4">
+            <div className="user-profile-info p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3">
                     Thông tin người dùng
                 </div>
@@ -169,21 +169,18 @@ const UserProfile = () => {
                     />
                     {errors.dob && <span className="text-danger">{errors.dob}</span>}
                 </div>
-                <div className="mb-3" style={{display: "flex", gap: "20px"}}>
+                <div className="mb-3">
                     <Button onClick={handleUpdate} type="primary" htmlType="submit" className="update-btn">
                         Cập Nhật
                     </Button>
-                    <Button onClick={handleChangePass} type="primary" htmlType="submit" className="changepass-btn">
-                        Đổi Mật Khẩu
-                    </Button>
                 </div>
             </div>
-            <div className="user-profile-history w-75 p-3">
+            <div className="user-profile-history  p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3 d-flex flex-column gap-1">
                     <span>Lịch sử giao dịch</span>
                     <span className="fs-6 text-warning">Chỉ hiển thị 10 giao dịch gần nhất</span>
                 </div>
-                <table className="user-profile-history-table table w-100">
+                <table className="user-profile-history-table table">
                     <thead>
                         <tr className="text-nowrap">
                             <th scope="col">#</th>
@@ -191,9 +188,11 @@ const UserProfile = () => {
                             <th scope="col">Phòng</th>
                             <th scope="col">Thời gian</th>
                             <th scope="col">Chỗ ngồi</th>
+
                             <th scope="col">Popcorns</th>
                             <th scope="col">Ngày đặt</th>
                             <th scope="col">Tổng tiền</th>
+                            <th scope="col">Mã xác nhận</th>
                             <th scope="col">Trạng thái</th>
                         </tr>
                     </thead>
@@ -205,30 +204,31 @@ const UserProfile = () => {
                                         <tr>
                                             <th scope="row">{index + 1}</th>
                                             <td >
-                                                <Link className="user-profile-history-table-item-name" target="_black" to={`/film/detail/${item.showtime.movie._id}`}>{item.showtime.movie.name}</Link>
+                                                <Link className="user-profile-history-table-item-name" target="_black" to={`/film/detail/${item?.showtime?.movie?._id}`}>{item?.showtime?.movie?.name}</Link>
                                             </td>
-                                            <td>{item.room.name}</td>
+                                            <td>{item?.room?.name}</td>
                                             <td>
-                                                <div>Giờ: <span className="text-primary">{item.showtime.startAt.time}</span></div>
+                                                <div>Giờ: <span className="text-primary">{item?.showtime?.startAt?.time}</span></div>
                                                 <div>{getVietnameseDate(item.showtime.startAt.date, true)}</div>
                                             </td>
                                             <td>{item.seats.map((item, index) => {
                                                 return (
-                                                    <div>{item.area + item.position} {item.isVip ? " - (VIP)" : ""}</div>
+                                                    <div>{item?.area + item?.position} {item?.isVip ? " - (VIP)" : ""}</div>
                                                 )
                                             })}</td>
-                                            <td>{item.popcorns.length > 0 ?
+                                            <td>{item?.popcorns?.length > 0 ?
                                                 item.popcorns.map((item, index) => {
                                                     return (
-                                                        <div>{item.quantity + "x " + item.popcorn.name}</div>
+                                                        <div>{item?.quantity + "x " + item?._id?.name}</div>
                                                     )
                                                 })
                                                 :
                                                 <span>Không</span>
                                             }</td>
-                                            <td>{getVietnameseDate(item.createdAt, true)}</td>
-                                            <td><NumericFormat className="text-success" value={item.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
-                                            <td><span style={{ color: bookingStatus[item.status].textColor }}>{bookingStatus[item.status].text}</span></td>
+                                            <td>{getVietnameseDate(item?.createdAt, true)}</td>
+                                            <td><NumericFormat className="text-success" value={item?.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td>{item.orderCode}</td>
+                                            <td><span style={{ color: bookingStatus[item.status]?.textColor }}>{bookingStatus[item.status]?.text}</span></td>
                                         </tr>
                                     )
                                 })

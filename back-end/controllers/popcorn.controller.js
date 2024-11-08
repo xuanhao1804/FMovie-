@@ -23,13 +23,14 @@ const getAllPopcorn = async (req, res) => {
 };
 const CreateNewPopCorn = async (req, res) => {
     const file = req.file;
-    const { name, description, price } = req.body;
+    const { name, description, price, status } = req.body;
     try {
         const newPopcorn = new db.popcorn({
             name,
             description,
             price,
-            image: file.path
+            image: file.path,
+            status
         });
         const savePopcorn = await newPopcorn.save();
         return res.status(201).json(savePopcorn);
@@ -40,9 +41,8 @@ const CreateNewPopCorn = async (req, res) => {
 };
 const EditPopCorn = async (req, res) => {
     const file = req.file;
-    console.log(req.file);
     const { id } = req.body;
-    const { name, description, price } = req.body;
+    const { name, description, price, status } = req.body;
     try {
         if (file?.path) {
             const updatedPopcorn = await db.popcorn.findByIdAndUpdate(
@@ -52,6 +52,7 @@ const EditPopCorn = async (req, res) => {
                     image: file.path,
                     description,
                     price,
+                    status
                 },
                 { new: true }
             );
@@ -64,6 +65,7 @@ const EditPopCorn = async (req, res) => {
                     name,
                     description,
                     price,
+                    status
                 },
                 { new: true }
             );

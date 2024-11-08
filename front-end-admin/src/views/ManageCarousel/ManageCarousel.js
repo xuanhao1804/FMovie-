@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Modal, Form, Input, DatePicker, Select, message, Upload } from 'antd';
-import { UploadOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Table, Button, Space, Modal, Form, Input, DatePicker, Select, message, Upload, Dropdown, Menu } from 'antd';
+import { UploadOutlined, DownOutlined, EditOutlined, ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCarousels, addCarousel, updateCarousel, deleteCarousel } from '../../reducers/CarouselReducer';
+import {
+  fetchCarousels,
+  addCarousel,
+  updateCarousel,
+  deleteCarousel,
+} from '../../reducers/CarouselReducer';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
@@ -12,9 +17,8 @@ const { confirm } = Modal;
 const CLOUDINARY_CLOUD_NAME = 'dcepcimwy';
 const CLOUDINARY_UPLOAD_PRESET = 'haolx18';
 
-// Hàm loại bỏ dấu tiếng Việt
 const removeDiacritics = (str) => {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 };
 
 const ManageCarousel = () => {
@@ -24,9 +28,10 @@ const ManageCarousel = () => {
   const [selectedCarousel, setSelectedCarousel] = useState(null);
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [movies, setMovies] = useState([]);
   const [linkType, setLinkType] = useState('none');
+  const [startDate, setStartDate] = useState(dayjs());
+  const [endDate, setEndDate] = useState(dayjs().add(1, 'day'));
+  const [movies, setMovies] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [pageSize, setPageSize] = useState(10);
 
@@ -40,8 +45,8 @@ const ManageCarousel = () => {
       const response = await axios.get('http://localhost:9999/movie/get-all');
       setMovies(response.data.data);
     } catch (error) {
-      console.error('Error fetching movies:', error);
-      message.error('Failed to fetch movies.');
+      console.error('Lỗi khi tải phim:', error);
+      message.error('Không thể tải danh sách phim.');
     }
   };
 
@@ -59,11 +64,13 @@ const ManageCarousel = () => {
       ...carousel,
       startDate: carousel.startDate ? dayjs(carousel.startDate) : null,
       endDate: carousel.endDate ? dayjs(carousel.endDate) : null,
+      movieId: carousel.linkType === 'movie' ? carousel.linkUrl.split('/').pop() : undefined, // Thay đổi ở đây
     });
     setImageUrl(carousel.imageUrl);
     setLinkType(carousel.linkType);
     setIsModalVisible(true);
-  };
+};
+
 
   const handleUpload = async (options) => {
     const { file } = options;
@@ -78,31 +85,67 @@ const ManageCarousel = () => {
       );
       const imageUrl = response.data.secure_url;
       setImageUrl(imageUrl);
-      message.success('Image uploaded successfully!');
+      message.success('Tải ảnh lên thành công!');
     } catch (error) {
-      console.error('Error uploading image:', error);
-      message.error('Failed to upload image. Please try again.');
+      console.error('Lỗi khi tải ảnh lên:', error);
+      message.error('Không thể tải ảnh lên. Vui lòng thử lại.');
     }
   };
 
-  const showDeleteConfirm = (carousel) => {
+  const handleStatusChange = async (carousel, status) => {
+    try {
+      const updatedCarousel = { ...carousel, status };
+      await dispatch(updateCarousel({ id: carousel._id, carousel: updatedCarousel }));
+      message.success(`Carousel đã được ${status === 'active' ? 'hiển thị' : 'ẩn'}`);
+    } catch (error) {
+      message.error('Không thể cập nhật trạng thái của carousel');
+    }
+  };
+
+  const handleDeleteCarousel = (carousel) => {
     confirm({
-      title: `Bạn có muốn xóa carousel "${carousel.title}" không?`,
+      title: `Bạn có chắc chắn muốn xóa carousel "${carousel.title}" không?`,
       icon: <ExclamationCircleOutlined />,
       content: 'Hành động này không thể hoàn tác',
       okText: 'Xóa',
       okType: 'danger',
       cancelText: 'Hủy',
       onOk() {
-        return dispatch(deleteCarousel(carousel._id))
+        const updatedCarousel = { ...carousel, status: 'deleted' };
+        return dispatch(updateCarousel({ id: carousel._id, carousel: updatedCarousel }))
           .then(() => {
-            message.success('Carousel deleted successfully');
+            message.success('Carousel đã được đánh dấu là "đã xóa"');
           })
           .catch(() => {
-            message.error('Failed to delete carousel');
+            message.error('Không thể cập nhật trạng thái của carousel');
           });
       },
     });
+  };
+  
+
+  const handleDateChange = (date, dateString, isStartDate) => {
+    if (isStartDate) {
+      setStartDate(date);
+      if (date.isAfter(endDate)) {
+        setEndDate(date.add(1, 'day'));
+      }
+    } else {
+      setEndDate(date);
+    }
+  };
+
+  const disabledEndDate = (current) => {
+    return (
+      current &&
+      (current < startDate || current > startDate.add(6, 'months'))
+    );
+  };
+
+  const disabledStartDate = (current) => {
+    return (
+      current && current > dayjs().add(6, 'months')
+    );
   };
 
   const handleOk = () => {
@@ -110,6 +153,8 @@ const ManageCarousel = () => {
       const carouselData = {
         ...values,
         imageUrl,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
       };
 
       if (linkType === 'movie') {
@@ -120,24 +165,24 @@ const ManageCarousel = () => {
       if (selectedCarousel) {
         dispatch(updateCarousel({ id: selectedCarousel._id, carousel: carouselData }))
           .then(() => {
-            message.success('Carousel updated successfully');
+            message.success('Cập nhật carousel thành công');
             setIsModalVisible(false);
             form.resetFields();
             setImageUrl('');
           })
           .catch(() => {
-            message.error('Failed to update carousel');
+            message.error('Cập nhật carousel thất bại');
           });
       } else {
         dispatch(addCarousel(carouselData))
           .then(() => {
-            message.success('Carousel added successfully');
+            message.success('Thêm mới carousel thành công');
             setIsModalVisible(false);
             form.resetFields();
             setImageUrl('');
           })
           .catch(() => {
-            message.error('Failed to add carousel');
+            message.error('Thêm mới carousel thất bại');
           });
       }
     });
@@ -166,10 +211,13 @@ const ManageCarousel = () => {
     setPageSize(size);
   };
 
-  const filteredCarousels = carousels.filter((carousel) => {
+  const filteredCarousels = carousels
+  .filter((carousel) => carousel.status !== 'deleted')
+  .filter((carousel) => {
     const title = removeDiacritics(carousel.title);
     return title.includes(searchText);
   });
+
 
   const columns = [
     {
@@ -177,6 +225,7 @@ const ManageCarousel = () => {
       dataIndex: 'title',
       key: 'title',
       sorter: (a, b) => a.title.localeCompare(b.title),
+      render: (text) => <span style={{ color: '#000' }}>{text}</span>,
     },
     {
       title: 'Ảnh',
@@ -189,6 +238,11 @@ const ManageCarousel = () => {
       dataIndex: 'status',
       key: 'status',
       sorter: (a, b) => a.status.localeCompare(b.status),
+      render: (status) => (
+        <span style={{ color: status === 'active' ? 'green' : 'red' }}>
+          {status === 'active' ? 'Hiển thị' : 'Ẩn'}
+        </span>
+      ),
     },
     {
       title: 'Thứ tự hiển thị',
@@ -211,18 +265,35 @@ const ManageCarousel = () => {
       sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
     },
     {
-      title: '',
+      title: 'Hành động',
       key: 'actions',
-      render: (_, record) => (
-        <Space size="middle">
-          <Button type="primary" onClick={() => handleEditCarousel(record)}>
-            Chỉnh sửa
-          </Button>
-          <Button type="danger" onClick={() => showDeleteConfirm(record)}>
-            Xóa
-          </Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        const menu = (
+          <Menu>
+            <Menu.Item onClick={() => handleStatusChange(record, 'active')}>
+              Hiển thị
+            </Menu.Item>
+            <Menu.Item onClick={() => handleStatusChange(record, 'inactive')}>
+              Ẩn
+            </Menu.Item>
+          </Menu>
+        );
+        return (
+          <Space size="middle">
+            <Button type="primary" icon={<EditOutlined />} onClick={() => handleEditCarousel(record)}>
+              Chỉnh sửa
+            </Button>
+            <Dropdown overlay={menu}>
+              <Button>
+                Trạng thái <DownOutlined />
+              </Button>
+            </Dropdown>
+            <Button type="danger" icon={<DeleteOutlined />} onClick={() => handleDeleteCarousel(record)}>
+              Xóa
+            </Button>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -243,13 +314,19 @@ const ManageCarousel = () => {
         columns={columns}
         dataSource={filteredCarousels}
         rowKey="_id"
-        pagination={{
-          pageSize: pageSize,
-          showSizeChanger: true,
-          pageSizeOptions: ['5', '10', '20', '50'],
-          onShowSizeChange: handlePageSizeChange,
-          showTotal: (total) => <span style={{ color: '#000' }}>Tổng số {total} bản ghi</span>,
-        }}
+        pagination={
+          filteredCarousels.length > 10
+            ? {
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ['5', '10', '20', '50'],
+                onShowSizeChange: handlePageSizeChange,
+                showTotal: (total) => (
+                  <span style={{ color: '#000' }}>Tổng số {total} bản ghi</span>
+                ),
+              }
+            : false
+        }
       />
       <Modal
         title={selectedCarousel ? 'Chỉnh sửa' : 'Tạo mới'}
@@ -265,9 +342,9 @@ const ManageCarousel = () => {
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Upload Ảnh">
+          <Form.Item label="Tải lên ảnh">
             <Upload customRequest={handleUpload} listType="picture" maxCount={1}>
-              <Button icon={<UploadOutlined />}>Upload</Button>
+              <Button icon={<UploadOutlined />}>Tải lên</Button>
             </Upload>
           </Form.Item>
           {imageUrl && (
@@ -276,7 +353,7 @@ const ManageCarousel = () => {
           <Form.Item
             name="status"
             label="Trạng thái"
-            rules={[{ required: true, message: 'Please select the status' }]}
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
           >
             <Select>
               <Option value="active">Kích hoạt</Option>
@@ -285,47 +362,59 @@ const ManageCarousel = () => {
           </Form.Item>
           <Form.Item
             name="displayOrder"
-            label="Display Order"
-            rules={[{ required: true, message: 'Please enter the display order' }]}
+            label="Thứ tự hiển thị"
+            rules={[{ required: true, message: 'Vui lòng nhập thứ tự hiển thị' }]}
           >
             <Input type="number" />
           </Form.Item>
-          <Form.Item label="Date Range">
+          <Form.Item label="Khoảng thời gian">
             <Input.Group compact>
               <Form.Item
                 name="startDate"
                 noStyle
-                rules={[{ required: true, message: 'Please select the start date' }]}
+                rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
               >
-                <DatePicker placeholder="Start Date" style={{ width: '50%' }} />
+                <DatePicker 
+                  placeholder="Ngày bắt đầu" 
+                  style={{ width: '50%' }}
+                  value={startDate}
+                  onChange={(date, dateString) => handleDateChange(date, dateString, true)}
+                  disabledDate={disabledStartDate}
+                />
               </Form.Item>
               <Form.Item
                 name="endDate"
                 noStyle
-                rules={[{ required: true, message: 'Please select the end date' }]}
+                rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc' }]}
               >
-                <DatePicker placeholder="End Date" style={{ width: '50%' }} />
+                <DatePicker 
+                  placeholder="Ngày kết thúc" 
+                  style={{ width: '50%' }}
+                  value={endDate}
+                  onChange={(date, dateString) => handleDateChange(date, dateString, false)}
+                  disabledDate={disabledEndDate}
+                />
               </Form.Item>
             </Input.Group>
           </Form.Item>
           <Form.Item
             name="linkType"
-            label="Link Type"
-            rules={[{ required: true, message: 'Please select the link type' }]}
+            label="Loại liên kết"
+            rules={[{ required: true, message: 'Vui lòng chọn loại liên kết' }]}
           >
             <Select onChange={handleLinkTypeChange}>
               <Option value="movie">Phim</Option>
-              <Option value="external">External</Option>
-              <Option value="none">None</Option>
+              <Option value="external">Liên kết ngoài</Option>
+              <Option value="none">Không</Option>
             </Select>
           </Form.Item>
           {linkType === 'movie' && (
             <Form.Item
               name="movieId"
-              label="Select Movie"
-              rules={[{ required: true, message: 'Please select a movie' }]}
+              label="Chọn phim"
+              rules={[{ required: true, message: 'Vui lòng chọn một phim' }]}
             >
-              <Select showSearch placeholder="Search for a movie">
+              <Select showSearch placeholder="Tìm kiếm phim">
                 {movies.map((movie) => (
                   <Option key={movie._id} value={movie._id}>
                     {movie.name}
@@ -337,13 +426,13 @@ const ManageCarousel = () => {
           {linkType === 'external' && (
             <Form.Item
               name="linkUrl"
-              label="Link URL"
-              rules={[{ required: true, message: 'Please enter the external URL' }]}
+              label="URL liên kết"
+              rules={[{ required: true, message: 'Vui lòng nhập URL liên kết ngoài' }]}
             >
               <Input />
             </Form.Item>
           )}
-          <Form.Item name="description" label="Description">
+          <Form.Item name="description" label="Mô tả">
             <Input.TextArea />
           </Form.Item>
         </Form>

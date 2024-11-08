@@ -44,7 +44,9 @@ const MovieSchema = new mongoose.Schema({
         type: String
     },
     status: {
-        type: String
+        type: String,
+        enum: ['playing', 'upcoming', 'inactive'], 
+        default: 'playing'
     }
 }, { timestamps: true });
 

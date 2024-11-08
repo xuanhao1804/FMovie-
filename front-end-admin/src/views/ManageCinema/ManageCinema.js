@@ -10,6 +10,7 @@ const ManageCinema = () => {
     const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [selectedCinema, setSelectedCinema] = useState(null);
+    const [city, setCity] = useState([]);
 
     const columns = [
         {
@@ -28,7 +29,7 @@ const ManageCinema = () => {
         {
             title: 'Thành Phố',
             dataIndex: 'city',
-            render: (text, record) => record?.city?.name,
+            render: (text, record) => city?.find(item => item?._id === record?.city)?.name,
         },
         {
             title: 'Số phòng',
@@ -71,6 +72,8 @@ const ManageCinema = () => {
         try {
             const response = await axios.get('http://localhost:9999/cinema/get-all');
             setData(response.data.data);
+            const res = await axios.get('http://localhost:9999/city/get-all');
+            setCity(res.data.data)
         } catch (error) {
             console.error('Error fetching data:', error);
         }

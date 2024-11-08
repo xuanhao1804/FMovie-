@@ -10,7 +10,6 @@ const useCinemas = () => {
                 const result = await response.json(); // Lưu ý rằng bạn cần đặt tên cho kết quả là `result`
 
                 // Kiểm tra dữ liệu nhận được
-                console.log(result); // Kiểm tra dữ liệu
                 if (Array.isArray(result.data)) { // Kiểm tra xem result.data có phải là mảng không
                     setCinemas(result.data); // Set cinemas bằng data
                 } else {

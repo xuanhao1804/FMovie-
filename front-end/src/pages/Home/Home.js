@@ -6,8 +6,14 @@ import { fetchMovies } from "../../reducers/MovieReducer";
 import { fetchCarousels } from "../../reducers/CarouselReducer";
 import { useNavigate } from "react-router-dom";
 import FilmsCard from "../../components/FilmsCard/FilmsCard";
+import dayjs from "dayjs";
 import "./Home.scss";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 const CustomLeftArrow = ({ onClick }) => (
   <LeftOutlined className="custom-arrow arrow-left" onClick={onClick} />
 );
@@ -30,10 +36,21 @@ const Home = () => {
   const carousels = useSelector((state) => state.carousels?.carousels || []);
   const moviesState = useSelector((state) => state.movies);
 
-  // Lọc chỉ các mục có status là 'active' và sắp xếp theo displayOrder
-  const activeCarousels = carousels
-    .filter((carousel) => carousel.status === "active")
-    .sort((a, b) => a.displayOrder - b.displayOrder);
+// Lọc chỉ các mục có status là 'active', nằm trong ngày hợp lệ và sắp xếp theo displayOrder
+const activeCarousels = carousels
+  .filter((carousel) => {
+    const today = dayjs();
+    const startDate = dayjs(carousel.startDate);
+    const endDate = dayjs(carousel.endDate);
+
+    // Kiểm tra nếu các ngày là hợp lệ và nằm trong khoảng thời gian mong muốn
+    return (
+      carousel.status === "active" &&
+      startDate.isSameOrBefore(today, "day") &&
+      endDate.isSameOrAfter(today, "day")
+    );
+  })
+  .sort((a, b) => a.displayOrder - b.displayOrder);
 
   const goToNextMainSlide = () => {
     if (mainCarouselRef.current) {
@@ -60,15 +77,14 @@ const Home = () => {
   };
 
   const handleCarouselClick = (carousel) => {
-    console.log("Carousel clicked:", carousel);
     if (carousel.linkType === "movie" && carousel.linkUrl) {
-      navigate("/" + carousel.linkUrl);
+      const relativeUrl = carousel.linkUrl.replace("http://localhost:3000", "");
+      navigate(relativeUrl);
     } else if (carousel.linkType === "external" && carousel.linkUrl) {
       window.open(carousel.linkUrl, "_blank");
-    } else {
-      console.log("No valid link found for this carousel item");
     }
   };
+  
 
   return (
     <div className="home-container">
