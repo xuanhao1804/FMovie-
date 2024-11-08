@@ -13,6 +13,8 @@ const ManageRoom = () => {
     const [isOpenCreateModal, setIsOpenCreateModal] = useState(false)
     const [isOpenEditModal, setIsOpenEditModal] = useState(false)
     const [selectedRoom, setSelectedRoom] = useState(null)
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 10;
 
     const fetchRoomByCinemas = async () => {
         const { data } = await axios.post("http://localhost:9999/cinema/get-rooms/", {
@@ -24,6 +26,10 @@ const ManageRoom = () => {
     useEffect(() => {
         fetchRoomByCinemas()
     }, [cinemaId])
+
+    const handleTableChange = (pagination) => {
+        setCurrentPage(pagination.current);
+    };
 
     const columns = [
         {
@@ -66,7 +72,12 @@ const ManageRoom = () => {
                 </div>
                 <div>
                     {rooms.length > 0 &&
-                        <Table dataSource={rooms} columns={columns} />
+                        <Table
+                            pagination={Math.ceil(rooms.length / pageSize) > 1 ? { current: currentPage, pageSize: pageSize, total: rooms.length } : false}
+                            dataSource={rooms}
+                            columns={columns}
+                            onChange={handleTableChange}
+                        />
                     }
                 </div>
             </div>
