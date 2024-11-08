@@ -55,3 +55,31 @@
         box-shadow: 0px 0px 0px 3px rgba(255, 69, 0, 0.5); // Viền nổi bật khi focus
     }
 }
+
+.changepass-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(45deg, #ff69b4, #ba55d3); // Gradient từ hồng (#ff69b4) sang tím (#ba55d3)
+    border: none;
+    border-radius: 8px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        background: linear-gradient(45deg, #ff1493, #8a2be2)!important; // Gradient tối hơn khi hover, từ hồng đậm đến tím đậm
+        box-shadow: 0px 4px 12px rgba(138, 43, 226, 0.4);
+    }
+
+    &:active {
+        background: linear-gradient(45deg, #c71585, #6a0dad); // Màu gradient đậm hơn khi nhấn
+        box-shadow: 0px 2px 8px rgba(138, 43, 226, 0.3);
+        transform: translateY(2px);
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0px 0px 0px 3px rgba(138, 43, 226, 0.5); // Viền nổi bật khi focus
+    }
+}

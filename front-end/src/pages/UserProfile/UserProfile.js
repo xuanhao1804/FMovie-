@@ -28,6 +28,10 @@ const UserProfile = () => {
         }
     }
 
+    const handleChangePass = () => {
+        navigate('/change-password')
+    }
+
     const validateField = (field, value) => {
         let error = null;
         if (!value) {
@@ -165,9 +169,12 @@ const UserProfile = () => {
                     />
                     {errors.dob && <span className="text-danger">{errors.dob}</span>}
                 </div>
-                <div className="mb-3">
+                <div className="mb-3" style={{display: "flex", gap: "20px"}}>
                     <Button onClick={handleUpdate} type="primary" htmlType="submit" className="update-btn">
                         Cập Nhật
+                    </Button>
+                    <Button onClick={handleChangePass} type="primary" htmlType="submit" className="changepass-btn">
+                        Đổi Mật Khẩu
                     </Button>
                 </div>
             </div>
