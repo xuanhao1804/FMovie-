@@ -28,6 +28,10 @@ const UserProfile = () => {
         }
     }
 
+    const handleChangePass = () => {
+        navigate('/change-password')
+    }
+
     const validateField = (field, value) => {
         let error = null;
         if (!value) {

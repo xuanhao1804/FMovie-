@@ -20,10 +20,20 @@ const verifyOTPService = (data) => {
   return axios.post(`/user/verify-otp`, data);
 };
 
+const signInwithGoogle = (data) => {
+  return axios.post(`/user/sign-in-google`, data);
+};
+
+const changePassword = (data) => {
+  return axios.post(`/user/change-password`, data);
+}
+
 export const UserService = {
   signUpService,
   signInService,
   resetPasswordService,
   sendEmailService,
   verifyOTPService,
+  signInwithGoogle,
+  changePassword
 };

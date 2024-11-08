@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Tabs, DatePicker, Checkbox, message } from 'antd';
+import { Form, Input, Button, Tabs, DatePicker, Checkbox, message, Modal } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"
-import { createUser, loginUser, saveUserData, setRecoverEmail, sendEmail } from '../../reducers/UserReducer';
+import { createUser, loginUser, saveUserData, setRecoverEmail, sendEmail, setCredential, setClientId } from '../../reducers/UserReducer';
+import { GoogleLogin } from '@react-oauth/google';
+import {UserService} from '../../services/UserService'
 import './Authentication.scss';
 
 const { TabPane } = Tabs;
@@ -17,11 +19,38 @@ export default function Authentication() {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate()
   const dispatch = useDispatch();
+  const [isModalVisible, setIsModalVisible] = useState(false); 
   useEffect(() => {
     if (user.user.account) {
       window.location.href = '/';
     }
   }, [user])
+
+  const handleGoogleLogin = async (response) => {
+    const data = {
+      credential: response.credential,
+    }
+    const res = await UserService.signInwithGoogle(data);
+    if (res.needInfor) {
+      dispatch(setCredential(response.credential));
+      dispatch(setClientId(response.clientId));
+      navigate('/fill-info')
+    }
+    else if (res.success) {
+      dispatch(saveUserData({ account: res.account, token: res.token }));
+    }
+    else {
+      message.error("Có lỗi xảy ra, vui lòng thử lại.")
+    }
+  }
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   const handleSignUp = async (values) => {
     const data = {
@@ -40,8 +69,7 @@ export default function Authentication() {
       if (res.payload.errors) {
         message.error(res.payload.errors[0].msg);
       }
-      else
-      {
+      else {
         message.success('Đăng ký thành công!');
         register_form.resetFields();
       }
@@ -126,6 +154,14 @@ export default function Authentication() {
         </Button>
         Hoặc <a href="#" onClick={() => setActiveTab('recover')}>Quên Mật Khẩu</a>
       </Form.Item>
+      <Form.Item>
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => {
+            message.error('Đăng nhập thất bại, vui lòng thử lại.');
+          }}
+        />
+      </Form.Item>
     </Form>
   );
 
@@ -191,12 +227,20 @@ export default function Authentication() {
           { validator: (_, value) => value ? Promise.resolve() : Promise.reject('Xin hãy chấp nhận điều khoản sử dụng') },
         ]}
       >
-        <Checkbox>Tôi đồng ý với <a href="#">điều khoản sử dụng</a></Checkbox>
+        <Checkbox>Tôi đồng ý với <a onClick={showModal} href="#">điều khoản sử dụng</a></Checkbox>
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit" className="register-form-button" loading={loading}>
           Đăng ký
         </Button>
+      </Form.Item>
+      <Form.Item>
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => {
+            message.error('Đăng nhập thất bại, vui lòng thử lại.');
+          }}
+        />
       </Form.Item>
     </Form>
   );
@@ -241,6 +285,35 @@ export default function Authentication() {
       <div>
         <img src="https://frontends.udemycdn.com/components/auth/desktop-illustration-step-2-x1.webp" alt="Authentication" />
       </div>
+
+      <Modal
+        title="Fmovie - Thỏa Thuận Sử Dụng"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="close" type="primary" onClick={handleCancel}>
+            Đóng
+          </Button>,
+        ]}
+      >
+        <p>Chào mừng bạn đến với website của Fmovie. Fmovie cung cấp các sản phẩm và dịch vụ dựa trên những điều khoản dưới đây. Khi bạn sử dụng các sản phẩm và dịch vụ do Fmovie cung cấp, bạn đồng ý với những điều khoản sử dụng này. Vui lòng đọc kỹ các điều khoản dưới đây.</p>
+        <h4>Bản Quyền:</h4>
+        <p>Tất cả nội dung hiển thị trên website và các sản phẩm liên quan của Fmovie đều thuộc sở hữu của Fmovie hoặc các đối tác cung cấp nội dung, được bảo vệ bởi luật pháp Việt Nam và các quy định bản quyền quốc tế.</p>
+        <h4>Quyền Truy Cập:</h4>
+        <p>Bạn có quyền truy cập và sử dụng các dịch vụ của Fmovie, miễn là bạn tuân thủ các điều khoản này và thanh toán cho bất kỳ dịch vụ bổ sung nào. Quyền truy cập không bao gồm việc sử dụng cho mục đích thương mại.</p>
+        <h4>Tài Khoản Của Bạn:</h4>
+        <p>Bạn có trách nhiệm bảo mật tài khoản và mật khẩu của mình. Fmovie có quyền từ chối cung cấp dịch vụ hoặc đóng tài khoản nếu bạn không tuân theo các điều khoản này.</p>
+        <h4>Bình Luận và Đánh Giá:</h4>
+        <p>Khách hàng có thể đăng tải các bình luận hoặc đánh giá miễn là không chứa nội dung bất hợp pháp hoặc gây hại. Fmovie có quyền sử dụng các nội dung mà bạn đăng tải.</p>
+        <h4>Thông Tin Phim, Chương Trình, Sự Kiện:</h4>
+        <p>Fmovie cung cấp thông tin chính xác về các bộ phim. Nếu có sự cố về đặt chỗ, bạn hãy liên hệ với bộ phận chăm sóc khách hàng của Fmovie để được hỗ trợ.</p>
+        <h4>Giá Cả:</h4>
+        <p>Mức giá hiển thị cho từng loại sản phẩm là giá bán lẻ cuối cùng, và có thể thay đổi cho đến khi bạn hoàn tất đặt vé.</p>
+        <h4>Tình Trạng Chỗ Ngồi:</h4>
+        <p>Fmovie không đảm bảo chỗ ngồi bạn chọn chưa được khách khác đặt cho đến khi bạn thanh toán.</p>
+        <h4>Trách Nhiệm Pháp Lý:</h4>
+        <p>Fmovie không chịu trách nhiệm cho bất kỳ thiệt hại nào phát sinh từ việc sử dụng các dịch vụ và nội dung của mình.</p>
+      </Modal>
     </div>
   );
 }

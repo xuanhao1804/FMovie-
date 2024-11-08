@@ -1,14 +1,12 @@
 const Account = require("../models").account;
 const { validationResult } = require('express-validator');
-const { createJWT } = require('../middlewares/JsonWebToken')
-const bcrypt = require('bcrypt');
+const { createJWT, verifyToken } = require('../middlewares/JsonWebToken')
+const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const OPT = require('../models').otp;
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, userId } = req.body;
-
-    // Thêm log để kiểm tra userId
 
     if (!userId) {
       return res.status(400).json({ success: false, message: 'User ID is missing' });
@@ -16,17 +14,19 @@ const changePassword = async (req, res) => {
 
     const account = await Account.findById(userId);
     if (!account) {
-      return res.status(404).json({ success: false, message: 'Account not found' });
+      console.log('Account not found');
+      return res.status(404).json({ success: false, message: 'Tài Khoản không tìm thấy' });
     }
 
     if (account.password !== currentPassword) {
-      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+      console.log('Current password is incorrect');
+      return res.status(400).json({ success: false, message: 'Mật Khẩu Hiện Tại Không Chính Xác' });
     }
 
     account.password = newPassword;
     await account.save();
 
-    return res.status(200).json({ success: true, message: 'Password changed successfully' });
+    return res.status(200).json({ success: true, message: 'Đổi Mật Khẩu Thành Công' });
   } catch (error) {
     console.error('Error changing password:', error);
     res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
@@ -319,6 +319,51 @@ const updateAccountInfo = async (req, res) => {
   }
 }
 
+const loginWithGoogle = async (req, res) => {
+  try {
+    const { credential, dob, phone, clientId } = req.body
+    const data = jwt.decode(credential)
+    if (!data) {
+      return res.status(400).json({ success: false, message: 'Invalid credential' })
+    }
+    const { email, name } = data
+    const account = await Account.findOne({ email })
+    if (!account && !dob && !phone) {
+      return res.status(400).json({ success: false, needInfor: true })
+    }
+    else if (!account) {
+      const password = getRandomPassword()
+      const newAccount = new Account({
+        email,
+        fullname: name,
+        dob,
+        phone,
+        clientId,
+        password,
+        roles: ['user']
+      })
+      await newAccount.save()
+      return res.status(200).json({ success: true, account: newAccount, token: createJWT({ email: newAccount.email }) })
+    }
+    return res.status(200).json({ success: true, account, token: createJWT({ email: account.email }) })
+  }
+  catch (error) {
+    console.error('Error login with google:', error);
+    res.status(500).json({
+      success: false, message: 'Failed to login with google', error: error.message
+    });
+  }
+}
+
+const getRandomPassword = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return password;
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -330,5 +375,6 @@ module.exports = {
   getAllAccounts,
   changePassword,
   getTotalUser,
-  updateAccountInfo
+  updateAccountInfo,
+  loginWithGoogle
 };
