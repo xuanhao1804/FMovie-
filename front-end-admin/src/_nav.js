@@ -8,7 +8,7 @@ import { faFilm, faTheaterMasks, faTicket, faCalendar, faClipboardList, faCookie
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react';
 import useCinemas from './components/useCinemas';
 
-const NavComponent = () => {  
+const NavComponent = () => {
   const cinemas = useCinemas();
 
   return [
@@ -62,7 +62,7 @@ const NavComponent = () => {
     },
     {
       component: CNavGroup,
-      name: 'Showtime',
+      name: 'Suất chiếu',
       icon: <FontAwesomeIcon icon={faCalendar} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
       items: Array.isArray(cinemas) ? cinemas.map(cinema => ({
         component: CNavItem,
@@ -80,7 +80,7 @@ const NavComponent = () => {
       component: CNavItem,
       name: 'Quản lý carousel',
       to: '/manage-carousel',
-      icon: <FontAwesomeIcon icon={faPhotoVideo} style={{ marginRight: "5px" }} customClassName="nav-icon" />      ,
+      icon: <FontAwesomeIcon icon={faPhotoVideo} style={{ marginRight: "5px" }} customClassName="nav-icon" />,
     },
   ];
 };

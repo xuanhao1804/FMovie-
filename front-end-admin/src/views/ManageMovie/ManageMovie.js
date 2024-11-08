@@ -91,7 +91,9 @@ const ManageMovie = () => {
             dataIndex: 'status',
             render: (status) => (
                 <span style={{ color: status === 'playing' ? 'green' : status === 'upcoming' ? 'orange' : 'red' }}>
-                    {status}
+                    {status === 'playing' ? 'Đang chiếu' :
+                        status === 'upcoming' ? 'Sắp chiếu' :
+                            'Không hiển thị'}
                 </span>
             ),
         },
@@ -100,8 +102,7 @@ const ManageMovie = () => {
             dataIndex: 'actions',
             render: (text, record) => (
                 <Space size="middle">
-                    <Button type="link" onClick={() => showEditModal(record)}>Edit</Button>
-                    <Button type="link" onClick={() => handleDeleteMovie(record._id)}>Delete</Button>
+                    <Button type="link" onClick={() => showEditModal(record)}>Chỉnh sửa</Button>
                 </Space>
             ),
         },
