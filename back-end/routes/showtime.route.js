@@ -12,6 +12,6 @@ showtimeRouter.get("/get-all", ShowtimeController.getAllShowtime);
 showtimeRouter.get("/get-all-showtime-cinema/:id", ShowtimeController.getShowtimebyCinemaAdmin);
 showtimeRouter.post("/create", ShowtimeController.CreateNewShowtime);
 showtimeRouter.get("/get-by-cinema/:cinemaId", ShowtimeController.getShowtimeByCinema);
-
+showtimeRouter.post("/createmany", ShowtimeController.CreateMultipleShowtimes);
 module.exports = showtimeRouter;
 

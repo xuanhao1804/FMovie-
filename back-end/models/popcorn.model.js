@@ -1,3 +1,4 @@
+const { body } = require('express-validator');
 const mongoose = require('mongoose');
 
 const PopcornSchema = new mongoose.Schema({
@@ -12,6 +13,9 @@ const PopcornSchema = new mongoose.Schema({
     },
     price: {
         type: Number
+    },
+    status: {
+        type: String
     }
 });
 

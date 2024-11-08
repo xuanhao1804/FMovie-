@@ -3,6 +3,7 @@ import { Table, DatePicker, Button, Modal, Form, Input, TimePicker, Select, mess
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import CreateMultipleShowtimesModal from '../../components/Modal/CreateMultipleShowtimesModal/CreateMultipleShowtimesModal';
 
 const { Option } = Select;
 
@@ -11,6 +12,7 @@ const ShowtimeManagement = () => {
     const [movies, setMovies] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dayjs().format('YYYY-MM-DD'));
     const { id } = useParams();
+    const [isMultipleShowtimesModalVisible, setIsMultipleShowtimesModalVisible] = useState(false); // New state for multiple showtimes modal
 
     // State for the modal
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -54,12 +56,12 @@ const ShowtimeManagement = () => {
     };
     const columns = [
         {
-            title: 'Room',
+            title: 'Phòng',
             dataIndex: 'name',
             key: 'room',
         },
         {
-            title: 'Showtimes',
+            title: 'Suất chiếu',
             key: 'showtimes',
             dataIndex: 'showtimes',
             render: (showtimes) => (
@@ -69,14 +71,14 @@ const ShowtimeManagement = () => {
                             <strong>{showtime?.time}</strong> - Movie: {movies.find(movie => movie._id == showtime.movie)?.name}
                         </div>
                     ))
-                    : 'No Showtimes'
+                    : 'Không có suất chiếu'
             ),
         },
         {
-            title: 'Actions',
+            title: '',
             key: 'actions',
             render: (_, record) => (
-                <Button type="primary" onClick={() => handleOpenModal(record)}>Create Showtime</Button>
+                <Button disabled={dayjs(selectedDate).isBefore(dayjs(), 'day')} type="primary" onClick={() => handleOpenModal(record)}>Tạo mới 1 suất chiếu</Button>
             ),
         }
     ];
@@ -106,6 +108,14 @@ const ShowtimeManagement = () => {
 
     const handleCloseModal = () => {
         setIsModalVisible(false);
+    };
+    // Open modal for creating multiple showtimes
+    const handleOpenMultipleShowtimesModal = () => {
+        setIsMultipleShowtimesModalVisible(true);
+    };
+
+    const handleCloseMultipleShowtimesModal = () => {
+        setIsMultipleShowtimesModalVisible(false);
     };
 
     const handleCreateShowtime = async (values) => {
@@ -137,14 +147,17 @@ const ShowtimeManagement = () => {
 
     return (
         <div className="showtime-management">
-            <h2>Showtime Management by Date and Room</h2>
+            <h2>Quản lí suất chiếu</h2>
             <div style={{ marginBottom: '20px' }}>
-                <label>Select Date: </label>
+                <label>Chọn ngày: </label>
                 <DatePicker
                     format="YYYY-MM-DD"
                     value={selectedDate ? dayjs(selectedDate) : null}
                     onChange={handleDateChange}
                 />
+                <Button style={{ marginLeft: '10px' }} type="primary" onClick={handleOpenMultipleShowtimesModal}>
+                    Tạo nhiều suất chiếu
+                </Button>
             </div>
 
             <Table
@@ -167,7 +180,7 @@ const ShowtimeManagement = () => {
                 >
                     <Form.Item
                         name="roomName"
-                        label="Room Name"
+                        label="Tên phòng"
                         rules={[{ required: true }]}
                     >
                         <Input disabled />
@@ -182,34 +195,42 @@ const ShowtimeManagement = () => {
                     </Form.Item>
                     <Form.Item
                         name="movieId"
-                        label="Movie"
-                        rules={[{ required: true, message: 'Please select a movie!' }]}
+                        label="Tên phim"
+                        rules={[{ required: true, message: 'Chọn 1 bộ phim chiếu!' }]}
                     >
-                        <Select placeholder="Select a movie">
-                            {movies.map(movie => (
+                        <Select placeholder="Chọn 1 bộ phim">
+                            {movies.filter(movie => movie.status === 'playing').map(movie => (
                                 <Option key={movie._id} value={movie._id}>{movie.name}</Option>
                             ))}
                         </Select>
                     </Form.Item>
                     <Form.Item
                         name="date"
-                        label="Date"
+                        label="Ngày"
                         rules={[{ required: true, message: 'Please select a date!' }]}
                     >
                         <DatePicker format="YYYY-MM-DD" disabled />
                     </Form.Item>
                     <Form.Item
                         name="time"
-                        label="Time"
-                        rules={[{ required: true, message: 'Please select a time!' }]}
+                        label="Giờ"
+                        rules={[{ required: true, message: 'Chọn giờ chiếu!' }]}
                     >
                         <TimePicker format="HH:mm" />
                     </Form.Item>
                     <Form.Item>
-                        <Button type="primary" htmlType="submit">Create</Button>
+                        <Button type="primary" htmlType="submit">Tạo</Button>
                     </Form.Item>
                 </Form>
             </Modal>
+            <CreateMultipleShowtimesModal
+                visible={isMultipleShowtimesModalVisible}
+                onCancel={handleCloseMultipleShowtimesModal}
+                selectedDate={selectedDate}
+                rooms={rooms}
+                movies={movies}
+                fetchShowtimes={fetchShowtimes}
+            />
         </div>
     );
 };
