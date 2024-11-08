@@ -184,9 +184,11 @@ const UserProfile = () => {
                             <th scope="col">Phòng</th>
                             <th scope="col">Thời gian</th>
                             <th scope="col">Chỗ ngồi</th>
+
                             <th scope="col">Popcorns</th>
                             <th scope="col">Ngày đặt</th>
                             <th scope="col">Tổng tiền</th>
+                            <th scope="col">Mã xác nhận</th>
                             <th scope="col">Trạng thái</th>
                         </tr>
                     </thead>

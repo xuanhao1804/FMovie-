@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Button, message, Upload } from 'antd';
+import { Modal, Form, Input, InputNumber, Button, message, Upload, Select } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
@@ -16,6 +16,7 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 description: popcorn.description,
                 price: popcorn.price,
                 image: popcorn.image ? [{ url: popcorn.image }] : [],
+                status: popcorn.status
             });
             setImageUrl(popcorn.image); // Cập nhật hình ảnh hiện có
         }
@@ -33,6 +34,7 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
             formData.append('name', values.name);
             formData.append('description', values.description);
             formData.append('price', values.price);
+            formData.append('status', values.status);
 
             if (values.image && values.image.length > 0 && values.image[0].originFileObj) {
                 formData.append('image', values.image[0].originFileObj); // Append file to formData
@@ -79,10 +81,10 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
             confirmLoading={loading}
             footer={[
                 <Button key="cancel" onClick={onCancel}>
-                    Cancel
+                    Hủy
                 </Button>,
                 <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-                    Save Changes
+                    Lưu thay đổi
                 </Button>,
             ]}
         >
@@ -92,15 +94,15 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 onFinish={handleSubmit}
             >
                 <Form.Item
-                    label="Name"
+                    label="Tên"
                     name="name"
                     rules={[{ required: true, message: 'Please enter the name!' }]}
                 >
-                    <Input placeholder="Enter popcorn name" />
+                    <Input placeholder="Điền tên bỏng nước" />
                 </Form.Item>
 
                 <Form.Item
-                    label="Image"
+                    label="Ảnh"
                     name="image"
                     valuePropName="fileList"
                     getValueFromEvent={(e) => e && e.fileList}
@@ -108,10 +110,10 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                     <Upload
                         listType="picture"
                         maxCount={1}
-                        beforeUpload={() => false} // Ngăn upload ngay lập tức
+                        beforeUpload={() => false}
                         onChange={handleImageChange}
                     >
-                        <Button icon={<UploadOutlined />}>Upload New Image</Button>
+                        <Button icon={<UploadOutlined />}>Upload Ảnh mới</Button>
                     </Upload>
                     {imageUrl && (
                         <div style={{ marginTop: 10 }}>
@@ -121,19 +123,25 @@ const ModalEditPopcorn = ({ isVisible, onCancel, onSuccess, popcorn }) => {
                 </Form.Item>
 
                 <Form.Item
-                    label="Description"
+                    label="Mô tả"
                     name="description"
-                    rules={[{ required: true, message: 'Please enter the description!' }]}
+                    rules={[{ required: true, message: 'Hãy điền mô tả!' }]}
                 >
-                    <Input placeholder="Enter description" />
+                    <Input placeholder="Điền mô tả" />
                 </Form.Item>
 
                 <Form.Item
-                    label="Price (VND)"
+                    label="Giá tiền (VND)"
                     name="price"
-                    rules={[{ required: true, message: 'Please enter the price!' }]}
+                    rules={[{ required: true, message: 'Hãy điền giá tiền!' }]}
                 >
                     <InputNumber style={{ width: '100%' }} placeholder="Enter price" min={0} />
+                </Form.Item>
+                <Form.Item label="Trạng thái" name="status" rules={[{ required: true, message: 'Vui lòng chọn trạng thái bỏng nước!' }]}>
+                    <Select placeholder="Chọn trạng thái bỏng nước" style={{ width: '100%' }}>
+                        <Option value="active"> Hoạt động</Option>
+                        <Option value="inactive">Không hoạt động</Option>
+                    </Select>
                 </Form.Item>
             </Form>
         </Modal>
