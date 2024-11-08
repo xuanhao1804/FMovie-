@@ -5,6 +5,7 @@ import { Button, message, Modal } from 'antd';
 import "@progress/kendo-theme-material/dist/all.css"
 import { savePDF } from "@progress/kendo-react-pdf"
 import "./TakeTicket.scss"
+import logo from "../../assets/icon/logo.png"
 
 const TakeTicket = () => {
 
@@ -93,7 +94,7 @@ const TakeTicket = () => {
                                         <div key={item._id} className="take-ticket-pdf mb-4">
                                             <img
                                                 className="take-ticket-pdf-logo"
-                                                src="http://localhost:3000/static/media/logo.09f45ecf3fb18cbc8aad.png"
+                                                src={logo}
                                                 alt="logo"
                                             />
                                             <div className="take-ticket-pdf-content">
@@ -132,7 +133,7 @@ const TakeTicket = () => {
                                 <div className="take-ticket-pdf mb-4">
                                     <img
                                         className="take-ticket-pdf-logo"
-                                        src="http://localhost:3000/static/media/logo.09f45ecf3fb18cbc8aad.png"
+                                        src={logo}
                                         alt="logo"
                                     />
                                     <div className="take-ticket-pdf-content">
