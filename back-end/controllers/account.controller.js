@@ -1,15 +1,12 @@
 const Account = require("../models").account;
 const { validationResult } = require('express-validator');
-const { createJWT } = require('../middlewares/JsonWebToken')
-const bcrypt = require('bcrypt');
+const { createJWT, verifyToken } = require('../middlewares/JsonWebToken')
+const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
 const OPT = require('../models').otp;
 const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword, userId } = req.body;
-
-    // Thêm log để kiểm tra userId
-    console.log('User ID received:', userId);
 
     if (!userId) {
       return res.status(400).json({ success: false, message: 'User ID is missing' });
@@ -18,19 +15,18 @@ const changePassword = async (req, res) => {
     const account = await Account.findById(userId);
     if (!account) {
       console.log('Account not found');
-      return res.status(404).json({ success: false, message: 'Account not found' });
+      return res.status(404).json({ success: false, message: 'Tài Khoản không tìm thấy' });
     }
 
     if (account.password !== currentPassword) {
       console.log('Current password is incorrect');
-      return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+      return res.status(400).json({ success: false, message: 'Mật Khẩu Hiện Tại Không Chính Xác' });
     }
 
     account.password = newPassword;
     await account.save();
 
-    console.log('Password changed successfully');
-    return res.status(200).json({ success: true, message: 'Password changed successfully' });
+    return res.status(200).json({ success: true, message: 'Đổi Mật Khẩu Thành Công' });
   } catch (error) {
     console.error('Error changing password:', error);
     res.status(500).json({ success: false, message: 'Failed to change password', error: error.message });
@@ -50,7 +46,7 @@ const signUp = async (req, res) => {
     // Không băm mật khẩu, lưu trực tiếp vào database
     const account = new Account({
       email,
-      password, 
+      password,
       fullname,
       dob,
       phone,
@@ -94,7 +90,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'tattupro2705@gmail.com',
-    pass: 'gshh oymp mbbf ywxc'  
+    pass: 'gshh oymp mbbf ywxc'
   }
 });
 
@@ -153,14 +149,14 @@ const sendMail = async (req, res) => {
 
     // Gửi email
     const info = await transporter.sendMail(mailOptions);
-  
+
     // Kiểm tra và lưu OTP vào database
     await OPT.findOneAndUpdate(
       { email: email }, // Điều kiện tìm kiếm
       { otp: OTPCode, timeCreated: new Date() }, // Giá trị cập nhật
       { upsert: true, new: true } // Nếu không tìm thấy thì tạo mới (upsert)
     );
-    
+
     res.status(200).json({
       success: true,
       message: 'Email sent successfully',
@@ -190,7 +186,7 @@ transporter.verify((error, success) => {
 const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    
+
     const otpData = await OPT.findOne({ email, otp });
     if (!otpData) {
       return res.status(404).json({
@@ -322,6 +318,51 @@ const updateAccountInfo = async (req, res) => {
   }
 }
 
+const loginWithGoogle = async (req, res) => {
+  try {
+    const { credential, dob, phone, clientId } = req.body
+    const data = jwt.decode(credential)
+    if (!data) {
+      return res.status(400).json({ success: false, message: 'Invalid credential' })
+    }
+    const { email, name } = data
+    const account = await Account.findOne({ email })
+    if (!account && !dob && !phone) {
+      return res.status(400).json({ success: false, needInfor: true })
+    }
+    else if (!account) {
+      const password = getRandomPassword()
+      const newAccount = new Account({
+        email,
+        fullname: name,
+        dob,
+        phone,
+        clientId,
+        password,
+        roles: ['user']
+      })
+      await newAccount.save()
+      return res.status(200).json({ success: true, account: newAccount, token: createJWT({ email: newAccount.email }) })
+    }
+    return res.status(200).json({ success: true, account, token: createJWT({ email: account.email }) })
+  }
+  catch (error) {
+    console.error('Error login with google:', error);
+    res.status(500).json({
+      success: false, message: 'Failed to login with google', error: error.message
+    });
+  }
+}
+
+const getRandomPassword = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return password;
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -333,5 +374,6 @@ module.exports = {
   getAllAccounts,
   changePassword,
   getTotalUser,
-  updateAccountInfo
+  updateAccountInfo,
+  loginWithGoogle
 };
