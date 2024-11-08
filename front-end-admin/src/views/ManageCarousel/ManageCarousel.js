@@ -111,16 +111,18 @@ const ManageCarousel = () => {
       okType: 'danger',
       cancelText: 'Hủy',
       onOk() {
-        return dispatch(deleteCarousel(carousel._id))
+        const updatedCarousel = { ...carousel, status: 'deleted' };
+        return dispatch(updateCarousel({ id: carousel._id, carousel: updatedCarousel }))
           .then(() => {
-            message.success('Xóa carousel thành công');
+            message.success('Carousel đã được đánh dấu là "đã xóa"');
           })
           .catch(() => {
-            message.error('Xóa carousel thất bại');
+            message.error('Không thể cập nhật trạng thái của carousel');
           });
       },
     });
   };
+  
 
   const handleDateChange = (date, dateString, isStartDate) => {
     if (isStartDate) {
@@ -209,10 +211,13 @@ const ManageCarousel = () => {
     setPageSize(size);
   };
 
-  const filteredCarousels = carousels.filter((carousel) => {
+  const filteredCarousels = carousels
+  .filter((carousel) => carousel.status !== 'deleted')
+  .filter((carousel) => {
     const title = removeDiacritics(carousel.title);
     return title.includes(searchText);
   });
+
 
   const columns = [
     {
