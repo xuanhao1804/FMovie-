@@ -123,23 +123,25 @@ const sendMail = async (req, res) => {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Reset Password</title>
+  <title>Khôi phục mật khẩu</title>
 </head>
 <body>
-<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-  <div style="margin:50px auto;width:70%;padding:20px 0">
-    <div style="border-bottom:1px solid #eee">
-      <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Fmovie</a>
+<div style="font-family: Helvetica, Arial, sans-serif; min-width: 1000px; overflow: auto; line-height: 1.6; background-color: #f4f7f9; padding: 30px;">
+  <div style="margin: 0 auto; max-width: 600px; background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);">
+    <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; text-align: center;">
+      <a href="" style="font-size: 1.5em; color: #00466a; text-decoration: none; font-weight: bold;">FMovie</a>
     </div>
-    <p style="font-size:1.1em">Xin chào,</p>
-    <p>Cảm ơn bạn đã sử dụng FMovie. Sử dụng mã OTP sau để hoàn tất quy trình khôi phục mật khẩu của bạn. Mã OTP có hiệu lực trong 5 phút.</p>
-    <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${OTPCode}</h2>
-    <p style="font-size:0.9em;">Trân trọng,<br />FMovie Team</p>
-    <hr style="border:none;border-top:1px solid #eee" />
-    <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+    <div style="padding: 20px 0; text-align: center;">
+      <h2 style="font-size: 1.3em; color: #333;">Xin chào,</h2>
+      <p style="font-size: 1.1em; color: #555;">Chúng tôi rất vui vì bạn đã chọn FMovie. Để khôi phục mật khẩu, vui lòng nhập mã OTP dưới đây. Mã có hiệu lực trong vòng 5 phút.</p>
+      <h2 style="background-color: #00466a; color: #ffffff; display: inline-block; padding: 10px 20px; border-radius: 6px; letter-spacing: 2px;">${OTPCode}</h2>
+    </div>
+    <p style="text-align: center; font-size: 0.9em; color: #777; margin-top: 20px;">Trân trọng,<br>Đội ngũ FMovie</p>
+    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+    <div style="text-align: center; font-size: 0.8em; color: #aaa; line-height: 1.4;">
       <p>FMovie Inc</p>
-      <p>166 Long Bien</p>
-      <p>Ha Noi, Vietnam</p>
+      <p>Khu CNC Hòa Lạc</p>
+      <p>Hà Nội, Vietnam</p>
     </div>
   </div>
 </div>

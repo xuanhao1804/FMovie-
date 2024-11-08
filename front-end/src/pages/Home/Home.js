@@ -78,11 +78,13 @@ const activeCarousels = carousels
 
   const handleCarouselClick = (carousel) => {
     if (carousel.linkType === "movie" && carousel.linkUrl) {
-      navigate("/" + carousel.linkUrl);
+      const relativeUrl = carousel.linkUrl.replace("http://localhost:3000", "");
+      navigate(relativeUrl);
     } else if (carousel.linkType === "external" && carousel.linkUrl) {
       window.open(carousel.linkUrl, "_blank");
     }
   };
+  
 
   return (
     <div className="home-container">
