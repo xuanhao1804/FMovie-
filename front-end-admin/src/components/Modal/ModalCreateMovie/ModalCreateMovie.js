@@ -249,6 +249,7 @@ const CreateMovieModal = ({ isCreateModalOpen, handleCreateCancel, fetchData }) 
                 </Form.Item>
                 <Form.Item
                     name="duration"
+                    label="Thời lượng phim (Phút)"
                     rules={[{ required: true, message: 'Vui lòng nhập thời lượng phim!' }]
                     }
                 >

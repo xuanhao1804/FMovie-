@@ -20,7 +20,7 @@ const FilmsCard = ({ _id, image, limit, star, video }) => {
                 }}>
 
                 <span className="films-card-age-limitation">
-                    {limit}
+                    {limit}T
                 </span>
                 <span className="films-card-rating">
                     {star} <i style={{ color: "yellow" }} className="fa-solid fa-star"></i>

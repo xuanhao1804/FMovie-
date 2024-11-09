@@ -2,7 +2,7 @@ const db = require("../models");
 
 const getAllPopcorn = async (req, res) => {
     try {
-        const combos = await db.popcorn.find({})
+        const combos = await db.popcorn.find({}).sort({ updatedAt: -1 });
         if (combos) {
             return res.status(200).json({
                 status: 200,

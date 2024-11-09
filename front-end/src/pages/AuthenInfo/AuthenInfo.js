@@ -16,7 +16,7 @@ export default function AuthenInfo() {
     const user = useSelector((state) => state.user);
 
     if (!user.clientId || !user.credential) {
-        navigate('auth/sign-in');
+        navigate('/');
     }
 
     const handleSubmit = async (values) => {

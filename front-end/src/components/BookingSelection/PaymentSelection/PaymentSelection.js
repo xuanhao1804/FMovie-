@@ -11,7 +11,7 @@ const PaymentSelection = ({ handleCreatePayment, paymentInformation, handleSessi
 
     useEffect(() => {
         if (paymentInformation !== null) {
-            setTimeLeft(600)
+            setTimeLeft(240)
         }
     }, [paymentInformation]);
 
@@ -73,7 +73,7 @@ const PaymentSelection = ({ handleCreatePayment, paymentInformation, handleSessi
                         <>
                             <button onClick={() => handleCreatePayment()} className="btn btn-outline-primary">Bắt đầu thanh toán</button>
                             <div>
-                                Hệ thống sẽ giữ chỗ cho quý khách trong vòng <span className="fw-semibold">10 phút</span>
+                                Hệ thống sẽ giữ chỗ cho quý khách trong vòng <span className="fw-semibold">4 phút</span>
                             </div>
                         </>
                 }

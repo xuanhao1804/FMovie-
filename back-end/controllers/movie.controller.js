@@ -3,7 +3,7 @@ const db = require("../models");
 const getAllMovie = async (req, res) => {
     try {
         const response = await db.movie.find({
-        })
+        }).sort({ createdAt: -1 });
         if (response) {
             return res.status(200).json({
                 status: 200,
@@ -49,7 +49,7 @@ const getMovieByID = async (req, res) => {
 const CreatnewMovie = async (req, res) => {
     try {
         const file = req.file;
-        const { name, actors, director, duration, genres, video, studio, country, description, status, price } = req.body;
+        const { name, actors, director, limit, duration, genres, video, studio, country, description, status, price } = req.body;
         if (file?.path) {
             const newMovie = new db.movie({
                 name,
@@ -57,8 +57,10 @@ const CreatnewMovie = async (req, res) => {
                 actors,
                 studio,
                 duration,
+                rating: 9,
                 country,
                 genres,
+                limit,
                 image: file.path,
                 video,
                 description,

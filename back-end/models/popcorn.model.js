@@ -17,7 +17,7 @@ const PopcornSchema = new mongoose.Schema({
     status: {
         type: String
     }
-});
+}, { timestamps: true });
 
 const Popcorn = mongoose.model("Popcorn", PopcornSchema);
 

@@ -48,7 +48,7 @@ const PopcornSelection = ({ selectdPopcorns, setSelectedPopcorns }) => {
                 </span>
             </div>
             <div className="popcorns-selection-list">
-                {popcorns && popcorns.list && popcorns.list.map((item, index) => {
+                {popcorns && popcorns.list && popcorns.list.filter(item => item.status === "active").map((item, index) => {
                     return (
                         <div className="popcorns-selection-combo">
                             <img className="popcorns-selection-combo-image" src={item.image} alt="combo-image" />

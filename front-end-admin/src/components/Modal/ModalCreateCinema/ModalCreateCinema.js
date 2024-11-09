@@ -106,7 +106,7 @@ const ModalCreateCinema = ({ isVisible, onCancel, onSuccess }) => {
                     rules={[
                         { required: true, message: 'Vui lòng nhập địa chỉ!' },
                         { min: 5, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
-                        { max: 50, message: 'Địa chỉ phải có độ dài từ 5 đến 50 ký tự' },
+                        { max: 100, message: 'Địa chỉ phải có độ dài từ 5 đến 100 ký tự' },
                     ]}
 
                 >
