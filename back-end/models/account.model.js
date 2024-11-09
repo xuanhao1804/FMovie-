@@ -28,6 +28,9 @@ const AccountSchema = new Schema({
         type: String,
         enum: ['active', 'disable'],
         default: 'active'
+    },
+    clientId: {
+        type: String
     }
 }, { timestamps: true });
 

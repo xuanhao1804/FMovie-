@@ -28,6 +28,10 @@ const UserProfile = () => {
         }
     }
 
+    const handleChangePass = () => {
+        navigate('/change-password')
+    }
+
     const validateField = (field, value) => {
         let error = null;
         if (!value) {
@@ -116,8 +120,8 @@ const UserProfile = () => {
     }, [])
 
     return (
-        <div className="user-profile content-width-padding content-height-padding d-flex gap-4">
-            <div className="user-profile-info w-25 p-3">
+        <div className="user-profile content-width-padding content-height-padding d-flex flex-column flex-lg-row gap-4">
+            <div className="user-profile-info p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3">
                     Thông tin người dùng
                 </div>
@@ -171,12 +175,12 @@ const UserProfile = () => {
                     </Button>
                 </div>
             </div>
-            <div className="user-profile-history w-75 p-3">
+            <div className="user-profile-history  p-3">
                 <div className="fs-5 pb-2 text-center border-bottom mb-3 d-flex flex-column gap-1">
                     <span>Lịch sử giao dịch</span>
                     <span className="fs-6 text-warning">Chỉ hiển thị 10 giao dịch gần nhất</span>
                 </div>
-                <table className="user-profile-history-table table w-100">
+                <table className="user-profile-history-table table">
                     <thead>
                         <tr className="text-nowrap">
                             <th scope="col">#</th>
@@ -223,6 +227,7 @@ const UserProfile = () => {
                                             }</td>
                                             <td>{getVietnameseDate(item?.createdAt, true)}</td>
                                             <td><NumericFormat className="text-success" value={item?.total_price} decimalSeparator="," thousandSeparator="." displayType="text" suffix=" đ" /></td>
+                                            <td>{item.orderCode}</td>
                                             <td><span style={{ color: bookingStatus[item.status]?.textColor }}>{bookingStatus[item.status]?.text}</span></td>
                                         </tr>
                                     )

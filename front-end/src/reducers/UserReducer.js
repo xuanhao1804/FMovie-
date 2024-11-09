@@ -4,7 +4,9 @@ import { UserService } from "../services/UserService";
 const initialState = {
     user: {},
     recoverEmail: "",
-    canResetPassword: false
+    canResetPassword: false,
+    credential: "",
+    clientId: "",
 }
 
 export const createUser = createAsyncThunk("/user/createUser", async (data) => {
@@ -50,10 +52,16 @@ export const userSlice = createSlice({
         },
         resetInfo: (state, action) => {
             state.user.account = action.payload
+        },
+        setCredential: (state, action) => {
+            state.credential = action.payload
+        },
+        setClientId: (state, action) => {
+            state.clientId = action.payload
         }
     }
 })
 
-export const { saveUserData, logout, setRecoverEmail, setCanResetPassword, resetInfo } = userSlice.actions
+export const { saveUserData, logout, setRecoverEmail, setCanResetPassword, resetInfo, setCredential, setClientId } = userSlice.actions
 
 export default userSlice.reducer

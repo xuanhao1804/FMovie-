@@ -21,6 +21,8 @@ import UserProfile from "./pages/UserProfile/UserProfile";
 import AutoScrollToTop from "./components/AutoScrollToTop/AutoScrollToTop";
 import ForgotPassword from "./pages/ResetPassword/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import AuthenInfo from "./pages/AuthenInfo/AuthenInfo";
+import ChangePass from "./pages/ChangePass/ChangePass";
 import CinemaMovies from "./pages/CinemaMovies/CinemaMovies";
 
 export const socket = io.connect(process.env.REACT_APP_API_HOST);
@@ -49,6 +51,8 @@ function App() {
 
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/change-password" element={<ChangePass />} />
+          <Route path="/fill-info" element={<AuthenInfo />} />
           <Route path="films" element={<Films />} >
             <Route index element={<Navigate to={"playing"} replace={true} />} />
             <Route path="playing" element={<Playing />} />
