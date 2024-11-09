@@ -37,7 +37,7 @@ const carouselSchema = new Schema({
     default: 'movie'
   },
   linkUrl: {
-    type: String  // URL nếu linkType là 'external'
+    type: String  
   },
   description: {
     type: String
