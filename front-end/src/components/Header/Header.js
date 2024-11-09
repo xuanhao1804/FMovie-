@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // Import useLocation
 import "./Header.scss";
 import logo from "../../assets/icon/logo.png";
 import ticket from "../../assets/icon/btn-ticket.webp";
@@ -12,12 +12,13 @@ import TakeTicket from "../TakeTicket/TakeTicket";
 
 const Header = () => {
 
-    const navigate = useNavigate()
-
-    const [cinemas, setCinemas] = useState([]); // Dùng để lưu danh sách các rạp chiếu phim
-    const [cinemaDropDown, setCinemaDropDown] = useState(null)
+    const navigate = useNavigate();
+    const location = useLocation(); // Đường dẫn hiện tại
+    const [cinemas, setCinemas] = useState([]);
+    const [cinemaDropDown, setCinemaDropDown] = useState(null);
+    const [selectedCinemaName, setSelectedCinemaName] = useState("Rạp chiếu phim");
     const user = useSelector((state) => state.user);
-    const { city } = useSelector((state) => state)
+    const { city } = useSelector((state) => state);
     const dispatch = useDispatch();
 
     const handleLogout = () => {
@@ -29,7 +30,7 @@ const Header = () => {
     useEffect(() => {
         const fetchCinemas = async () => {
             try {
-                const response = await axios.get('http://localhost:9999/cinema/get-all');  // Gọi API để lấy danh sách các rạp chiếu phim
+                const response = await axios.get('http://localhost:9999/cinema/get-all');
                 if (response.data.status === 200) {
                     setCinemas(response.data.data);
                 }
@@ -38,7 +39,7 @@ const Header = () => {
             }
         };
 
-        fetchCinemas();  // Gọi hàm lấy danh sách rạp chiếu phim
+        fetchCinemas();
     }, []);
 
     const buildCinemaDropdown = () => {
@@ -49,19 +50,32 @@ const Header = () => {
                 children: cinemas.filter(cinema => cinema.city === item._id).map(cinema => (
                     {
                         key: cinema._id,
-                        label: (<Link className="text-decoration-none" to={`/cinemas-movies/${cinema._id}`}>
-                            {cinema.name}
-                        </Link>)
+                        label: (
+                            <Link 
+                                className="text-decoration-none" 
+                                to={`/cinemas-movies/${cinema._id}`}
+                                onClick={() => setSelectedCinemaName(cinema.name)} // Cập nhật tên rạp đã chọn
+                            >
+                                {cinema.name}
+                            </Link>
+                        )
                     }
                 ))
             }
-        ))
-        setCinemaDropDown(cinemaByCity)
-    }
+        ));
+        setCinemaDropDown(cinemaByCity);
+    };
 
     useEffect(() => {
-        buildCinemaDropdown()
-    }, [cinemas, city])
+        buildCinemaDropdown();
+    }, [cinemas, city]);
+
+    // Reset selectedCinemaName khi người dùng trở lại trang chủ
+    useEffect(() => {
+        if (location.pathname === "/home" || location.pathname === "/") {
+            setSelectedCinemaName("Rạp chiếu phim");
+        }
+    }, [location.pathname]);
 
     // Danh sách các loại phim
     const filmsType = [
@@ -90,7 +104,7 @@ const Header = () => {
                     {/* Dropdown các rạp chiếu phim */}
                     <Dropdown className="dropdown-cinemas" menu={{ items: cinemaDropDown }} trigger={['hover']}>
                         <span>
-                            Rạp chiếu phim <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
+                            {selectedCinemaName} <i className="fa-solid fa-chevron-down dropdown-cinemas-items"></i>
                         </span>
                     </Dropdown>
                 </div>
@@ -118,7 +132,6 @@ const Header = () => {
                         </div>
                     )
                 }
-
             </div>
             <div className="header-divider content-width-padding">
                 FMOVIE. Website đặt lịch xem phim trực tuyến số một Việt Nam
