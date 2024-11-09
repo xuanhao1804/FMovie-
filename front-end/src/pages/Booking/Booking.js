@@ -228,6 +228,9 @@ const Booking = () => {
                                                 setSelectedPopcorns([])
                                                 setStep(1)
                                             }} className="btn btn-outline-warning"><i class="fa-solid fa-film"></i> Chọn phim khác</button>
+                                            <Link to={"/user-profile"} className="btn btn-outline-success">
+                                                <i class="fa-solid fa-ticket"></i> Vé của tôi
+                                            </Link>
                                         </div>
                                     </div>
                                 </>
@@ -242,7 +245,7 @@ const Booking = () => {
                                     <div className="d-flex flex-column gap-2">
                                         <div className="d-flex justify-content-between gap-4">
                                             <span className="fs-5 fw-semibold">{selectedMovie.name || ""}</span>
-                                            <span className="film-detail-age-limit" style={{ height: "fit-content" }}>{selectedMovie.limit}</span>
+                                            <span className="film-detail-age-limit" style={{ height: "fit-content" }}>{selectedMovie.limit}T</span>
                                         </div>
                                         <span>Quốc gia: <span className="fw-semibold">{selectedMovie.country}</span></span>
                                         <span>Phụ đề: <span className="fw-semibold">Tiếng Việt</span></span>

@@ -41,9 +41,9 @@ const CreatePayment = async (req, res) => {
                     //await payOS.cancelPaymentLink(savedBooking.orderCode);
                     bookingToUpdate.status = 'cancelled';
                     await bookingToUpdate.save();
-                    console.log(`Booking ${savedBooking._id} đã bị hủy sau 10 phút.`);
+                    console.log(`Booking ${savedBooking._id} đã bị hủy sau 4 phút.`);
                 }
-            }, 600000);
+            }, 240000);
 
             // Create payment link
             const paymentLinkBody = {
@@ -120,7 +120,7 @@ const receiveHook = async (req, res) => {
                     })
                     .populate({ path: 'createdBy', select: 'fullname email' })
                     .populate({ path: 'room', select: '-showtimes -areas' })
-                    .populate({ path: 'popcorns.popcorn' })
+                    .populate({ path: 'popcorns._id' })
                     .exec();
                 const cinema = await db.cinema.findOne({ rooms: booking.room._id })
                 const transporter = nodemailer.createTransport({
@@ -182,7 +182,8 @@ const receiveHook = async (req, res) => {
                         month: '2-digit',
                         year: 'numeric'
                     })} lúc ${booking?.showtime.startAt.time}</li>
-                       <li><strong>Rạp:</strong> ${booking?.room.name}</li>
+                     <li><strong>Rạp:</strong> Rạp: ${cinema?.name}</li>
+                       <li><strong>Phòng:</strong> ${booking?.room.name}</li>
                        <li><strong>Ghế:</strong> ${booking?.seats.map(seat => `Khu vực ${seat.area} - Vị trí ${seat.position} ${seat.isVip ? "(VIP)" : ""}`).join(", ")}</li>
                    </ul>
 

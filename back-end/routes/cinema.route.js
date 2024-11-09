@@ -7,7 +7,7 @@ cinemaRouter.get("/get-all", cinemaController.getAllCinema);
 
 cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
 
-cinemaRouter.get("/get-by-city/:id", cinemaController.getCinemaByCity);
+cinemaRouter.post("/create", cinemaController.CreateNewCinema);
 
 cinemaRouter.get("/get-movies-by-cinema/:cinemaId", cinemaController.getMoviesByCinema);
 

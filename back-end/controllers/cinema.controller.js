@@ -136,7 +136,7 @@ const CreateNewCinema = async (req, res) => {
             city,
             address
         });
-        const savedCinema = await db.cinema.save();
+        const savedCinema = await newCinema.save();
         return res.status(201).json(savedCinema);
     } catch (error) {
         console.error('Error creating new cinema:', error);

@@ -141,7 +141,7 @@ const UserProfile = () => {
                     <input
                         value={userData?.email || ''}
                         type="email"
-                        onChange={handleDataChange}
+                        disabled
                         className="form-control"
                         id="email"
                     />

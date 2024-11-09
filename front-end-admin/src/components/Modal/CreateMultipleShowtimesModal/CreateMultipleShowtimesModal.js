@@ -3,7 +3,6 @@ import { Modal, Form, Select, DatePicker, TimePicker, Button, message, Card, Typ
 import { CloseOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import './Crea.css';
 
 const { Option } = Select;
 
