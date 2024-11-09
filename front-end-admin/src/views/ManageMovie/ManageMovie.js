@@ -155,7 +155,7 @@ const ManageMovie = () => {
       ),
     },
   ];
-  
+
 
   const fetchData = async () => {
     try {
